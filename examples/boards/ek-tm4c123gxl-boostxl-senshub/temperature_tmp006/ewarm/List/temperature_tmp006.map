@@ -1,0 +1,367 @@
+###############################################################################
+#
+# IAR ELF Linker V7.80.3.12102/W32 for ARM                01/Mar/2017  21:15:15
+# Copyright 2007-2016 IAR Systems AB.
+#
+#    Output file  =  
+#        H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\ewarm\Exe\temperature_tmp006.out
+#    Map file     =  
+#        H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\ewarm\List\temperature_tmp006.map
+#    Command line =  
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\driverlib\ewarm\Exe\driverlib.a"
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\ewarm\Obj\rgb.o"
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\sensorlib\ewarm\Exe\sensorlib.a"
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\ewarm\Obj\startup_ewarm.o"
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\ewarm\Obj\temperature_tmp006.o"
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\ewarm\Obj\uartstdio.o"
+#        --redirect _Printf=_PrintfTiny --redirect _Scanf=_ScanfSmall -o
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\ewarm\Exe\temperature_tmp006.out"
+#        --map "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\ewarm\List\temperature_tmp006.map"
+#        --config "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\temperature_tmp006.icf"
+#        --semihosting --entry __iar_program_start --vfe
+#
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__SystemLibrary = DLib
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A0":  place at start of [0x00000000-0x0003ffff] { ro section .intvec };
+"P1":  place in [from 0x00000000 to 0x0003ffff] { ro };
+"P2":  place in [from 0x20000000 to 0x20007fff] { rw, block HEAP };
+do not initialize { section .noinit };
+initialize by copy { rw };
+
+  Section             Kind        Address    Size  Object
+  -------             ----        -------    ----  ------
+"A0":                                       0x26c
+  .intvec             const    0x00000000   0x26c  startup_ewarm.o [1]
+                             - 0x0000026c   0x26c
+
+"P1":                                      0x1ffc
+  .text               ro code  0x0000026c   0x4e8  uartstdio.o [1]
+  .text               ro code  0x00000754    0x66  ABImemset.o [6]
+  .text               ro code  0x000007bc   0x480  temperature_tmp006.o [1]
+  .text               ro code  0x00000c3c   0x2e4  rgb.o [1]
+  .text               ro code  0x00000f20   0x444  i2cm_drv.o [7]
+  .text               ro code  0x00001364   0x16a  gpio.o [4]
+  .text               ro code  0x000014d0   0x2e6  tmp006.o [7]
+  .text               ro code  0x000017b8     0x6  uart.o [4]
+  .text               ro code  0x000017c0   0x1a4  sysctl.o [4]
+  .text               ro code  0x00001964    0x46  FltToU64.o [5]
+  .text               ro code  0x000019ac    0x8c  i2c.o [4]
+  .text               ro code  0x00001a38   0x144  interrupt.o [4]
+  .text               ro code  0x00001b7c    0x1e  tmp006.o [7]
+  .text               ro code  0x00001b9a    0x20  tmp006.o [7]
+  .text               ro code  0x00001bba    0x2e  tmp006.o [7]
+  .text               ro code  0x00001be8    0xe8  DblAdd.o [5]
+  .text               ro code  0x00001cd0    0x90  DblToFlt.o [5]
+  .text               ro code  0x00001d60   0x1a2  DblMul.o [5]
+  .text               ro code  0x00001f04    0x4e  FltToDbl.o [5]
+  .text               ro code  0x00001f54   0x180  DblSub.o [5]
+  .text               ro code  0x000020d4    0x1c  sqrtf.o [5]
+  .text               ro code  0x000020f0     0xc  iarEdom.o [6]
+  .text               ro code  0x000020fc     0xc  errno.o [3]
+  .text               ro code  0x00002108     0x2  xtls.o [3]
+  .text               ro code  0x0000210a    0x40  zero_init3.o [6]
+  .text               ro code  0x0000214a    0x2c  copy_init3.o [6]
+  .text               ro code  0x00002178    0x28  data_init.o [6]
+  .text               ro code  0x000021a0    0x22  fpinit_M.o [5]
+  .iar.init_table     const    0x000021c4    0x24  - Linker created -
+  .text               ro code  0x000021e8    0x1a  startup_ewarm.o [1]
+  .text               ro code  0x00002202     0xc  cstartup_M.o [6]
+  .text               ro code  0x00002210    0x1a  cmain.o [6]
+  .text               ro code  0x0000222a     0x4  low_level_init.o [3]
+  .text               ro code  0x0000222e     0x4  exit.o [3]
+  .text               ro code  0x00002234     0xa  cexit.o [6]
+  .text               ro code  0x00002240    0x14  exit.o [8]
+  Initializer bytes   const    0x00002254    0x14  <for P2-1>
+  .rodata             const    0x00002268     0x0  zero_init3.o [6]
+  .rodata             const    0x00002268     0x0  copy_init3.o [6]
+                             - 0x00002268  0x1ffc
+
+"P2", part 1 of 3:                           0x14
+  P2-1                         0x20000000    0x14  <Init block>
+    .data             inited   0x20000000    0x10  rgb.o [1]
+    __DLIB_PERTHREAD  inited   0x20000010     0x4  errno.o [3]
+                             - 0x20000014    0x14
+
+"P2", part 2 of 3:                          0x400
+  .noinit             uninit   0x20000014   0x400  startup_ewarm.o [1]
+                             - 0x20000414   0x400
+
+"P2", part 3 of 3:                          0x608
+  .bss                zero     0x20000414   0x400  uartstdio.o [1]
+  .bss                zero     0x20000814   0x168  temperature_tmp006.o [1]
+  .bss                zero     0x2000097c    0x80  uartstdio.o [1]
+  .bss                zero     0x200009fc    0x1c  uartstdio.o [1]
+  .bss                zero     0x20000a18     0x4  rgb.o [1]
+                             - 0x20000a1c   0x608
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0x608:
+          0x20000414  0x608
+
+Copy (__iar_copy_init3)
+    1 source range, total size 0x14:
+          0x00002254   0x14
+    1 destination range, total size 0x14:
+          0x20000000   0x14
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module                ro code  ro data  rw data
+    ------                -------  -------  -------
+H:\Ascension_HADES\LaunchPad TI Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\ewarm\Obj: [1]
+    rgb.o                     740       16       20
+    startup_ewarm.o            26      620    1 024
+    temperature_tmp006.o    1 152               360
+    uartstdio.o             1 256             1 180
+    -----------------------------------------------
+    Total:                  3 174      636    2 584
+
+command line: [2]
+    -----------------------------------------------
+    Total:
+
+dl7M_tln.a: [3]
+    errno.o                    12        4        4
+    exit.o                      4
+    low_level_init.o            4
+    xtls.o                      2
+    -----------------------------------------------
+    Total:                     22        4        4
+
+driverlib.a: [4]
+    gpio.o                    362
+    i2c.o                     140
+    interrupt.o               324
+    sysctl.o                  420
+    uart.o                      6
+    -----------------------------------------------
+    Total:                  1 252
+
+m7M_tls.a: [5]
+    DblAdd.o                  232
+    DblMul.o                  418
+    DblSub.o                  384
+    DblToFlt.o                144
+    FltToDbl.o                 78
+    FltToU64.o                 70
+    fpinit_M.o                 34
+    sqrtf.o                    28
+    -----------------------------------------------
+    Total:                  1 388
+
+rt7M_tl.a: [6]
+    ABImemset.o               102
+    cexit.o                    10
+    cmain.o                    26
+    copy_init3.o               44
+    cstartup_M.o               12
+    data_init.o                40
+    iarEdom.o                  12
+    zero_init3.o               64
+    -----------------------------------------------
+    Total:                    310
+
+sensorlib.a: [7]
+    i2cm_drv.o              1 092
+    tmp006.o                  850
+    -----------------------------------------------
+    Total:                  1 942
+
+shb_l.a: [8]
+    exit.o                     20
+    -----------------------------------------------
+    Total:                     20
+
+    Gaps                       22        2
+    Linker created                      36
+---------------------------------------------------
+    Grand Total:            8 130      678    2 588
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address   Size  Type      Object
+-----                      -------   ----  ----      ------
+.iar.init_table$$Base   0x000021c4          --   Gb  - Linker created -
+.iar.init_table$$Limit  0x000021e8          --   Gb  - Linker created -
+?main                   0x00002211         Code  Gb  cmain.o [6]
+ConfigureUART           0x00000843   0x4a  Code  Gb  temperature_tmp006.o [1]
+FaultISR                0x000021ff    0x2  Code  Lc  startup_ewarm.o [1]
+GPIODirModeSet          0x00001365   0x28  Code  Gb  gpio.o [4]
+GPIOIntClear            0x000014a1    0x6  Code  Gb  gpio.o [4]
+GPIOIntEnable           0x0000148b    0x6  Code  Gb  gpio.o [4]
+GPIOIntStatus           0x00001491   0x10  Code  Gb  gpio.o [4]
+GPIOPadConfigSet        0x0000138d   0xfe  Code  Gb  gpio.o [4]
+GPIOPinTypeI2CSCL       0x000014ab   0x14  Code  Gb  gpio.o [4]
+I2CMCommand             0x00001217   0x7e  Code  Gb  i2cm_drv.o [7]
+I2CMInit                0x000011e3   0x34  Code  Gb  i2cm_drv.o [7]
+I2CMIntHandler          0x00000fb1  0x216  Code  Gb  i2cm_drv.o [7]
+I2CMRead                0x00001b9b   0x20  Code  Gb  tmp006.o [7]
+I2CMReadModifyWrite16BE
+                        0x00001bbb   0x2e  Code  Gb  tmp006.o [7]
+I2CMReadModifyWrite16LE
+                        0x000012f9   0x60  Code  Gb  i2cm_drv.o [7]
+I2CMReadModifyWrite16LECallback
+                        0x00001295   0x5a  Code  Lc  i2cm_drv.o [7]
+I2CMStateIdle           0x00000f21   0x90  Code  Lc  i2cm_drv.o [7]
+I2CMWrite               0x00001b7d   0x1e  Code  Gb  tmp006.o [7]
+I2CMasterControl        0x00001a11    0x4  Code  Gb  i2c.o [4]
+I2CMasterDataGet        0x00001a19    0x4  Code  Gb  i2c.o [4]
+I2CMasterDataPut        0x00001a15    0x4  Code  Gb  i2c.o [4]
+I2CMasterEnable         0x000019ef    0xc  Code  Gb  i2c.o [4]
+I2CMasterInitExpClk     0x000019ad   0x42  Code  Gb  i2c.o [4]
+I2CMasterIntClear       0x00001a01    0x8  Code  Gb  i2c.o [4]
+I2CMasterIntEnableEx    0x000019fb    0x6  Code  Gb  i2c.o [4]
+I2CMasterSlaveAddrSet   0x00001a09    0x8  Code  Gb  i2c.o [4]
+IntDefaultHandler       0x00002201    0x2  Code  Lc  startup_ewarm.o [1]
+IntDisable              0x00001a8f   0x56  Code  Gb  interrupt.o [4]
+IntEnable               0x00001a39   0x56  Code  Gb  interrupt.o [4]
+IntGPIOe                0x00000819   0x2a  Code  Gb  temperature_tmp006.o [1]
+IntIsEnabled            0x00001ae5   0x5c  Code  Gb  interrupt.o [4]
+IntTrigger              0x00001b41    0x8  Code  Gb  interrupt.o [4]
+IsBufferEmpty           0x00000287   0x10  Code  Lc  uartstdio.o [1]
+IsBufferFull            0x0000026d   0x1a  Code  Lc  uartstdio.o [1]
+NmiSR                   0x000021fd    0x2  Code  Lc  startup_ewarm.o [1]
+RGBBlinkIntHandler      0x00000c3d   0x28  Code  Gb  rgb.o [1]
+RGBBlinkIntHandler::ulFlags
+                        0x20000a18    0x4  Data  Lc  rgb.o [1]
+RGBBlinkRateSet         0x00000e71   0x70  Code  Gb  rgb.o [1]
+RGBColorSet             0x00000df5   0x74  Code  Gb  rgb.o [1]
+RGBDisable              0x00000da9   0x4c  Code  Gb  rgb.o [1]
+RGBEnable               0x00000d1d   0x8c  Code  Gb  rgb.o [1]
+RGBInit                 0x00000c65   0xb8  Code  Gb  rgb.o [1]
+RGBIntensitySet         0x00000e69    0x8  Code  Gb  rgb.o [1]
+Region$$Table$$Base     0x000021c4          --   Gb  - Linker created -
+Region$$Table$$Limit    0x000021e8          --   Gb  - Linker created -
+ResetISR                0x000021e9    0xe  Code  Gb  startup_ewarm.o [1]
+SysCtlClockGet          0x000017c1  0x110  Code  Gb  sysctl.o [4]
+TMP006AppCallback       0x000007bd    0xc  Code  Gb  temperature_tmp006.o [1]
+TMP006AppErrorHandler   0x000007c9   0x4a  Code  Gb  temperature_tmp006.o [1]
+TMP006Callback          0x000014d1   0x54  Code  Lc  tmp006.o [7]
+TMP006DataRead          0x000015ad   0x3a  Code  Gb  tmp006.o [7]
+TMP006DataTemperatureGetFloat
+                        0x00001609  0x13c  Code  Gb  tmp006.o [7]
+TMP006DataTemperatureGetRaw
+                        0x000015f1   0x18  Code  Gb  tmp006.o [7]
+TMP006I2CIntHandler     0x00000813    0x6  Code  Gb  temperature_tmp006.o [1]
+TMP006Init              0x00001525   0x40  Code  Gb  tmp006.o [7]
+TMP006ReadModifyWrite   0x00001587   0x26  Code  Gb  tmp006.o [7]
+UARTClockSourceSet      0x000017b9    0x6  Code  Gb  uart.o [4]
+UARTFlushRx             0x000005b7   0x20  Code  Gb  uartstdio.o [1]
+UARTFlushTx             0x000005d7   0x30  Code  Gb  uartstdio.o [1]
+UARTPrimeTransmit       0x00000297   0x66  Code  Lc  uartstdio.o [1]
+UARTStdioConfig         0x000002fd   0x90  Code  Gb  uartstdio.o [1]
+UARTStdioIntHandler     0x00000607   0xee  Code  Gb  uartstdio.o [1]
+UARTStdioIntHandler::bLastWasCR
+                        0x200009fd    0x1  Data  Lc  uartstdio.o [1]
+UARTprintf              0x0000059d    0xe  Code  Gb  uartstdio.o [1]
+UARTvprintf             0x0000040f  0x184  Code  Gb  uartstdio.o [1]
+UARTwrite               0x0000038d   0x62  Code  Gb  uartstdio.o [1]
+__aeabi_d2f             0x00001cd1         Code  Gb  DblToFlt.o [5]
+__aeabi_dadd            0x00001be9         Code  Gb  DblAdd.o [5]
+__aeabi_dmul            0x00001d61         Code  Gb  DblMul.o [5]
+__aeabi_dsub            0x00001f55         Code  Gb  DblSub.o [5]
+__aeabi_errno_addr      0x000020fd    0x6  Code  Gb  errno.o [3]
+__aeabi_f2d             0x00001f05         Code  Gb  FltToDbl.o [5]
+__aeabi_f2ulz           0x00001965         Code  Gb  FltToU64.o [5]
+__aeabi_memset          0x00000755         Code  Gb  ABImemset.o [6]
+__cmain                 0x00002211         Code  Gb  cmain.o [6]
+__exit                  0x00002241   0x14  Code  Gb  exit.o [8]
+__iar_Errno             0x20000010    0x4  Data  Gb  errno.o [3]
+__iar_Memset            0x00000755         Code  Gb  ABImemset.o [6]
+__iar_Memset_word       0x0000075d         Code  Gb  ABImemset.o [6]
+__iar_copy_init3        0x0000214b   0x2c  Code  Gb  copy_init3.o [6]
+__iar_dadd              0x00001bfd         Code  Gb  DblAdd.o [5]
+__iar_data_init3        0x00002179   0x28  Code  Gb  data_init.o [6]
+__iar_dlib_perthread_access
+                        0x00002109    0x2  Code  Gb  xtls.o [3]
+__iar_dsub              0x00001f69         Code  Gb  DblSub.o [5]
+__iar_dsubStart         0x00001f7b         Code  Gb  DblSub.o [5]
+__iar_edom              0x000020f1         Code  Gb  iarEdom.o [6]
+__iar_init_vfp          0x000021a1         Code  Gb  fpinit_M.o [5]
+__iar_program_start     0x00002203         Code  Gb  cstartup_M.o [6]
+__iar_zero_init3        0x0000210b   0x40  Code  Gb  zero_init3.o [6]
+__low_level_init        0x0000222b    0x4  Code  Gb  low_level_init.o [3]
+__vector_table          0x00000000  0x26c  Data  Gb  startup_ewarm.o [1]
+_call_main              0x0000221d         Code  Gb  cmain.o [6]
+_exit                   0x00002235         Code  Gb  cexit.o [6]
+_main                   0x00002227         Code  Gb  cmain.o [6]
+exit                    0x0000222f    0x4  Code  Gb  exit.o [3]
+g_bDisableEcho          0x200009fc    0x1  Data  Lc  uartstdio.o [1]
+g_fIntensity            0x2000000c    0x4  Data  Lc  rgb.o [1]
+g_pcUARTRxBuffer        0x2000097c   0x80  Data  Lc  uartstdio.o [1]
+g_pcUARTTxBuffer        0x20000414  0x400  Data  Lc  uartstdio.o [1]
+g_pui32Colors           0x20000814    0xc  Data  Gb  temperature_tmp006.o [1]
+g_pui32Dii16Regs        0x00001b68   0x14  Data  Lc  interrupt.o [4]
+g_pui32EnRegs           0x00001b54   0x14  Data  Lc  interrupt.o [4]
+g_pui32Xtals            0x000018f8   0x6c  Data  Lc  sysctl.o [4]
+g_sI2CInst              0x20000828  0x124  Data  Gb  temperature_tmp006.o [1]
+g_sTMP006Inst           0x2000094c   0x30  Data  Gb  temperature_tmp006.o [1]
+g_ui32Base              0x20000a10    0x4  Data  Lc  uartstdio.o [1]
+g_ui32Colors            0x20000000    0xc  Data  Lc  rgb.o [1]
+g_ui32PortNum           0x20000a14    0x4  Data  Lc  uartstdio.o [1]
+g_ui32UARTBase          0x00000730    0xc  Data  Lc  uartstdio.o [1]
+g_ui32UARTInt           0x0000073c    0xc  Data  Lc  uartstdio.o [1]
+g_ui32UARTPeriph        0x00000748    0xc  Data  Lc  uartstdio.o [1]
+g_ui32UARTRxReadIndex   0x20000a0c    0x4  Data  Lc  uartstdio.o [1]
+g_ui32UARTRxWriteIndex  0x20000a08    0x4  Data  Lc  uartstdio.o [1]
+g_ui32UARTTxReadIndex   0x20000a04    0x4  Data  Lc  uartstdio.o [1]
+g_ui32UARTTxWriteIndex  0x20000a00    0x4  Data  Lc  uartstdio.o [1]
+g_vui8DataFlag          0x20000820    0x4  Data  Gb  temperature_tmp006.o [1]
+g_vui8ErrorFlag         0x20000824    0x4  Data  Gb  temperature_tmp006.o [1]
+main                    0x0000088d  0x220  Code  Gb  temperature_tmp006.o [1]
+pui32Stack              0x20000014  0x400  Data  Lc  startup_ewarm.o [1]
+sqrtf                   0x000020d5         Code  Gb  sqrtf.o [5]
+
+
+[1] = H:\Ascension_HADES\LaunchPad TI Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\temperature_tmp006\ewarm\Obj
+[2] = command line
+[3] = dl7M_tln.a
+[4] = driverlib.a
+[5] = m7M_tls.a
+[6] = rt7M_tl.a
+[7] = sensorlib.a
+[8] = shb_l.a
+
+  8 130 bytes of readonly  code memory
+    678 bytes of readonly  data memory
+  2 588 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

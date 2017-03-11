@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>2711317055</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\rom_map.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\sensorlib\bmp180.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\timer.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\debug.h</file>
+      <file>$PROJ_DIR$\ewarm\List\pressure_bmp180.map</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\interrupt.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_timer.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_nvic.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\pressure_bmp180.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\ymath.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\math.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.pbi</file>
+      <file>$PROJ_DIR$\ewarm\Obj\rgb.o</file>
+      <file>$PROJ_DIR$\ewarm\Obj\rgb.pbi</file>
+      <file>$PROJ_DIR$\pressure_bmp180.icf</file>
+      <file>$PROJ_DIR$\ewarm\Exe\pressure_bmp180.out</file>
+      <file>$PROJ_DIR$\ewarm\Obj\pressure_bmp180.o</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\rom.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\ewarm\Exe\pressure_bmp180.bin</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.o</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\uart.h</file>
+      <file>$PROJ_DIR$\pressure_bmp180.c</file>
+      <file>$PROJ_DIR$\..\drivers\rgb.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\ewarm\Exe\driverlib.a</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\sensorlib\ewarm\Exe\sensorlib.a</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\pin_map.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_uart.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\gpio.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\systick.h</file>
+      <file>$PROJ_DIR$\..\drivers\rgb.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_types.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\sensorlib\i2cm_drv.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\sensorlib\hw_bmp180.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\sysctl.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_ints.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_memmap.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xtgmath.h</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
+    </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 22 7</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\ewarm\Exe\pressure_bmp180.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 7</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 28</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 21 33 23 19 35 29 0 24 8 55 13</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\pressure_bmp180.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 15</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 23</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 54 43 45 1 9 10 27 44 41 47 17 6 25 39 42 48 53 14 52 50 40 37 49 30 46 3 5 16 51</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 51 27 1 10 53 47 48 5 14 17 16 54 52 44 50 6 40 9 37 25 49 41 30 39 46 45 3 42</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\drivers\rgb.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 20</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 19</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 2 11 9 5 1 44 49 4 27 14 52 50 25 37 40 42 10 48 53 47 51</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 51 27 1 10 53 47 48 5 14 44 52 11 50 49 25 2 37 4 40 9 42</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\startup_ewarm.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 18</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 29</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10 47 44 27 48 53 12 1 5 51</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 51 27 1 10 53 47 48 5 12 44</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 26</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 0</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 9 10 27 52 30 47 1 43 38 2 48 53 51 50 44 6 25 49 39 5 14</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 14 51 27 1 10 53 47 48 5 50 52 44 38 6 9 25 2 49 30 39</file>
+        </tool>
+      </inputs>
+    </file>
+  </configuration>
+</project>
+
+

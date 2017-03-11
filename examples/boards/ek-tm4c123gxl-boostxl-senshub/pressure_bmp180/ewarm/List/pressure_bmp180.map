@@ -1,0 +1,332 @@
+###############################################################################
+#
+# IAR ELF Linker V7.80.3.12102/W32 for ARM                01/Mar/2017  21:24:50
+# Copyright 2007-2016 IAR Systems AB.
+#
+#    Output file  =  
+#        H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\ewarm\Exe\pressure_bmp180.out
+#    Map file     =  
+#        H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\ewarm\List\pressure_bmp180.map
+#    Command line =  
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\driverlib\ewarm\Exe\driverlib.a"
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\ewarm\Obj\pressure_bmp180.o"
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\ewarm\Obj\rgb.o"
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\sensorlib\ewarm\Exe\sensorlib.a"
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\ewarm\Obj\startup_ewarm.o"
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\ewarm\Obj\uartstdio.o"
+#        --redirect _Printf=_PrintfTiny --redirect _Scanf=_ScanfSmall -o
+#        "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\ewarm\Exe\pressure_bmp180.out"
+#        --map "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\ewarm\List\pressure_bmp180.map"
+#        --config "H:\Ascension_HADES\LaunchPad TI
+#        Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\pressure_bmp180.icf"
+#        --semihosting --entry __iar_program_start --vfe
+#
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__SystemLibrary = DLib
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A0":  place at start of [0x00000000-0x0003ffff] { ro section .intvec };
+"P1":  place in [from 0x00000000 to 0x0003ffff] { ro };
+"P2":  place in [from 0x20000000 to 0x20007fff] { rw, block HEAP };
+do not initialize { section .noinit };
+initialize by copy { rw };
+
+  Section             Kind        Address    Size  Object
+  -------             ----        -------    ----  ------
+"A0":                                       0x26c
+  .intvec             const    0x00000000   0x26c  startup_ewarm.o [1]
+                             - 0x0000026c   0x26c
+
+"P1":                                      0x1e0c
+  .text               ro code  0x0000026c   0x474  bmp180.o [7]
+  .text               ro code  0x000006e0    0x20  i2cm_drv.o [7]
+  .text               ro code  0x00000700    0x1e  i2cm_drv.o [7]
+  .text               ro code  0x00000720   0x374  i2cm_drv.o [7]
+  .text               ro code  0x00000a94    0x8c  i2c.o [4]
+  .text               ro code  0x00000b20   0x144  interrupt.o [4]
+  .text               ro code  0x00000c64   0x31c  pressure_bmp180.o [1]
+  .text               ro code  0x00000f80   0x14c  gpio.o [4]
+  .text               ro code  0x000010cc     0x6  uart.o [4]
+  .text               ro code  0x000010d4   0x264  uartstdio.o [1]
+  .text               ro code  0x00001338   0x2e4  rgb.o [1]
+  .text               ro code  0x0000161c   0x306  powf.o [5]
+  .text               ro code  0x00001924    0x66  ABImemset.o [6]
+  .text               ro code  0x0000198c   0x1a4  sysctl.o [4]
+  .text               ro code  0x00001b30    0x46  FltToU64.o [5]
+  .text               ro code  0x00001b76    0x28  xfdnorm.o [5]
+  .text               ro code  0x00001b9e    0x50  xfdint.o [5]
+  .text               ro code  0x00001bf0     0xc  errno.o [3]
+  .text               ro code  0x00001bfc    0x28  xflog.o [5]
+  .text               ro code  0x00001c24   0x230  xfexp.o [5]
+  .text               ro code  0x00001e54     0x2  xtls.o [3]
+  .text               ro code  0x00001e58    0xc4  xfdscale.o [5]
+  .text               ro code  0x00001f1c    0x40  zero_init3.o [6]
+  .text               ro code  0x00001f5c    0x2c  copy_init3.o [6]
+  .text               ro code  0x00001f88    0x28  data_init.o [6]
+  .text               ro code  0x00001fb0    0x22  fpinit_M.o [5]
+  .iar.init_table     const    0x00001fd4    0x24  - Linker created -
+  .text               ro code  0x00001ff8    0x1a  startup_ewarm.o [1]
+  .text               ro code  0x00002012     0xc  cstartup_M.o [6]
+  .text               ro code  0x00002020    0x1a  cmain.o [6]
+  .text               ro code  0x0000203a     0x4  low_level_init.o [3]
+  .text               ro code  0x0000203e     0x4  exit.o [3]
+  .text               ro code  0x00002044     0xa  cexit.o [6]
+  .text               ro code  0x00002050    0x14  exit.o [8]
+  Initializer bytes   const    0x00002064    0x14  <for P2-1>
+  .rodata             const    0x00002078     0x0  zero_init3.o [6]
+  .rodata             const    0x00002078     0x0  copy_init3.o [6]
+                             - 0x00002078  0x1e0c
+
+"P2", part 1 of 3:                           0x14
+  P2-1                         0x20000000    0x14  <Init block>
+    .data             inited   0x20000000    0x10  rgb.o [1]
+    __DLIB_PERTHREAD  inited   0x20000010     0x4  errno.o [3]
+                             - 0x20000014    0x14
+
+"P2", part 2 of 3:                          0x400
+  .noinit             uninit   0x20000014   0x400  startup_ewarm.o [1]
+                             - 0x20000414   0x400
+
+"P2", part 3 of 3:                          0x184
+  .bss                zero     0x20000414   0x178  pressure_bmp180.o [1]
+  .bss                zero     0x2000058c     0x8  uartstdio.o [1]
+  .bss                zero     0x20000594     0x4  rgb.o [1]
+                             - 0x20000598   0x184
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0x184:
+          0x20000414  0x184
+
+Copy (__iar_copy_init3)
+    1 source range, total size 0x14:
+          0x00002064   0x14
+    1 destination range, total size 0x14:
+          0x20000000   0x14
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module             ro code  ro data  rw data
+    ------             -------  -------  -------
+H:\Ascension_HADES\LaunchPad TI Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\ewarm\Obj: [1]
+    pressure_bmp180.o      796               376
+    rgb.o                  740       16       20
+    startup_ewarm.o         26      620    1 024
+    uartstdio.o            612                 8
+    --------------------------------------------
+    Total:               2 174      636    1 428
+
+command line: [2]
+    --------------------------------------------
+    Total:
+
+dl7M_tln.a: [3]
+    errno.o                 12        4        4
+    exit.o                   4
+    low_level_init.o         4
+    xtls.o                   2
+    --------------------------------------------
+    Total:                  22        4        4
+
+driverlib.a: [4]
+    gpio.o                 332
+    i2c.o                  140
+    interrupt.o            324
+    sysctl.o               420
+    uart.o                   6
+    --------------------------------------------
+    Total:               1 222
+
+m7M_tls.a: [5]
+    FltToU64.o              70
+    fpinit_M.o              34
+    powf.o                 774
+    xfdint.o                80
+    xfdnorm.o               40
+    xfdscale.o             196
+    xfexp.o                560
+    xflog.o                 40
+    --------------------------------------------
+    Total:               1 794
+
+rt7M_tl.a: [6]
+    ABImemset.o            102
+    cexit.o                 10
+    cmain.o                 26
+    copy_init3.o            44
+    cstartup_M.o            12
+    data_init.o             40
+    zero_init3.o            64
+    --------------------------------------------
+    Total:                 298
+
+sensorlib.a: [7]
+    bmp180.o             1 140
+    i2cm_drv.o             946
+    --------------------------------------------
+    Total:               2 086
+
+shb_l.a: [8]
+    exit.o                  20
+    --------------------------------------------
+    Total:                  20
+
+    Gaps                    18        2
+    Linker created                   36
+------------------------------------------------
+    Grand Total:         7 634      678    1 432
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address   Size  Type      Object
+-----                      -------   ----  ----      ------
+.iar.init_table$$Base   0x00001fd4          --   Gb  - Linker created -
+.iar.init_table$$Limit  0x00001ff8          --   Gb  - Linker created -
+?main                   0x00002021         Code  Gb  cmain.o [6]
+BMP180AppCallback       0x00000c65    0xa  Code  Gb  pressure_bmp180.o [1]
+BMP180Callback          0x0000026d  0x184  Code  Lc  bmp180.o [7]
+BMP180DataPressureGetFloat
+                        0x00000491  0x1a4  Code  Gb  bmp180.o [7]
+BMP180DataRead          0x00000451   0x34  Code  Gb  bmp180.o [7]
+BMP180DataTemperatureGetFloat
+                        0x00000635   0x6e  Code  Gb  bmp180.o [7]
+BMP180I2CIntHandler     0x00000c6f    0x6  Code  Gb  pressure_bmp180.o [1]
+BMP180Init              0x00000409   0x3e  Code  Gb  bmp180.o [7]
+ConfigureUART           0x00000c9b   0x4a  Code  Gb  pressure_bmp180.o [1]
+FaultISR                0x0000200f    0x2  Code  Lc  startup_ewarm.o [1]
+GPIODirModeSet          0x00000f81   0x28  Code  Gb  gpio.o [4]
+GPIOPadConfigSet        0x00000fa9   0xfe  Code  Gb  gpio.o [4]
+GPIOPinTypeI2CSCL       0x000010b1   0x14  Code  Gb  gpio.o [4]
+GPIOPinWrite            0x000010a7    0x6  Code  Gb  gpio.o [4]
+I2CMCommand             0x00000a17   0x7e  Code  Gb  i2cm_drv.o [7]
+I2CMInit                0x000009e3   0x34  Code  Gb  i2cm_drv.o [7]
+I2CMIntHandler          0x000007b1  0x216  Code  Gb  i2cm_drv.o [7]
+I2CMRead                0x000006e1   0x20  Code  Gb  i2cm_drv.o [7]
+I2CMStateIdle           0x00000721   0x90  Code  Lc  i2cm_drv.o [7]
+I2CMWrite               0x00000701   0x1e  Code  Gb  i2cm_drv.o [7]
+I2CMasterControl        0x00000af9    0x4  Code  Gb  i2c.o [4]
+I2CMasterDataGet        0x00000b01    0x4  Code  Gb  i2c.o [4]
+I2CMasterDataPut        0x00000afd    0x4  Code  Gb  i2c.o [4]
+I2CMasterEnable         0x00000ad7    0xc  Code  Gb  i2c.o [4]
+I2CMasterInitExpClk     0x00000a95   0x42  Code  Gb  i2c.o [4]
+I2CMasterIntClear       0x00000ae9    0x8  Code  Gb  i2c.o [4]
+I2CMasterIntEnableEx    0x00000ae3    0x6  Code  Gb  i2c.o [4]
+I2CMasterSlaveAddrSet   0x00000af1    0x8  Code  Gb  i2c.o [4]
+IntDefaultHandler       0x00002011    0x2  Code  Lc  startup_ewarm.o [1]
+IntDisable              0x00000b77   0x56  Code  Gb  interrupt.o [4]
+IntEnable               0x00000b21   0x56  Code  Gb  interrupt.o [4]
+IntIsEnabled            0x00000bcd   0x5c  Code  Gb  interrupt.o [4]
+IntTrigger              0x00000c29    0x8  Code  Gb  interrupt.o [4]
+NmiSR                   0x0000200d    0x2  Code  Lc  startup_ewarm.o [1]
+RGBBlinkIntHandler      0x00001339   0x28  Code  Gb  rgb.o [1]
+RGBBlinkIntHandler::ulFlags
+                        0x20000594    0x4  Data  Lc  rgb.o [1]
+RGBBlinkRateSet         0x0000156d   0x70  Code  Gb  rgb.o [1]
+RGBColorSet             0x000014f1   0x74  Code  Gb  rgb.o [1]
+RGBDisable              0x000014a5   0x4c  Code  Gb  rgb.o [1]
+RGBEnable               0x00001419   0x8c  Code  Gb  rgb.o [1]
+RGBInit                 0x00001361   0xb8  Code  Gb  rgb.o [1]
+RGBIntensitySet         0x00001565    0x8  Code  Gb  rgb.o [1]
+Region$$Table$$Base     0x00001fd4          --   Gb  - Linker created -
+Region$$Table$$Limit    0x00001ff8          --   Gb  - Linker created -
+ResetISR                0x00001ff9    0xe  Code  Gb  startup_ewarm.o [1]
+SysCtlClockGet          0x0000198d  0x110  Code  Gb  sysctl.o [4]
+SysTickIntHandler       0x00000c75   0x26  Code  Gb  pressure_bmp180.o [1]
+UARTClockSourceSet      0x000010cd    0x6  Code  Gb  uart.o [4]
+UARTStdioConfig         0x000010d5   0x50  Code  Gb  uartstdio.o [1]
+UARTgets::bLastWasCR    0x2000058c    0x1  Data  Lc  uartstdio.o [1]
+UARTprintf              0x000012f7    0xe  Code  Gb  uartstdio.o [1]
+UARTvprintf             0x0000115b  0x184  Code  Gb  uartstdio.o [1]
+UARTwrite               0x00001125   0x36  Code  Gb  uartstdio.o [1]
+__aeabi_errno_addr      0x00001bf1    0x6  Code  Gb  errno.o [3]
+__aeabi_f2ulz           0x00001b31         Code  Gb  FltToU64.o [5]
+__aeabi_memset          0x00001925         Code  Gb  ABImemset.o [6]
+__cmain                 0x00002021         Code  Gb  cmain.o [6]
+__exit                  0x00002051   0x14  Code  Gb  exit.o [8]
+__iar_Errno             0x20000010    0x4  Data  Gb  errno.o [3]
+__iar_FDint             0x00001b9f   0x50  Code  Gb  xfdint.o [5]
+__iar_FDnorm            0x00001b77   0x28  Code  Gb  xfdnorm.o [5]
+__iar_FDscale           0x00001e59   0xc4  Code  Gb  xfdscale.o [5]
+__iar_FExp              0x00001c25  0x200  Code  Gb  xfexp.o [5]
+__iar_FLogpoly          0x00001bfd   0x1a  Code  Gb  xflog.o [5]
+__iar_Memset            0x00001925         Code  Gb  ABImemset.o [6]
+__iar_Memset_word       0x0000192d         Code  Gb  ABImemset.o [6]
+__iar_copy_init3        0x00001f5d   0x2c  Code  Gb  copy_init3.o [6]
+__iar_data_init3        0x00001f89   0x28  Code  Gb  data_init.o [6]
+__iar_dlib_perthread_access
+                        0x00001e55    0x2  Code  Gb  xtls.o [3]
+__iar_init_vfp          0x00001fb1         Code  Gb  fpinit_M.o [5]
+__iar_program_start     0x00002013         Code  Gb  cstartup_M.o [6]
+__iar_zero_init3        0x00001f1d   0x40  Code  Gb  zero_init3.o [6]
+__low_level_init        0x0000203b    0x4  Code  Gb  low_level_init.o [3]
+__vector_table          0x00000000  0x26c  Data  Gb  startup_ewarm.o [1]
+_call_main              0x0000202d         Code  Gb  cmain.o [6]
+_exit                   0x00002045         Code  Gb  cexit.o [6]
+_main                   0x00002037         Code  Gb  cmain.o [6]
+exit                    0x0000203f    0x4  Code  Gb  exit.o [3]
+g_fIntensity            0x2000000c    0x4  Data  Lc  rgb.o [1]
+g_pui32Colors           0x20000414    0xc  Data  Gb  pressure_bmp180.o [1]
+g_pui32Dii16Regs        0x00000c50   0x14  Data  Lc  interrupt.o [4]
+g_pui32EnRegs           0x00000c3c   0x14  Data  Lc  interrupt.o [4]
+g_pui32Xtals            0x00001ac4   0x6c  Data  Lc  sysctl.o [4]
+g_sBMP180Inst           0x20000548   0x44  Data  Gb  pressure_bmp180.o [1]
+g_sI2CInst              0x20000424  0x124  Data  Gb  pressure_bmp180.o [1]
+g_ui32Base              0x20000590    0x4  Data  Lc  uartstdio.o [1]
+g_ui32Colors            0x20000000    0xc  Data  Lc  rgb.o [1]
+g_ui32UARTBase          0x00001320    0xc  Data  Lc  uartstdio.o [1]
+g_ui32UARTPeriph        0x0000132c    0xc  Data  Lc  uartstdio.o [1]
+g_vui8DataFlag          0x20000420    0x4  Data  Gb  pressure_bmp180.o [1]
+internal_Pow            0x0000161d  0x2fa  Code  Lc  powf.o [5]
+main                    0x00000ce5  0x1ce  Code  Gb  pressure_bmp180.o [1]
+powf                    0x0000191f    0x4  Code  Gb  powf.o [5]
+pui32Stack              0x20000014  0x400  Data  Lc  startup_ewarm.o [1]
+
+
+[1] = H:\Ascension_HADES\LaunchPad TI Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\pressure_bmp180\ewarm\Obj
+[2] = command line
+[3] = dl7M_tln.a
+[4] = driverlib.a
+[5] = m7M_tls.a
+[6] = rt7M_tl.a
+[7] = sensorlib.a
+[8] = shb_l.a
+
+  7 634 bytes of readonly  code memory
+    678 bytes of readonly  data memory
+  1 432 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

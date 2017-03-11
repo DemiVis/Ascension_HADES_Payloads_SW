@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+    
+    
+  <CurrentConfigs><Project>compdcm_mpu9150/Debug</Project><Project>pressure_bmp180/Debug</Project><Project>HADES_SENSEHUB_SW_Take2/Debug</Project><Project>HADES_SW/Debug</Project><Project>humidity_sht21/Debug</Project><Project>temperature_tmp006/Debug</Project><Project>usblib/Debug</Project><Project>driverlib/Debug</Project><Project>sensorlib/Debug</Project><Project>light_isl29023/Debug</Project><Project>airmouse/Debug</Project></CurrentConfigs><CurrentProj>HADES_SENSEHUB_SW_Take2</CurrentProj><OverviewSelected>0</OverviewSelected></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>203</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Debug-Log>
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1861</ColumnWidth1></Debug-Log>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1395</ColumnWidth1><ColumnWidth2>372</ColumnWidth2><ColumnWidth3>93</ColumnWidth3></Build>
+      <TerminalIO/>
+    </Static>
+    <Windows>
+      
+      
+    <Wnd2>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-16353-3510</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>&lt;ws&gt;</ExpandedNode><ExpandedNode>HADES_SENSEHUB_SW_Take2</ExpandedNode><ExpandedNode>HADES_SENSEHUB_SW_Take2/Source</ExpandedNode><ExpandedNode>HADES_SW</ExpandedNode><ExpandedNode>HADES_SW/Source</ExpandedNode><ExpandedNode>compdcm_mpu9150</ExpandedNode><ExpandedNode>compdcm_mpu9150/Source</ExpandedNode><ExpandedNode>driverlib</ExpandedNode><ExpandedNode>pressure_bmp180</ExpandedNode><ExpandedNode>temperature_tmp006</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-27101-3514</Identity>
+            <TabName>Debug Log</TabName>
+            <Factory>Debug-Log</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-10079-3628</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>1</SelectedTab></Wnd3></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\HADES_SENSHUB_SW_TAKE2\compdcm_mpu9150.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>71</YPos2><SelStart2>3729</SelStart2><SelEnd2>3737</SelEnd2></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>H:\Ascension_HADES\LaunchPad TI Software\utils\uartstdio.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>312</YPos2><SelStart2>13109</SelStart2><SelEnd2>13109</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\driverlib\sysctl.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>204</YPos2><SelStart2>12057</SelStart2><SelEnd2>12057</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>H:\Ascension_HADES\LaunchPad TI Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\compdcm_mpu9150\startup_ewarm.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>294</YPos2><SelStart2>15765</SelStart2><SelEnd2>15765</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\driverlib\cpu.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>274</YPos2><SelStart2>9071</SelStart2><SelEnd2>9071</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\sensorlib\mpu9150.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>69</YPos2><SelStart2>34820</SelStart2><SelEnd2>34842</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\sensorlib\mpu9150.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>54</YPos2><SelStart2>2414</SelStart2><SelEnd2>2428</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-0123EB20><key>iaridepm.enu1</key></Toolbar-0123EB20></Sizes></Row0><Row1><Sizes/></Row1><Row2><Sizes/></Row2></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>750</Bottom><Right>277</Right><x>-2</x><y>-2</y><xscreen>804</xscreen><yscreen>204</yscreen><sizeHorzCX>418750</sizeHorzCX><sizeHorzCY>204614</sizeHorzCY><sizeVertCX>145313</sizeVertCX><sizeVertCY>754263</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>202</Bottom><Right>1922</Right><x>-2</x><y>-2</y><xscreen>1924</xscreen><yscreen>204</yscreen><sizeHorzCX>1002083</sizeHorzCX><sizeHorzCY>204614</sizeHorzCY><sizeVertCX>418750</sizeVertCX><sizeVertCY>204614</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

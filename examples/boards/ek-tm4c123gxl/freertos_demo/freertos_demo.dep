@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>2552066452</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\ewarm\Exe\driverlib.a</file>
+      <file>$PROJ_DIR$\freertos_demo.c</file>
+      <file>$PROJ_DIR$\..\drivers\buttons.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\..\drivers\rgb.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\FreeRTOS\Source\portable\MemMang\heap_2.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\FreeRTOS\Source\list.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\FreeRTOS\Source\queue.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\FreeRTOS\Source\portable\IAR\ARM_CM4F\port.c</file>
+      <file>$PROJ_DIR$\switch_task.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\ustdlib.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\FreeRTOS\Source\portable\IAR\ARM_CM4F\portasm.s</file>
+      <file>$PROJ_DIR$\..\..\..\..\third_party\FreeRTOS\Source\tasks.c</file>
+      <file>$PROJ_DIR$\led_task.c</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+    </outputs>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>ILINK</tool>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+

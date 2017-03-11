@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>3227573862</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\ewarm\Exe\driverlib.a</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+      <file>$PROJ_DIR$\timers.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\rom_map.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\sysctl.h</file>
+      <file>$PROJ_DIR$\ewarm\Exe\timers.bin</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\debug.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\timers.pbi</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_ints.h</file>
+      <file>$PROJ_DIR$\ewarm\Exe\timers.out</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.o</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\uart.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.pbi</file>
+      <file>$PROJ_DIR$\ewarm\List\timers.map</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.o</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
+      <file>$PROJ_DIR$\timers.icf</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.pbi</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_types.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\gpio.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\rom.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\timer.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\timers.o</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\fpu.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\interrupt.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\pin_map.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_uart.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_memmap.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_nvic.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\startup_ewarm.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 15</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 25</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 37 42 21 10 17 20 11 32 38 26</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 32 26 21 42 38 10 11 17 20 37</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\timers.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 30</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 12</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 37 42 21 10 17 20 11 32 40 13 36 26 8 31 27 33 34 28 6 29 16 5</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 33 42 26 29 13 31 28 5 21 11 17 40 36 8 27 34 6 16 10 20 37 32 9</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 22</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 18</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 40 37 42 21 10 17 20 11 32 13 36 26 35 8 33 28 4 6 16 5</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 33 10 42 36 16 20 21 9 35 4 11 17 37 13 26 8 28 6 5 32 40</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\ewarm\Exe\timers.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 19</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 7</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 24 0 15 30 22 41 43 23 39</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 19 14</file>
+        </tool>
+      </outputs>
+    </file>
+  </configuration>
+</project>
+
+
