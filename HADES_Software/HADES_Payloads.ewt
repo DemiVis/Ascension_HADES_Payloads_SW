@@ -1170,19 +1170,16 @@
   <group>
     <name>Source</name>
     <file>
-      <name>$PROJ_DIR$\compdcm_mpu9150.c</name>
+      <name>$PROJ_DIR$\main.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\elapsed_timing.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\drivers\rgb.c</name>
+      <name>$PROJ_DIR$\drivers\rgb.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\startup_ewarm.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</name>
+      <name>$PROJ_DIR$\..\utils\uartstdio.c</name>
     </file>
   </group>
 </project>

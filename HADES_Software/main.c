@@ -43,8 +43,6 @@
 #include "sensorlib/comp_dcm.h"
 #include "drivers/rgb.h"
 
-#include "../../elapsed_timing.h"
-
 //*****************************************************************************
 //
 //! \addtogroup example_list
@@ -370,10 +368,6 @@ main(void)
     // Enable port B used for motion interrupt.
     //
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    
-    //
-    // Enable the Elapsed Time Timer
-    ElapsedTimingInit();
 
     //
     // Initialize the UART.
@@ -540,11 +534,6 @@ main(void)
         // Clear the flag
         //
         g_vui8I2CDoneFlag = 0;
-
-        //
-        // Start the timer to time how long it takes to capture all the data
-        //
-        ElapsedTiming_Start();
         
         //
         // Get floating point version of the Accel Data in m/s^2.
@@ -563,11 +552,6 @@ main(void)
         //
         MPU9150DataMagnetoGetFloat(&g_sMPU9150Inst, pfMag, pfMag + 1,
                                    pfMag + 2);
-
-        //
-        // Start the timer to time how long it takes to capture all the data
-        //
-        elap_time = ElapsedTiming_Stop_Seconds();
         
         
         //

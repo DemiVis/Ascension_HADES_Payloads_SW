@@ -2,37 +2,7 @@
 
 <workspace>
   <project>
-    <path>$WS_DIR$\..\..\..\driverlib\driverlib.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\HADES_SENSHUB_SW_TAKE2\HADES_SENSEHUB_SW_Take2.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\HADSE_SENSHUB_SW\HADES_SW.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\..\..\..\usblib\usblib.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\..\..\..\sensorlib\sensorlib.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\airmouse\airmouse.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\compdcm_mpu9150\compdcm_mpu9150.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\humidity_sht21\humidity_sht21.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\light_isl29023\light_isl29023.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\pressure_bmp180\pressure_bmp180.ewp</path>
-  </project>
-  <project>
-    <path>$WS_DIR$\temperature_tmp006\temperature_tmp006.ewp</path>
+    <path>$WS_DIR$\HADES_Payloads.ewp</path>
   </project>
   <batchBuild>
     <batchDefinition>

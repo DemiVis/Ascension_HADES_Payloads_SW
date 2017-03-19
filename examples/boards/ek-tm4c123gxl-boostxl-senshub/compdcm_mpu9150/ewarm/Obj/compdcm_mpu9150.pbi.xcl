@@ -1,18 +1,18 @@
-"H:\Ascension_HADES\LaunchPad TI Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\compdcm_mpu9150\compdcm_mpu9150.c"
+"F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\examples\boards\ek-tm4c123gxl-boostxl-senshub\compdcm_mpu9150\compdcm_mpu9150.c"
 -std=c99
 -ferror-limit=100
 -I
-H:\Ascension_HADES\LaunchPad TI Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\compdcm_mpu9150\..
+F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\examples\boards\ek-tm4c123gxl-boostxl-senshub\compdcm_mpu9150\..
 -I
-H:\Ascension_HADES\LaunchPad TI Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\compdcm_mpu9150\..\..\..\..
+F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\examples\boards\ek-tm4c123gxl-boostxl-senshub\compdcm_mpu9150\..\..\..\..
 -I
 F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\inc
 -I
 F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\inc\c
 -I
-H:\Ascension_HADES\LaunchPad TI Software\examples\boards\ek-tm4c123gxl-boostxl-senshub
+F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\examples\boards\ek-tm4c123gxl-boostxl-senshub
 -I
-H:\Ascension_HADES\LaunchPad TI Software
+F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW
 -Dewarm=1
 -DPART_TM4C123GH6PM=1
 -DTARGET_IS_TM4C123_RB1=1

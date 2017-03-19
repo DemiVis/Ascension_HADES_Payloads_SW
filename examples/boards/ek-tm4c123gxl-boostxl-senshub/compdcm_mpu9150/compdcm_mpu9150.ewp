@@ -985,9 +985,6 @@
       <name>$PROJ_DIR$\compdcm_mpu9150.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\elapsed_timing.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\drivers\rgb.c</name>
     </file>
     <file>

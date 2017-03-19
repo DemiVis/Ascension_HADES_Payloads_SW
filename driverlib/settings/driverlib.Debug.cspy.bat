@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "C:\Users\Matthew\Desktop\LaunchPad TI Software\driverlib\settings\driverlib.Debug.general.xcl" --backend -f "C:\Users\Matthew\Desktop\LaunchPad TI Software\driverlib\settings\driverlib.Debug.driver.xcl" 
+"F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\settings\driverlib.Debug.general.xcl" --backend -f "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\settings\driverlib.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "C:\Users\Matthew\Desktop\LaunchPad TI Software\driverlib\settings\driverlib.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\Matthew\Desktop\LaunchPad TI Software\driverlib\settings\driverlib.Debug.driver.xcl" 
+"F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\settings\driverlib.Debug.general.xcl" "--debug_file=%~1" --backend -f "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\settings\driverlib.Debug.driver.xcl" 
 
 @echo off 
 :end

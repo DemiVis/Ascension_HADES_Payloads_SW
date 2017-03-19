@@ -1,0 +1,428 @@
+###############################################################################
+#
+# IAR ELF Linker V7.80.3.12102/W32 for ARM                19/Mar/2017  16:51:42
+# Copyright 2007-2016 IAR Systems AB.
+#
+#    Output file  =  
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\Exe\HADES.out
+#    Map file     =  
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\List\HADES.map
+#    Command line =  
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\ewarm\Exe\driverlib.a
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\Obj\main.o
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\Obj\rgb.o
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\sensorlib\ewarm\Exe\sensorlib.a
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\Obj\startup_ewarm.o
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\Obj\uartstdio.o
+#        --redirect _Printf=_PrintfSmall --redirect _Scanf=_ScanfSmallNoMb -o
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\Exe\HADES.out
+#        --map
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\List\HADES.map
+#        --config
+#        F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\HADES.icf
+#        --semihosting --entry __iar_program_start --vfe
+#
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__SystemLibrary = DLib
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A0":  place at start of [0x00000000-0x0003ffff] { ro section .intvec };
+"P1":  place in [from 0x00000000 to 0x0003ffff] { ro };
+"P2":  place in [from 0x20000000 to 0x20007fff] { rw, block HEAP };
+do not initialize { section .noinit };
+initialize by copy { rw };
+
+  Section             Kind        Address    Size  Object
+  -------             ----        -------    ----  ------
+"A0":                                       0x26c
+  .intvec             const    0x00000000   0x26c  startup_ewarm.o [1]
+                             - 0x0000026c   0x26c
+
+"P1":                                      0x3634
+  .text               ro code  0x0000026c   0x998  main.o [1]
+  .text               ro code  0x00000c04   0x2c8  gpio.o [4]
+  .text               ro code  0x00000ecc   0x3b0  mpu9150.o [7]
+  .text               ro code  0x0000127c   0x424  i2cm_drv.o [7]
+  .text               ro code  0x000016a0   0x544  uartstdio.o [1]
+  .text               ro code  0x00001be4   0x2ec  rgb.o [1]
+  .text               ro code  0x00001ed0    0x34  sprintf.o [3]
+  .text               ro code  0x00001f04   0x320  sysctl.o [4]
+  .text               ro code  0x00002224     0x6  uart.o [4]
+  .text               ro code  0x0000222a     0xa  xsprout.o [3]
+  .text               ro code  0x00002234   0x154  interrupt.o [4]
+  .text               ro code  0x00002388   0x57e  comp_dcm.o [7]
+  .text               ro code  0x00002906    0x1e  mpu9150.o [7]
+  .text               ro code  0x00002924    0x20  mpu9150.o [7]
+  .text               ro code  0x00002944    0x90  DblToFlt.o [5]
+  .text               ro code  0x000029d4   0x1a2  DblMul.o [5]
+  .text               ro code  0x00002b78    0x4e  FltToDbl.o [5]
+  .text               ro code  0x00002bc8    0x8c  i2c.o [4]
+  .text               ro code  0x00002c54    0x20  i2cm_drv.o [7]
+  .text               ro code  0x00002c74    0x46  FltToU64.o [5]
+  .text               ro code  0x00002cbc   0x4d8  xprintfsmall.o [3]
+  .text               ro code  0x00003194     0xc  cpu.o [4]
+  .text               ro code  0x000031a0    0xcc  vector.o [7]
+  .text               ro code  0x0000326c    0x1c  sqrtf.o [5]
+  .text               ro code  0x00003288    0x38  xfdtest.o [5]
+  .text               ro code  0x000032c0   0x180  DblSub.o [5]
+  .text               ro code  0x00003440    0x6a  atan2f.o [5]
+  .text               ro code  0x000034ac    0x5c  asinf.o [5]
+  .text               ro code  0x00003508    0x16  strchr.o [6]
+  .text               ro code  0x00003520    0x36  strlen.o [6]
+  .text               ro code  0x00003558    0x58  memchr.o [6]
+  .text               ro code  0x000035b0     0xc  iarEdom.o [6]
+  .text               ro code  0x000035bc    0xd4  DblAdd.o [5]
+  .text               ro code  0x00003690    0xa4  xatanf.o [5]
+  .text               ro code  0x00003734     0xc  errno.o [3]
+  .text               ro code  0x00003740     0x2  xtls.o [3]
+  .text               ro code  0x00003742    0x40  zero_init3.o [6]
+  .text               ro code  0x00003782    0x2c  copy_init3.o [6]
+  .text               ro code  0x000037b0    0x28  data_init.o [6]
+  .text               ro code  0x000037d8    0x22  fpinit_M.o [5]
+  .iar.init_table     const    0x000037fc    0x24  - Linker created -
+  .text               ro code  0x00003820    0x1a  startup_ewarm.o [1]
+  .text               ro code  0x0000383a     0xc  cstartup_M.o [6]
+  .text               ro code  0x00003848    0x1a  cmain.o [6]
+  .text               ro code  0x00003862     0x4  low_level_init.o [3]
+  .text               ro code  0x00003866     0x4  exit.o [3]
+  .text               ro code  0x0000386c     0xa  cexit.o [6]
+  .text               ro code  0x00003878    0x14  exit.o [8]
+  Initializer bytes   const    0x0000388c    0x14  <for P2-1>
+  .rodata             const    0x000038a0     0x0  zero_init3.o [6]
+  .rodata             const    0x000038a0     0x0  copy_init3.o [6]
+                             - 0x000038a0  0x3634
+
+"P2", part 1 of 3:                           0x14
+  P2-1                         0x20000000    0x14  <Init block>
+    .data             inited   0x20000000    0x10  rgb.o [1]
+    __DLIB_PERTHREAD  inited   0x20000010     0x4  errno.o [3]
+                             - 0x20000014    0x14
+
+"P2", part 2 of 3:                          0x400
+  .noinit             uninit   0x20000014   0x400  startup_ewarm.o [1]
+                             - 0x20000414   0x400
+
+"P2", part 3 of 3:                          0x6a0
+  .bss                zero     0x20000414   0x400  uartstdio.o [1]
+  .bss                zero     0x20000814   0x200  main.o [1]
+  .bss                zero     0x20000a14    0x80  uartstdio.o [1]
+  .bss                zero     0x20000a94    0x1c  uartstdio.o [1]
+  .bss                zero     0x20000ab0     0x4  rgb.o [1]
+                             - 0x20000ab4   0x6a0
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0x6a0:
+          0x20000414  0x6a0
+
+Copy (__iar_copy_init3)
+    1 source range, total size 0x14:
+          0x0000388c   0x14
+    1 destination range, total size 0x14:
+          0x20000000   0x14
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module            ro code  ro data  rw data
+    ------            -------  -------  -------
+F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\Obj: [1]
+    main.o              2 456               512
+    rgb.o                 748       16       20
+    startup_ewarm.o        26      620    1 024
+    uartstdio.o         1 348             1 180
+    -------------------------------------------
+    Total:              4 578      636    2 736
+
+command line: [2]
+    -------------------------------------------
+    Total:
+
+dl7M_tln.a: [3]
+    errno.o                12        4        4
+    exit.o                  4
+    low_level_init.o        4
+    sprintf.o              52
+    xprintfsmall.o      1 240
+    xsprout.o              10
+    xtls.o                  2
+    -------------------------------------------
+    Total:              1 324        4        4
+
+driverlib.a: [4]
+    cpu.o                  12
+    gpio.o                712
+    i2c.o                 140
+    interrupt.o           340
+    sysctl.o              800
+    uart.o                  6
+    -------------------------------------------
+    Total:              2 010
+
+m7M_tls.a: [5]
+    DblAdd.o              212
+    DblMul.o              418
+    DblSub.o              384
+    DblToFlt.o            144
+    FltToDbl.o             78
+    FltToU64.o             70
+    asinf.o                92
+    atan2f.o              106
+    fpinit_M.o             34
+    sqrtf.o                28
+    xatanf.o              164
+    xfdtest.o              56
+    -------------------------------------------
+    Total:              1 786
+
+rt7M_tl.a: [6]
+    cexit.o                10
+    cmain.o                26
+    copy_init3.o           44
+    cstartup_M.o           12
+    data_init.o            40
+    iarEdom.o              12
+    memchr.o               88
+    strchr.o               22
+    strlen.o               54
+    zero_init3.o           64
+    -------------------------------------------
+    Total:                372
+
+sensorlib.a: [7]
+    comp_dcm.o          1 406
+    i2cm_drv.o          1 092
+    mpu9150.o           1 006
+    vector.o              204
+    -------------------------------------------
+    Total:              3 708
+
+shb_l.a: [8]
+    exit.o                 20
+    -------------------------------------------
+    Total:                 20
+
+    Gaps                   20        2
+    Linker created                  36
+-----------------------------------------------
+    Grand Total:       13 818      678    2 740
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address   Size  Type      Object
+-----                      -------   ----  ----      ------
+.iar.init_table$$Base   0x000037fc          --   Gb  - Linker created -
+.iar.init_table$$Limit  0x00003820          --   Gb  - Linker created -
+?main                   0x00003849         Code  Gb  cmain.o [6]
+CPUcpsie                0x00003195    0x8  Code  Gb  cpu.o [4]
+CPUwfi                  0x0000319d    0x4  Code  Gb  cpu.o [4]
+CompDCMAccelUpdate      0x000023b9    0xe  Code  Gb  comp_dcm.o [7]
+CompDCMComputeEulers    0x0000270d   0x42  Code  Gb  comp_dcm.o [7]
+CompDCMComputeQuaternion
+                        0x0000274f  0x1b8  Code  Gb  comp_dcm.o [7]
+CompDCMGyroUpdate       0x000023c7    0xe  Code  Gb  comp_dcm.o [7]
+CompDCMInit             0x00002389   0x30  Code  Gb  comp_dcm.o [7]
+CompDCMMagnetoUpdate    0x000023d5    0xe  Code  Gb  comp_dcm.o [7]
+CompDCMStart            0x000023e3   0x9a  Code  Gb  comp_dcm.o [7]
+CompDCMUpdate           0x0000247d  0x22a  Code  Gb  comp_dcm.o [7]
+ConfigureUART           0x00000347   0x46  Code  Gb  main.o [1]
+FaultISR                0x00003837    0x2  Code  Lc  startup_ewarm.o [1]
+GPIODirModeSet          0x00000c05   0x28  Code  Gb  gpio.o [4]
+GPIOIntClear            0x00000d8d    0x6  Code  Gb  gpio.o [4]
+GPIOIntEnable           0x00000d77    0x6  Code  Gb  gpio.o [4]
+GPIOIntStatus           0x00000d7d   0x10  Code  Gb  gpio.o [4]
+GPIOIntTypeSet          0x00000c2d   0x4c  Code  Gb  gpio.o [4]
+GPIOPadConfigSet        0x00000c79   0xfe  Code  Gb  gpio.o [4]
+GPIOPinConfigure        0x00000df7   0x38  Code  Gb  gpio.o [4]
+GPIOPinTypeGPIOInput    0x00000d97   0x14  Code  Gb  gpio.o [4]
+GPIOPinTypeI2C          0x00000dab   0x14  Code  Gb  gpio.o [4]
+GPIOPinTypeI2CSCL       0x00000dbf   0x14  Code  Gb  gpio.o [4]
+GPIOPinTypeUART         0x00000ddb   0x14  Code  Gb  gpio.o [4]
+I2CMCommand             0x00001573   0x7e  Code  Gb  i2cm_drv.o [7]
+I2CMInit                0x0000153f   0x34  Code  Gb  i2cm_drv.o [7]
+I2CMIntHandler          0x0000130d  0x216  Code  Gb  i2cm_drv.o [7]
+I2CMRead                0x00002925   0x20  Code  Gb  mpu9150.o [7]
+I2CMStateIdle           0x0000127d   0x90  Code  Lc  i2cm_drv.o [7]
+I2CMTransferResume      0x000015f1   0x30  Code  Gb  i2cm_drv.o [7]
+I2CMWrite               0x00002907   0x1e  Code  Gb  mpu9150.o [7]
+I2CMWrite8              0x0000164f   0x3e  Code  Gb  i2cm_drv.o [7]
+I2CMWrite8Callback      0x00001621   0x2e  Code  Lc  i2cm_drv.o [7]
+I2CMWriteBatched        0x00002c55   0x20  Code  Gb  i2cm_drv.o [7]
+I2CMasterControl        0x00002c2d    0x4  Code  Gb  i2c.o [4]
+I2CMasterDataGet        0x00002c35    0x4  Code  Gb  i2c.o [4]
+I2CMasterDataPut        0x00002c31    0x4  Code  Gb  i2c.o [4]
+I2CMasterEnable         0x00002c0b    0xc  Code  Gb  i2c.o [4]
+I2CMasterInitExpClk     0x00002bc9   0x42  Code  Gb  i2c.o [4]
+I2CMasterIntClear       0x00002c1d    0x8  Code  Gb  i2c.o [4]
+I2CMasterIntEnableEx    0x00002c17    0x6  Code  Gb  i2c.o [4]
+I2CMasterSlaveAddrSet   0x00002c25    0x8  Code  Gb  i2c.o [4]
+IntDefaultHandler       0x00003839    0x2  Code  Lc  startup_ewarm.o [1]
+IntDisable              0x0000229b   0x56  Code  Gb  interrupt.o [4]
+IntEnable               0x00002245   0x56  Code  Gb  interrupt.o [4]
+IntGPIOb                0x0000027d   0x30  Code  Gb  main.o [1]
+IntIsEnabled            0x000022f1   0x5c  Code  Gb  interrupt.o [4]
+IntMasterEnable         0x00002235    0x8  Code  Gb  interrupt.o [4]
+IntTrigger              0x0000234d    0x8  Code  Gb  interrupt.o [4]
+IsBufferEmpty           0x000016bb   0x10  Code  Lc  uartstdio.o [1]
+IsBufferFull            0x000016a1   0x1a  Code  Lc  uartstdio.o [1]
+LoadInt                 0x00003045   0x4c  Code  Lc  xprintfsmall.o [3]
+MPU9150AppCallback      0x0000026d   0x10  Code  Gb  main.o [1]
+MPU9150AppErrorHandler  0x000002b5   0x52  Code  Gb  main.o [1]
+MPU9150AppI2CWait       0x00000307   0x40  Code  Gb  main.o [1]
+MPU9150Callback         0x00000ecd  0x114  Code  Lc  mpu9150.o [7]
+MPU9150DataAccelGetFloat
+                        0x00001129   0x3e  Code  Gb  mpu9150.o [7]
+MPU9150DataGyroGetFloat
+                        0x00001167   0x3e  Code  Gb  mpu9150.o [7]
+MPU9150DataMagnetoGetFloat
+                        0x000011e1   0x56  Code  Gb  mpu9150.o [7]
+MPU9150DataRead         0x000010e3   0x46  Code  Gb  mpu9150.o [7]
+MPU9150I2CIntHandler    0x000002ad    0x8  Code  Gb  main.o [1]
+MPU9150Init             0x0000101d   0x44  Code  Gb  mpu9150.o [7]
+MPU9150Write            0x00001061   0x6c  Code  Gb  mpu9150.o [7]
+NmiSR                   0x00003835    0x2  Code  Lc  startup_ewarm.o [1]
+RGBBlinkIntHandler      0x00001be5   0x28  Code  Gb  rgb.o [1]
+RGBBlinkIntHandler::ulFlags
+                        0x20000ab0    0x4  Data  Lc  rgb.o [1]
+RGBBlinkRateSet         0x00001e1f   0x70  Code  Gb  rgb.o [1]
+RGBColorSet             0x00001d9f   0x78  Code  Gb  rgb.o [1]
+RGBDisable              0x00001d53   0x4c  Code  Gb  rgb.o [1]
+RGBEnable               0x00001cc7   0x8c  Code  Gb  rgb.o [1]
+RGBInit                 0x00001c0d   0xba  Code  Gb  rgb.o [1]
+RGBIntensitySet         0x00001e17    0x8  Code  Gb  rgb.o [1]
+Region$$Table$$Base     0x000037fc          --   Gb  - Linker created -
+Region$$Table$$Limit    0x00003820          --   Gb  - Linker created -
+ResetISR                0x00003821    0xe  Code  Gb  startup_ewarm.o [1]
+SysCtlClockGet          0x0000204d  0x110  Code  Gb  sysctl.o [4]
+SysCtlClockSet          0x00001f75   0xd8  Code  Gb  sysctl.o [4]
+SysCtlDelay             0x00001f6d    0x8  Code  Gb  sysctl.o [4]
+SysCtlPeripheralClockGating
+                        0x00001f2b   0x3c  Code  Gb  sysctl.o [4]
+SysCtlPeripheralEnable  0x00001f05    0x8  Code  Gb  sysctl.o [4]
+SysCtlPeripheralSleepEnable
+                        0x00001f21    0xa  Code  Gb  sysctl.o [4]
+SysCtlSleep             0x00001f67    0x4  Code  Gb  sysctl.o [4]
+UARTClockSourceSet      0x00002225    0x6  Code  Gb  uart.o [4]
+UARTFlushRx             0x00001a1f   0x22  Code  Gb  uartstdio.o [1]
+UARTFlushTx             0x00001a41   0x34  Code  Gb  uartstdio.o [1]
+UARTPrimeTransmit       0x000016cb   0x72  Code  Lc  uartstdio.o [1]
+UARTStdioConfig         0x0000173d   0xb0  Code  Gb  uartstdio.o [1]
+UARTStdioIntHandler     0x00001a75  0x10e  Code  Gb  uartstdio.o [1]
+UARTStdioIntHandler::bLastWasCR
+                        0x20000a95    0x1  Data  Lc  uartstdio.o [1]
+UARTprintf              0x00001a11    0xe  Code  Gb  uartstdio.o [1]
+UARTvprintf             0x00001879  0x198  Code  Gb  uartstdio.o [1]
+UARTwrite               0x000017ed   0x8c  Code  Gb  uartstdio.o [1]
+VectorAdd               0x0000323f   0x2e  Code  Gb  vector.o [7]
+VectorCrossProduct      0x000031c7   0x52  Code  Gb  vector.o [7]
+VectorDotProduct        0x000031a1   0x26  Code  Gb  vector.o [7]
+VectorScale             0x00003219   0x20  Code  Gb  vector.o [7]
+_LitobSmall             0x00003091   0xce  Code  Lc  xprintfsmall.o [3]
+_PrintfSmall            0x00002cbd  0x382  Code  Gb  xprintfsmall.o [3]
+_PutcharsSmall          0x0000315f   0x2e  Code  Lc  xprintfsmall.o [3]
+_SProut                 0x0000222b    0xa  Code  Gb  xsprout.o [3]
+__aeabi_d2f             0x00002945         Code  Gb  DblToFlt.o [5]
+__aeabi_dmul            0x000029d5         Code  Gb  DblMul.o [5]
+__aeabi_dsub            0x000032c1         Code  Gb  DblSub.o [5]
+__aeabi_errno_addr      0x00003735    0x6  Code  Gb  errno.o [3]
+__aeabi_f2d             0x00002b79         Code  Gb  FltToDbl.o [5]
+__aeabi_f2ulz           0x00002c75         Code  Gb  FltToU64.o [5]
+__cmain                 0x00003849         Code  Gb  cmain.o [6]
+__exit                  0x00003879   0x14  Code  Gb  exit.o [8]
+__iar_Errno             0x20000010    0x4  Data  Gb  errno.o [3]
+__iar_FDtest            0x00003289   0x30  Code  Gb  xfdtest.o [5]
+__iar_Memchr            0x00003559         Code  Gb  memchr.o [6]
+__iar_Strchr            0x00003509         Code  Gb  strchr.o [6]
+__iar_copy_init3        0x00003783   0x2c  Code  Gb  copy_init3.o [6]
+__iar_dadd              0x000035bd         Code  Gb  DblAdd.o [5]
+__iar_data_init3        0x000037b1   0x28  Code  Gb  data_init.o [6]
+__iar_dlib_perthread_access
+                        0x00003741    0x2  Code  Gb  xtls.o [3]
+__iar_dsub              0x000032d5         Code  Gb  DblSub.o [5]
+__iar_dsubStart         0x000032e7         Code  Gb  DblSub.o [5]
+__iar_edom              0x000035b1         Code  Gb  iarEdom.o [6]
+__iar_init_vfp          0x000037d9         Code  Gb  fpinit_M.o [5]
+__iar_program_start     0x0000383b         Code  Gb  cstartup_M.o [6]
+__iar_xatanf            0x00003691         Code  Gb  xatanf.o [5]
+__iar_zero_init3        0x00003743   0x40  Code  Gb  zero_init3.o [6]
+__low_level_init        0x00003863    0x4  Code  Gb  low_level_init.o [3]
+__vector_table          0x00000000  0x26c  Data  Gb  startup_ewarm.o [1]
+_call_main              0x00003855         Code  Gb  cmain.o [6]
+_exit                   0x0000386d         Code  Gb  cexit.o [6]
+_main                   0x0000385f         Code  Gb  cmain.o [6]
+asinf                   0x000034ad         Code  Gb  asinf.o [5]
+atan2f                  0x00003441         Code  Gb  atan2f.o [5]
+exit                    0x00003867    0x4  Code  Gb  exit.o [3]
+g_bDisableEcho          0x20000a94    0x1  Data  Lc  uartstdio.o [1]
+g_fIntensity            0x2000000c    0x4  Data  Lc  rgb.o [1]
+g_fMPU9150AccelFactors  0x0000125c   0x10  Data  Lc  mpu9150.o [7]
+g_fMPU9150GyroFactors   0x0000126c   0x10  Data  Lc  mpu9150.o [7]
+g_pcUARTRxBuffer        0x20000a14   0x80  Data  Lc  uartstdio.o [1]
+g_pcUARTTxBuffer        0x20000414  0x400  Data  Lc  uartstdio.o [1]
+g_pui32Colors           0x20000880    0xc  Data  Gb  main.o [1]
+g_pui32Dii16Regs        0x00002374   0x14  Data  Lc  interrupt.o [4]
+g_pui32EnRegs           0x00002360   0x14  Data  Lc  interrupt.o [4]
+g_pui32GPIOBaseAddrs    0x00000e3c   0x90  Data  Lc  gpio.o [4]
+g_pui32Xtals            0x000021b8   0x6c  Data  Lc  sysctl.o [4]
+g_sCompDCMInst          0x200009bc   0x58  Data  Gb  main.o [1]
+g_sI2CInst              0x20000898  0x124  Data  Gb  main.o [1]
+g_sMPU9150Inst          0x20000814   0x6c  Data  Gb  main.o [1]
+g_ui32Base              0x20000aa8    0x4  Data  Lc  uartstdio.o [1]
+g_ui32Colors            0x20000000    0xc  Data  Lc  rgb.o [1]
+g_ui32PortNum           0x20000aac    0x4  Data  Lc  uartstdio.o [1]
+g_ui32PrintSkipCounter  0x20000894    0x4  Data  Gb  main.o [1]
+g_ui32UARTBase          0x00001bc0    0xc  Data  Lc  uartstdio.o [1]
+g_ui32UARTInt           0x00001bcc    0xc  Data  Lc  uartstdio.o [1]
+g_ui32UARTPeriph        0x00001bd8    0xc  Data  Lc  uartstdio.o [1]
+g_ui32UARTRxReadIndex   0x20000aa4    0x4  Data  Lc  uartstdio.o [1]
+g_ui32UARTRxWriteIndex  0x20000aa0    0x4  Data  Lc  uartstdio.o [1]
+g_ui32UARTTxReadIndex   0x20000a9c    0x4  Data  Lc  uartstdio.o [1]
+g_ui32UARTTxWriteIndex  0x20000a98    0x4  Data  Lc  uartstdio.o [1]
+g_vui8ErrorFlag         0x20000890    0x4  Data  Gb  main.o [1]
+g_vui8I2CDoneFlag       0x2000088c    0x4  Data  Gb  main.o [1]
+main                    0x0000038d  0x492  Code  Gb  main.o [1]
+memchr                  0x00003559         Code  Gb  memchr.o [6]
+pui32Stack              0x20000014  0x400  Data  Lc  startup_ewarm.o [1]
+sprintf                 0x00001ed1   0x34  Code  Gb  sprintf.o [3]
+sqrtf                   0x0000326d         Code  Gb  sqrtf.o [5]
+strchr                  0x00003509         Code  Gb  strchr.o [6]
+strlen                  0x00003521         Code  Gb  strlen.o [6]
+
+
+[1] = F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\Obj
+[2] = command line
+[3] = dl7M_tln.a
+[4] = driverlib.a
+[5] = m7M_tls.a
+[6] = rt7M_tl.a
+[7] = sensorlib.a
+[8] = shb_l.a
+
+  13 818 bytes of readonly  code memory
+     678 bytes of readonly  data memory
+   2 740 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

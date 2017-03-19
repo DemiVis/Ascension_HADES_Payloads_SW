@@ -6,79 +6,88 @@
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$PROJ_DIR$\ewarm\Obj\rgb.pbi</file>
-      <file>$PROJ_DIR$\ewarm\Obj\temperature_tmp006.pbi</file>
-      <file>$PROJ_DIR$\..\..\..\..\inc\hw_nvic.h</file>
-      <file>$PROJ_DIR$\..\drivers\rgb.c</file>
       <file>$PROJ_DIR$\..\..\..\..\driverlib\ewarm\Exe\driverlib.a</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.pbi</file>
-      <file>$PROJ_DIR$\..\..\..\..\driverlib\interrupt.h</file>
-      <file>$PROJ_DIR$\..\..\..\..\sensorlib\tmp006.h</file>
-      <file>$PROJ_DIR$\ewarm\List\temperature_tmp006.map</file>
-      <file>$PROJ_DIR$\..\..\..\..\sensorlib\hw_tmp006.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\rgb.o</file>
       <file>$PROJ_DIR$\..\..\..\..\sensorlib\ewarm\Exe\sensorlib.a</file>
-      <file>$PROJ_DIR$\startup_ewarm.c</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
-      <file>$PROJ_DIR$\ewarm\Exe\temperature_tmp006.bin</file>
-      <file>$PROJ_DIR$\..\..\..\..\driverlib\timer.h</file>
-      <file>$PROJ_DIR$\temperature_tmp006.c</file>
-      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
-      <file>$PROJ_DIR$\..\..\..\..\driverlib\debug.h</file>
-      <file>$PROJ_DIR$\..\..\..\..\inc\hw_timer.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.pbi</file>
+      <file>$PROJ_DIR$\..\drivers\rgb.c</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.pbi</file>
+      <file>$PROJ_DIR$\..\..\..\..\sensorlib\tmp006.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
       <file>$PROJ_DIR$\..\..\..\..\inc\hw_uart.h</file>
-      <file>$PROJ_DIR$\..\..\..\..\inc\hw_memmap.h</file>
-      <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
-      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.o</file>
-      <file>$PROJ_DIR$\..\..\..\..\inc\hw_types.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
       <file>$PROJ_DIR$\..\..\..\..\driverlib\sysctl.h</file>
       <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$PROJ_DIR$\ewarm\Obj\rgb.o</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\timer.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.pbi</file>
+      <file>$PROJ_DIR$\..\..\..\..\sensorlib\hw_tmp006.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\rgb.pbi</file>
+      <file>$PROJ_DIR$\ewarm\List\temperature_tmp006.map</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\debug.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_memmap.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_nvic.h</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+      <file>$PROJ_DIR$\temperature_tmp006.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\interrupt.h</file>
+      <file>$PROJ_DIR$\ewarm\Exe\temperature_tmp006.bin</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_timer.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_types.h</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\temperature_tmp006.pbi</file>
       <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
-      <file>$PROJ_DIR$\..\..\..\..\driverlib\uart.h</file>
       <file>$PROJ_DIR$\..\..\..\..\driverlib\rom_map.h</file>
       <file>$PROJ_DIR$\ewarm\Exe\temperature_tmp006.out</file>
-      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.h</file>
-      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
-      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.o</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\uart.h</file>
       <file>$PROJ_DIR$\temperature_tmp006.icf</file>
-      <file>$PROJ_DIR$\..\..\..\..\sensorlib\i2cm_drv.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
-      <file>$PROJ_DIR$\..\..\..\..\driverlib\pin_map.h</file>
-      <file>$PROJ_DIR$\..\..\..\..\driverlib\gpio.h</file>
-      <file>$PROJ_DIR$\..\..\..\..\inc\hw_ints.h</file>
       <file>$PROJ_DIR$\..\..\..\..\driverlib\rom.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
-      <file>$PROJ_DIR$\..\drivers\rgb.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
       <file>$PROJ_DIR$\ewarm\Obj\temperature_tmp006.o</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\gpio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\sensorlib\i2cm_drv.h</file>
+      <file>$PROJ_DIR$\..\drivers\rgb.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\utils\uartstdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\inc\hw_ints.h</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$PROJ_DIR$\..\..\..\..\driverlib\pin_map.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.o</file>
     </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 16 35</file>
+        </tool>
+      </outputs>
+    </file>
     <file>
       <name>$PROJ_DIR$\..\drivers\rgb.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 0</file>
+          <file> 15</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 13</file>
+          <file> 9</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 35 23 8 16 17 29 31 19 12 43 26 46 47 44 45 49 5 39 48 30 50</file>
+          <file> 34 28 26 21 12 29 7 10 5 47 18 48 38 50 40 44 20 42 46 31 41</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 50 12 17 5 48 30 39 16 43 29 26 23 46 31 47 35 44 19 45 8 49</file>
+          <file> 41 5 12 20 46 31 42 21 47 29 18 28 48 7 38 34 50 10 40 26 44</file>
         </tool>
       </inputs>
     </file>
@@ -87,21 +96,21 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 24</file>
+          <file> 13</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 28</file>
+          <file> 19</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 17 12 29 16 2 5 39 48 30 50</file>
+          <file> 12 5 29 21 22 20 42 46 31 41</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 50 12 17 5 48 30 39 16 2 29</file>
+          <file> 41 5 12 20 46 31 42 21 22 29</file>
         </tool>
       </inputs>
     </file>
@@ -110,7 +119,30 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 1</file>
+          <file> 32</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 39</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 46 42 38 5 17 14 12 18 26 36 4 20 31 47 48 40 50 7 45 43 44 21 11 41</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 41 5 12 20 46 31 42 21 47 18 48 17 40 26 50 38 7 36 45 14 43 4 44</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 3</file>
         </tool>
         <tool>
           <name>ICCARM</name>
@@ -120,34 +152,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 48 39 47 12 22 11 17 26 8 34 9 5 30 43 46 45 44 31 37 42 49 16 6 50</file>
+          <file> 26 20 5 18 36 31 12 11 6 34 42 46 41 48 29 17 38 7 45 21 47</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 50 12 17 5 48 30 39 16 43 26 46 22 45 8 44 47 31 34 37 11 42 9 49</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\..\..\..\utils\uartstdio.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 7</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 40</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 8 5 12 26 34 30 17 6 25 35 39 48 50 46 29 22 47 31 37 16 43</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 43 50 12 17 5 48 30 39 16 46 26 29 25 22 8 47 35 31 34 37</file>
+          <file> 47 41 5 12 20 46 31 42 21 48 18 29 6 17 26 38 34 7 36 45</file>
         </tool>
       </inputs>
     </file>
@@ -156,28 +165,19 @@
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 10</file>
+          <file> 16</file>
         </tool>
         <tool>
           <name>OBJCOPY</name>
-          <file> 18</file>
+          <file> 27</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 41 4 13 14 28 51 40 38 32 27 33</file>
+          <file> 37 0 9 1 19 39 51 49 8 30 33</file>
         </tool>
       </inputs>
-    </file>
-    <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 10 36</file>
-        </tool>
-      </outputs>
     </file>
   </configuration>
 </project>

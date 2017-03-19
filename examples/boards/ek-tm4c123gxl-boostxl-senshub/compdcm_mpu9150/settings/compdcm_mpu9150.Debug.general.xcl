@@ -2,7 +2,7 @@
 
 "F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\bin\armlmiftdi.dll" 
 
-"H:\Ascension_HADES\LaunchPad TI Software\examples\boards\ek-tm4c123gxl-boostxl-senshub\compdcm_mpu9150\ewarm\Exe\compdcm_mpu9150.out" 
+"F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\examples\boards\ek-tm4c123gxl-boostxl-senshub\compdcm_mpu9150\ewarm\Exe\compdcm_mpu9150.out" 
 
 --plugin "F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\bin\armbat.dll" 
 
