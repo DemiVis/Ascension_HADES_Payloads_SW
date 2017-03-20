@@ -242,6 +242,30 @@ void ConfigureUART(void)
     UARTStdioConfig(0, 115200, 16000000);
 }
 
+void floatToDecimals(float inFloat, int_fast32_t *iPart, int_fast32_t *fPart) 
+{
+    // Conver float value to a integer truncating the decimal part.
+    *iPart = (int32_t)inFloat;
+
+    // Multiply by 1000 to preserve first three decimal values.
+    // Truncates at the 3rd decimal place.
+    *fPart = (int32_t)(inFloat * 1000.0f);
+
+    //
+    // Subtract off the integer part from this newly formed decimal
+    // part.
+    //
+    *fPart = *fPart - (*iPart * 1000);
+
+    //
+    // make the decimal part a positive number for display.
+    //
+    if(*fPart < 0)
+    {
+      *fPart *= -1;
+    }
+}
+
 //*****************************************************************************
 //
 // Main application entry point.
@@ -251,18 +275,18 @@ int main(void)
 {
     int_fast32_t i32IPart[16], i32FPart[16];
     uint_fast32_t ui32Idx, ui32CompDCMStarted;
-    float pfData[16];
+    dynamicsData_t fDynamicsData;
+    float pfData[8];
     float *pfAccel, *pfGyro, *pfMag, *pfEulers, *pfQuaternion;
-    float elap_time;
 
     // Initialize convenience pointers that clean up and clarify the code
     // meaning. We want all the data in a single contiguous array so that
     // we can make our pretty printing easier later.
-    pfAccel = pfData;
-    pfGyro = pfData + 3;
-    pfMag = pfData + 6;
-    pfEulers = pfData + 9;
-    pfQuaternion = pfData + 12;
+    pfAccel = fDynamicsData.fAccel;
+    pfGyro = fDynamicsData.fGyro;
+    pfMag = fDynamicsData.fMag;
+    pfEulers = pfData;
+    pfQuaternion = pfData + 3;
 
     // Setup the system clock to run at 40 Mhz from PLL with crystal reference
     SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ |
@@ -472,36 +496,19 @@ int main(void)
                 pfEulers[2] += 360.0f;
             }
 
-            // Now drop back to using the data as a single array for the
-            // purpose of decomposing the float into a integer part and a
-            // fraction (decimal) part.
-            for(ui32Idx = 0; ui32Idx < 16; ui32Idx++)
+            // convert the dynamics data to integers
+            for(ui32Idx = XAXIS; ui32Idx <= ZAXIS; ui32Idx++)
             {
-                //
-                // Conver float value to a integer truncating the decimal part.
-                //
-                i32IPart[ui32Idx] = (int32_t) pfData[ui32Idx];
-
-                //
-                // Multiply by 1000 to preserve first three decimal values.
-                // Truncates at the 3rd decimal place.
-                //
-                i32FPart[ui32Idx] = (int32_t) (pfData[ui32Idx] * 1000.0f);
-
-                //
-                // Subtract off the integer part from this newly formed decimal
-                // part.
-                //
-                i32FPart[ui32Idx] = i32FPart[ui32Idx] -
-                                    (i32IPart[ui32Idx] * 1000);
-
-                //
-                // make the decimal part a positive number for display.
-                //
-                if(i32FPart[ui32Idx] < 0)
-                {
-                    i32FPart[ui32Idx] *= -1;
-                }
+                floatToDecimals(fDynamicsData.fAccel[ui32Idx], &i32IPart[ui32Idx], &i32FPart[ui32Idx]);
+                floatToDecimals(fDynamicsData.fGyro[ui32Idx], &i32IPart[ui32Idx+3], &i32FPart[ui32Idx+3]);
+                floatToDecimals(fDynamicsData.fMag[ui32Idx], &i32IPart[ui32Idx+6], &i32FPart[ui32Idx+6]);
+            }
+            
+            // decompose the floats of pfData into a integer part and a
+            // fraction (decimal) part.
+            for(ui32Idx = 0; ui32Idx < 8; ui32Idx++)
+            {
+                floatToDecimals(pfData[ui32Idx], &i32IPart[ui32Idx+9], &i32FPart[ui32Idx+9]);
             }
 
             // Print the acceleration numbers in the table.
@@ -531,7 +538,7 @@ int main(void)
             UARTprintf("\033[19;68H%3d.%03d", i32IPart[15], i32FPart[15]);
             
             // Print the time to make the measurment
-            UARTprintf("\033[24;40H%d ms", (int)(elap_time*1000));
+            UARTprintf("\033[24;40H%d ms", 0);
 
         }
     }
