@@ -1,0 +1,5 @@
+*.o
+*.pbi
+HADES_Software/ewarm/Obj/microSD.pbi.xcl
+*.out
+*.map
