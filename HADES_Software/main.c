@@ -409,7 +409,6 @@ int main(void)
     UARTprintf("\n\033[17GQ1\033[26G|\033[35GQ2\033[44G|\033[53GQ3\033[62G|"
                "\033[71GQ4\n\n");
     UARTprintf("Q\033[8G|\033[26G|\033[44G|\033[62G|\n\n");
-    UARTprintf("Elapsed Measurement Time\n\n");
 
     // Enable blinking indicates config finished successfully
     RGBBlinkRateSet(1.0f);
@@ -506,7 +505,7 @@ int main(void)
             
             // decompose the floats of pfData into a integer part and a
             // fraction (decimal) part.
-            for(ui32Idx = 0; ui32Idx < 8; ui32Idx++)
+            for(ui32Idx = 0; ui32Idx < 7; ui32Idx++)
             {
                 floatToDecimals(pfData[ui32Idx], &i32IPart[ui32Idx+9], &i32FPart[ui32Idx+9]);
             }
@@ -536,9 +535,6 @@ int main(void)
             UARTprintf("\033[19;32H%3d.%03d", i32IPart[13], i32FPart[13]);
             UARTprintf("\033[19;50H%3d.%03d", i32IPart[14], i32FPart[14]);
             UARTprintf("\033[19;68H%3d.%03d", i32IPart[15], i32FPart[15]);
-            
-            // Print the time to make the measurment
-            UARTprintf("\033[24;40H%d ms", 0);
 
         }
     }
