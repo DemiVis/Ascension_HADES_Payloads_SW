@@ -1,3 +1,4 @@
+//*****************************************************************************\
 //*****************************************************************************
 //
 // main.c - Main Program for HADES Payload Software.
@@ -21,12 +22,21 @@
 //                    lathburj1@my.erau.edu  traherng@my.erau.edu
 //
 //*****************************************************************************
+//*****************************************************************************
 
+
+//*****************************************************************************
+//
+// Necessary Includes
+//
+//*****************************************************************************
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
+
 #include "inc/hw_memmap.h"
 #include "inc/hw_ints.h"
+
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
@@ -34,14 +44,19 @@
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
+
 #include "utils/uartstdio.h"
+
 #include "sensorlib/hw_mpu9150.h"
 #include "sensorlib/hw_ak8975.h"
 #include "sensorlib/i2cm_drv.h"
 #include "sensorlib/ak8975.h"
 #include "sensorlib/mpu9150.h"
 #include "sensorlib/comp_dcm.h"
+
 #include "drivers/rgb.h"
+
+#include "microSD.h"
 
 //*****************************************************************************
 //

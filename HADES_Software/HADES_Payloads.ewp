@@ -986,6 +986,9 @@
       <name>$PROJ_DIR$\main.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\microSD.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\drivers\rgb.c</name>
     </file>
     <file>
