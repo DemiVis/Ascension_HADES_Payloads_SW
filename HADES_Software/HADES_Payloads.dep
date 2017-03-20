@@ -5,7 +5,187 @@
   <fileChecksum>610974102</fileChecksum>
   <configuration>
     <name>Debug</name>
-    <outputs/>
+    <outputs>
+      <file>$PROJ_DIR$\..\inc\hw_uart.h</file>
+      <file>$PROJ_DIR$\..\driverlib\rom_map.h</file>
+      <file>$PROJ_DIR$\..\inc\hw_types.h</file>
+      <file>$PROJ_DIR$\HADES.icf</file>
+      <file>$PROJ_DIR$\..\inc\hw_nvic.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$PROJ_DIR$\ewarm\List\HADES.map</file>
+      <file>$PROJ_DIR$\main.c</file>
+      <file>$PROJ_DIR$\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\..\sensorlib\ewarm\Exe\sensorlib.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.pbi</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.pbi</file>
+      <file>$PROJ_DIR$\..\utils\uartstdio.h</file>
+      <file>$PROJ_DIR$\..\driverlib\pin_map.h</file>
+      <file>$PROJ_DIR$\..\driverlib\ewarm\Exe\driverlib.a</file>
+      <file>$PROJ_DIR$\..\driverlib\sysctl.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\main.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\drivers\rgb.c</file>
+      <file>$PROJ_DIR$\..\sensorlib\ak8975.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+      <file>$PROJ_DIR$\ewarm\Obj\main.o</file>
+      <file>$PROJ_DIR$\..\driverlib\interrupt.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\hw_mpu9150.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$PROJ_DIR$\..\driverlib\debug.h</file>
+      <file>$PROJ_DIR$\..\driverlib\uart.h</file>
+      <file>$PROJ_DIR$\ewarm\Exe\HADES_Payloads.bin</file>
+      <file>$PROJ_DIR$\ewarm\Obj\HADES_Payloads.pbd</file>
+      <file>$PROJ_DIR$\ewarm\Exe\HADES.out</file>
+      <file>$PROJ_DIR$\ewarm\Obj\rgb.o</file>
+      <file>$PROJ_DIR$\..\driverlib\rom.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$PROJ_DIR$\drivers\rgb.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\rgb.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\comp_dcm.h</file>
+      <file>$PROJ_DIR$\..\inc\hw_memmap.h</file>
+      <file>$PROJ_DIR$\..\inc\hw_ints.h</file>
+      <file>$PROJ_DIR$\..\driverlib\gpio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\mpu9150.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\i2cm_drv.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\hw_ak8975.h</file>
+      <file>$PROJ_DIR$\..\inc\hw_timer.h</file>
+      <file>$PROJ_DIR$\..\driverlib\timer.h</file>
+    </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 36 9</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\main.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 21</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 27</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 24 17 22 45 16 13 39 42 46 19 56 43 47 52 50 31 20 44 32 28 38 33 29 55 54 40 53 25 30 49</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 49 22 31 47 39 52 13 53 20 42 50 25 44 45 32 46 28 17 38 19 33 16 29 56 55 24 54 43 40</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\utils\uartstdio.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 15</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 51</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 28 47 22 44 33 52 31 30 0 1 13 39 49 45 2 32 38 19 16 53 20</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 20 49 22 31 47 39 52 13 53 45 44 2 0 32 28 38 1 19 33 16</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\drivers\rgb.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 41</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 37</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 1 57 28 53 31 2 19 58 22 20 44 45 38 17 46 40 47 13 39 52 49</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 49 22 31 47 39 52 13 53 20 2 44 57 45 19 38 1 17 58 46 28 40</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\startup_ewarm.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 14</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 48</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 31 22 2 53 4 47 13 39 52 49</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 49 22 31 47 39 52 13 53 4 2</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\ewarm\Exe\HADES.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 9</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 34</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 3 18 27 37 12 48 51 7 8 6 5</file>
+        </tool>
+      </inputs>
+    </file>
   </configuration>
 </project>
 
