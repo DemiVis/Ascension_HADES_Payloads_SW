@@ -32,11 +32,14 @@
 //*****************************************************************************
 #define SDCARD_ENABLE      true
 
-#define SDCARD_FILENAME 				"HADES_data"
-#define SDCARD_EXT      				"csv"
-#define SDCARD_COMMENT 					"Raw data read from sensors"
+#define SDCARD_FILENAME 			"HADES_data"
+#define SDCARD_EXT      			"csv"
+#define SDCARD_COMMENT 				"Raw data read from sensors"
 #define SDCARD_TIMERPROC_TIMER_BASE		TIMER0_BASE
 #define SDCARD_TIMERPROC_RATE 			100 		// in hz
+
+#define OK                                      1
+#define ERROR                                   0
 
 
 //*****************************************************************************

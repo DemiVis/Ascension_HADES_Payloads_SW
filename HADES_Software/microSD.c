@@ -27,9 +27,11 @@
 
 #include "driverlib/timer.h"
 
+// FatFS files
 #include "fatfs/diskio.h"
 #include "fatfs/ff.h"
 
+// Ryan Claus User Files
 #include "userlib/timer.h"
 
 //*****************************************************************************
@@ -90,11 +92,11 @@ uint_fast8_t SDCardInit( void )
     //
     f_close(g_psFlashFile);
     f_mount(1, NULL);
-    return (0);
+    return (ERROR);
   } else 
   {
     f_sync(g_psFlashFile);
-    return (1);
+    return (OK);
   }
 }
 
@@ -106,12 +108,12 @@ void FatFSTimerIntHandler(void) {
 // Write a string of arbitrary length to the specified file
 uint_fast8_t SDCardWrite(char * writeString, FIL * file)
 {
-  uint8_t rv = 0;
+  uint8_t rv = ERROR;
   
   if (f_puts(writeString, file) == EOF) 
     SDCardInit();
   else
-    rv = 1;
+    rv = OK;
   
   f_sync(g_psFlashFile);
   
