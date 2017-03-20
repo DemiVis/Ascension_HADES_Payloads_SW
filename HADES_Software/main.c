@@ -66,6 +66,19 @@
 #define MPU9150_I2C_ADDRESS     0x68
 #define PRINT_SKIP_COUNT        10
 
+#define XAXIS                   0
+#define YAXIS                   1
+#define ZAXIS                   2
+
+//*****************************************************************************
+//
+// Project-Specific Types
+//
+//*****************************************************************************
+typedef struct{
+  float fAccel[3], fGyro[3], fMag[3];
+}dynamicsData_t;
+
 //*****************************************************************************
 //
 // Global Variables
@@ -92,12 +105,11 @@ volatile uint_fast8_t g_vui8DataFlag;    // flags to alert main that MPU9150
 // we just set a flag and let main do the bulk of the computations and display.
 //
 //*****************************************************************************
-void
-MPU9150AppCallback(void *pvCallbackData, uint_fast8_t ui8Status)
+void MPU9150AppCallback(void *pvCallbackData, uint_fast8_t ui8Status)
 {
     // If the transaction succeeded set the data flag to indicate to
     // application that this transaction is complete and data may be ready.    
-	if(ui8Status == I2CM_STATUS_SUCCESS)
+    if(ui8Status == I2CM_STATUS_SUCCESS)
     {
         g_vui8I2CDoneFlag = 1;
     }
@@ -111,8 +123,7 @@ MPU9150AppCallback(void *pvCallbackData, uint_fast8_t ui8Status)
 // application GPIO port B pin 2 is the interrupt line for the MPU9150
 //
 //*****************************************************************************
-void
-IntGPIOb(void)
+void IntGPIOb(void)
 {
     unsigned long ulStatus;
 
@@ -134,8 +145,7 @@ IntGPIOb(void)
 // to the MPU9150.
 //
 //*****************************************************************************
-void
-MPU9150I2CIntHandler(void)
+void MPU9150I2CIntHandler(void)
 {
     // Pass through to the I2CM interrupt handler provided by sensor library.
     // This is required to be at application level so that I2CMIntHandler can
@@ -149,8 +159,7 @@ MPU9150I2CIntHandler(void)
 // I2C error.
 //
 //*****************************************************************************
-void
-MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg)
+void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg)
 {
     // Set terminal color to red and print error status and locations
     UARTprintf("\033[31;1m");
@@ -185,8 +194,7 @@ MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg)
 // wait on the I2C bus.
 //
 //*****************************************************************************
-void
-MPU9150AppI2CWait(char *pcFilename, uint_fast32_t ui32Line)
+void MPU9150AppI2CWait(char *pcFilename, uint_fast32_t ui32Line)
 {
     // Put the processor to sleep while we wait for the I2C driver to
     // indicate that the transaction is complete.
@@ -214,8 +222,7 @@ MPU9150AppI2CWait(char *pcFilename, uint_fast32_t ui32Line)
 // Configure the UART and its pins.  This must be called before UARTprintf().
 //
 //*****************************************************************************
-void
-ConfigureUART(void)
+void ConfigureUART(void)
 {
     // Enable the GPIO Peripheral used by the UART.
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
@@ -240,8 +247,7 @@ ConfigureUART(void)
 // Main application entry point.
 //
 //*****************************************************************************
-int
-main(void)
+int main(void)
 {
     int_fast32_t i32IPart[16], i32FPart[16];
     uint_fast32_t ui32Idx, ui32CompDCMStarted;
@@ -267,6 +273,14 @@ main(void)
 
     // Initialize the UART.
     ConfigureUART();
+    
+/*    if( SDCardInit() != OK )
+    {
+      char err_msg[28];
+      
+      sprintf(err_msg, "SD Card Initialization Failure");  
+      MPU9150AppErrorHandler(__FILE__, __LINE__, err_msg);
+    } */
 
     // Print the welcome message to the terminal.
     UARTprintf("\033[2JMPU9150 Raw Example\n");
