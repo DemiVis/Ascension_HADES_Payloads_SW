@@ -3,3 +3,5 @@
 HADES_Software/ewarm/Obj/microSD.pbi.xcl
 *.out
 *.map
+*.out
+HADES_Software/settings/HADES_Payloads.wsdt
