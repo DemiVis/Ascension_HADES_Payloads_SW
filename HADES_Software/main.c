@@ -33,6 +33,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_ints.h"
@@ -69,6 +70,8 @@
 #define XAXIS                   0
 #define YAXIS                   1
 #define ZAXIS                   2
+
+#define MAX_DATASTR_LEN         1024
 
 //*****************************************************************************
 //
@@ -266,6 +269,25 @@ void floatToDecimals(float inFloat, int_fast32_t *iPart, int_fast32_t *fPart)
     }
 }
 
+int makeDataString(char *outString, dynamicsData_t *dynamicsData)
+{
+  int len;
+  
+  sprintf(outString, "%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f\n",
+          dynamicsData->fAccel[XAXIS], dynamicsData->fAccel[YAXIS],
+          dynamicsData->fAccel[ZAXIS],
+          dynamicsData->fGyro[XAXIS] , dynamicsData->fGyro[YAXIS],
+          dynamicsData->fGyro[ZAXIS] ,
+          dynamicsData->fMag[XAXIS]  , dynamicsData->fMag[YAXIS],
+          dynamicsData->fMag[ZAXIS] );
+  
+  len = strnlen(outString, MAX_DATASTR_LEN+1);
+  if( len > MAX_DATASTR_LEN )
+    return ERROR;
+  else
+    return OK;
+}
+
 //*****************************************************************************
 //
 // Main application entry point.
@@ -278,6 +300,7 @@ int main(void)
     dynamicsData_t fDynamicsData;
     float pfData[8];
     float *pfAccel, *pfGyro, *pfMag, *pfEulers, *pfQuaternion;
+    char dataString[MAX_DATASTR_LEN];
 
     // Initialize convenience pointers that clean up and clarify the code
     // meaning. We want all the data in a single contiguous array so that
@@ -298,13 +321,10 @@ int main(void)
     // Initialize the UART.
     ConfigureUART();
     
-/*    if( SDCardInit() != OK )
+    if( SDCardInit() != OK )
     {
-      char err_msg[28];
-      
-      sprintf(err_msg, "SD Card Initialization Failure");  
-      MPU9150AppErrorHandler(__FILE__, __LINE__, err_msg);
-    } */
+      MPU9150AppErrorHandler(__FILE__, __LINE__, "SD Card Initialization Failure");
+    }
 
     // Print the welcome message to the terminal.
     UARTprintf("\033[2JMPU9150 Raw Example\n");
@@ -403,12 +423,6 @@ int main(void)
     UARTprintf("Accel\033[8G|\033[31G|\033[54G|\n\n");
     UARTprintf("Gyro\033[8G|\033[31G|\033[54G|\n\n");
     UARTprintf("Mag\033[8G|\033[31G|\033[54G|\n\n");
-    UARTprintf("\n\033[20GRoll\033[31G|\033[43GPitch\033[54G|\033[66GYaw\n\n");
-    UARTprintf("Eulers\033[8G|\033[31G|\033[54G|\n\n");
-
-    UARTprintf("\n\033[17GQ1\033[26G|\033[35GQ2\033[44G|\033[53GQ3\033[62G|"
-               "\033[71GQ4\n\n");
-    UARTprintf("Q\033[8G|\033[26G|\033[44G|\033[62G|\n\n");
 
     // Enable blinking indicates config finished successfully
     RGBBlinkRateSet(1.0f);
@@ -509,7 +523,11 @@ int main(void)
             {
                 floatToDecimals(pfData[ui32Idx], &i32IPart[ui32Idx+9], &i32FPart[ui32Idx+9]);
             }
-
+            
+            if( makeDataString(dataString, &fDynamicsData) != OK )
+            {
+              MPU9150AppErrorHandler(__FILE__, __LINE__, "Data String Creation Failure");
+            }      
             // Print the acceleration numbers in the table.
             UARTprintf("\033[5;17H%3d.%03d", i32IPart[0], i32FPart[0]);
             UARTprintf("\033[5;40H%3d.%03d", i32IPart[1], i32FPart[1]);
@@ -524,17 +542,8 @@ int main(void)
             UARTprintf("\033[9;17H%3d.%03d", i32IPart[6], i32FPart[6]);
             UARTprintf("\033[9;40H%3d.%03d", i32IPart[7], i32FPart[7]);
             UARTprintf("\033[9;63H%3d.%03d", i32IPart[8], i32FPart[8]);
-
-            // Print the Eulers in a table.
-            UARTprintf("\033[14;17H%3d.%03d", i32IPart[9], i32FPart[9]);
-            UARTprintf("\033[14;40H%3d.%03d", i32IPart[10], i32FPart[10]);
-            UARTprintf("\033[14;63H%3d.%03d", i32IPart[11], i32FPart[11]);
-
-            // Print the quaternions in a table format.
-            UARTprintf("\033[19;14H%3d.%03d", i32IPart[12], i32FPart[12]);
-            UARTprintf("\033[19;32H%3d.%03d", i32IPart[13], i32FPart[13]);
-            UARTprintf("\033[19;50H%3d.%03d", i32IPart[14], i32FPart[14]);
-            UARTprintf("\033[19;68H%3d.%03d", i32IPart[15], i32FPart[15]);
+            
+            UARTprintf("\033[11;5H%s",dataString);
 
         }
     }

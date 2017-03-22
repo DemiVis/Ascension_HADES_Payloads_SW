@@ -60,11 +60,6 @@ uint_fast8_t SDCardInit( void )
   char pcFilename[250];
   uint_fast8_t vui8Index = 0;
   
-  TimerFullWidthInit(SDCARD_TIMERPROC_TIMER_BASE, TIMER_CFG_PERIODIC,
-  SDCARD_TIMERPROC_RATE);
-  
-  TimerFullWidthIntInit(SDCARD_TIMERPROC_TIMER_BASE, -1, TIMER_TIMA_TIMEOUT, FatFSTimerIntHandler);
-
   // Mount the File System
   while (f_mount(1, g_psFlashMount) != FR_OK)
     ;
@@ -98,11 +93,6 @@ uint_fast8_t SDCardInit( void )
     f_sync(g_psFlashFile);
     return (OK);
   }
-}
-
-void FatFSTimerIntHandler(void) {
-  TimerIntClear(SDCARD_TIMERPROC_TIMER_BASE, TIMER_TIMA_TIMEOUT); // Clear the timer interrupt
-  disk_timerproc();
 }
 
 // Write a string of arbitrary length to the specified file

@@ -36,7 +36,7 @@
 /   3: f_lseek is removed in addition to 2. */
 
 
-#define	_USE_STRFUNC	0	/* 0:Disable or 1-2:Enable */
+#define	_USE_STRFUNC	1	/* 0:Disable or 1-2:Enable */
 /* To enable string functions, set _USE_STRFUNC to 1 or 2. */
 
 
@@ -60,7 +60,7 @@
 / Locale and Namespace Configurations
 /----------------------------------------------------------------------------*/
 
-#define _CODE_PAGE	932
+#define _CODE_PAGE	437
 /* The _CODE_PAGE specifies the OEM code page to be used on the target system.
 /  Incorrect setting of the code page can cause a file open failure.
 /
