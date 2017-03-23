@@ -34,6 +34,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_ints.h"
@@ -44,6 +45,7 @@
 #include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/systick.h"
 #include "driverlib/uart.h"
 
 #include "utils/uartstdio.h"
@@ -86,8 +88,12 @@
 //
 //*****************************************************************************
 typedef struct{
-  DATA_TYPE fAccel[3], fGyro[3], fMag[3];
+    DATA_TYPE fAccel[3], fGyro[3], fMag[3];
 }dynamicsData_t;
+
+typedef struct{
+    DATA_TYPE fTemperature, fPressure, fAltitude;
+}atmosData_t;
 
 //*****************************************************************************
 //
@@ -348,43 +354,51 @@ void floatToDecimals(float inFloat, int_fast32_t *iPart, int_fast32_t *fPart)
 // Make data string to write to file
 //
 //*****************************************************************************
-int makeDataString(char *outString, dynamicsData_t *dynamicsData)
+int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *atmosData)
 {
-  int len;
-  int_fast32_t iIPart[9], iFPart[9];
-  static uint32_t idx = 0;
+    int len;
+    int_fast32_t iIPart[12], iFPart[12]; // Dynamics(9) + Atmos(3)
+    static uint32_t idx = 0;
 
-  floatToDecimals( dynamicsData->fAccel[XAXIS], &iIPart[XAXIS], &iFPart[XAXIS]);
-  floatToDecimals( dynamicsData->fAccel[YAXIS], &iIPart[YAXIS], &iFPart[YAXIS]);
-  floatToDecimals( dynamicsData->fAccel[ZAXIS], &iIPart[ZAXIS], &iFPart[ZAXIS]);
-  floatToDecimals( dynamicsData->fGyro[XAXIS], &iIPart[XAXIS+3], &iFPart[XAXIS+3]);
-  floatToDecimals( dynamicsData->fGyro[YAXIS], &iIPart[YAXIS+3], &iFPart[YAXIS+3]);
-  floatToDecimals( dynamicsData->fGyro[ZAXIS], &iIPart[ZAXIS+3], &iFPart[ZAXIS+3]);
-  floatToDecimals( dynamicsData->fMag[XAXIS], &iIPart[XAXIS+6], &iFPart[XAXIS+6]);
-  floatToDecimals( dynamicsData->fMag[YAXIS], &iIPart[YAXIS+6], &iFPart[YAXIS+6]);
-  floatToDecimals( dynamicsData->fMag[ZAXIS], &iIPart[ZAXIS+6], &iFPart[ZAXIS+6]);
-  
-  
-  sprintf(outString,
-         "%4u,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d\n",
-          idx,
-          iIPart[0], iFPart[0],         // Accel X
-          iIPart[1], iFPart[1],         // Accel Y
-          iIPart[2], iFPart[2],         // Accel Z
-          iIPart[3], iFPart[3],         // Gyro X
-          iIPart[4], iFPart[4],         // Gyro Y
-          iIPart[5], iFPart[5],         // Gyro Z
-          iIPart[6], iFPart[6],         // Mag X
-          iIPart[7], iFPart[7],         // Mag Y
-          iIPart[8], iFPart[8]);        // Mag Z
-  
-  idx++;
-  
-  len = strnlen(outString, MAX_DATASTR_LEN+1);
-  if( len > MAX_DATASTR_LEN )
-    return ERROR;
-  else
-    return OK;
+    // Dynamics Data
+    floatToDecimals( dynamicsData->fAccel[XAXIS], &iIPart[XAXIS], &iFPart[XAXIS]);
+    floatToDecimals( dynamicsData->fAccel[YAXIS], &iIPart[YAXIS], &iFPart[YAXIS]);
+    floatToDecimals( dynamicsData->fAccel[ZAXIS], &iIPart[ZAXIS], &iFPart[ZAXIS]);
+    floatToDecimals( dynamicsData->fGyro[XAXIS], &iIPart[XAXIS+3], &iFPart[XAXIS+3]);
+    floatToDecimals( dynamicsData->fGyro[YAXIS], &iIPart[YAXIS+3], &iFPart[YAXIS+3]);
+    floatToDecimals( dynamicsData->fGyro[ZAXIS], &iIPart[ZAXIS+3], &iFPart[ZAXIS+3]);
+    floatToDecimals( dynamicsData->fMag[XAXIS], &iIPart[XAXIS+6], &iFPart[XAXIS+6]);
+    floatToDecimals( dynamicsData->fMag[YAXIS], &iIPart[YAXIS+6], &iFPart[YAXIS+6]);
+    floatToDecimals( dynamicsData->fMag[ZAXIS], &iIPart[ZAXIS+6], &iFPart[ZAXIS+6]);
+    
+    // Atmospheric Data
+    floatToDecimals( atmosData->fPressure,    &iIPart[9], &iFPart[9] );
+    floatToDecimals( atmosData->fTemperature, &iIPart[10], &iFPart[10] );
+    floatToDecimals( atmosData->fAltitude,    &iIPart[11], &iFPart[11] );
+    
+    sprintf(outString,
+           "%4u,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d\n",
+            idx,
+            iIPart[0], iFPart[0],         // Accel X
+            iIPart[1], iFPart[1],         // Accel Y
+            iIPart[2], iFPart[2],         // Accel Z
+            iIPart[3], iFPart[3],         // Gyro X
+            iIPart[4], iFPart[4],         // Gyro Y
+            iIPart[5], iFPart[5],         // Gyro Z
+            iIPart[6], iFPart[6],         // Mag X
+            iIPart[7], iFPart[7],         // Mag Y
+            iIPart[8], iFPart[8],         // Mag Z
+            iIPart[7], iFPart[9],         // Pressure
+            iIPart[10], iFPart[10],       // Temperature
+            iIPart[11], iFPart[11]);      // Altitude
+    
+    idx++;
+    
+    len = strnlen(outString, MAX_DATASTR_LEN+1);
+    if( len > MAX_DATASTR_LEN )
+      return ERROR;
+    else
+      return OK;
 }
 
 //*****************************************************************************
@@ -394,16 +408,16 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData)
 //*****************************************************************************
 int main(void)
 {
-    int_fast32_t i32IPart[16], i32FPart[16];
-    uint_fast32_t ui32Idx, ui32CompDCMStarted;
+    uint_fast32_t ui32CompDCMStarted;
     dynamicsData_t fDynamicsData;
-    float pfData[8];
+    atmosData_t fAtmosData;
     char dataString[MAX_DATASTR_LEN];
 
     // Setup the system clock to run at 40 Mhz from PLL with crystal reference
     SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ |
                        SYSCTL_OSC_MAIN);
 
+    ////////// General Peripheral Initialization //////////
     // Enable port B used for motion interrupt.
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 
@@ -413,7 +427,8 @@ int main(void)
     
     // Print the welcome message to the terminal.
     UARTprintf("\033[1;1HHADES Data Output\n\n");
-    UARTprintf("\033[3;1H      AccelX  AccelY  AccelZ   GyroX   GyroY   GyroZ   Mag X   Mag Y   Mag Z",dataString);
+    UARTprintf("\033[2;1H    , AccelX, AccelY, AccelZ, GyroX , GyroY , GyroZ , Mag X , Mag Y , Mag Z , Press ,  Temp ,   Alt  \n");
+    UARTprintf("\033[3;1H    , m/s^2 , m/s^2 , m/s^2 , rad/s , rad/s , rad/s ,   uT  ,   uT  ,   uT  ,  Press,   C   ,    m   \n");
 #endif
     
 #if USE_SDCARD
@@ -464,6 +479,7 @@ int main(void)
     I2CMInit(&g_sI2CInst, I2C3_BASE, INT_I2C3, 0xff, 0xff,
              SysCtlClockGet());
 
+    ////////// MPU9150 Initialization //////////
     // Initialize the MPU9150 Driver.
     MPU9150Init(&g_sMPU9150Inst, &g_sI2CInst, MPU9150_I2C_ADDRESS,
                 MPU9150AppCallback, &g_sMPU9150Inst);
@@ -498,20 +514,33 @@ int main(void)
     // Initialize the DCM system. 50 hz sample rate.
     // accel weight = .2, gyro weight = .8, mag weight = .2
     CompDCMInit(&g_sCompDCMInst, 1.0f / 50.0f, 0.2f, 0.6f, 0.2f);
+       
+    ////////// BMP Initialization //////////
+    // Initialize the BMP180.
+    BMP180Init(&g_sBMP180Inst, &g_sI2CInst, BMP180_I2C_ADDRESS,
+               BMP180AppCallback, &g_sBMP180Inst);
+
+    // Wait for initialization callback to indicate reset request is complete.
+    while(g_vui8BMPDataFlag == 0)
+    {    }
+
+    // Reset the flags
+    ui32CompDCMStarted = 0;
+    g_vui8BMPDataFlag = 0;
+    
+    // Enable the system ticks at 10 Hz.
+    //
+    SysTickPeriodSet(ROM_SysCtlClockGet() / (10 * 3));
+    SysTickIntEnable();
+    SysTickEnable();
     
     // Enable blinking indicates config finished successfully
     RGBBlinkRateSet(1.0f);
-
-    ui32CompDCMStarted = 0;
-
+    
     while(1)
     {
-        // Go to sleep mode while waiting for data ready.
-        while(!g_vui8I2CDoneFlag)
-        {
-            SysCtlSleep();
-        }
-
+      
+        ////////// Get Dynamics Data //////////
         // Clear the flag
         g_vui8I2CDoneFlag = 0;
         
@@ -541,6 +570,9 @@ int main(void)
             CompDCMGyroUpdate(&g_sCompDCMInst, fDynamicsData.fGyro[XAXIS],
                                 fDynamicsData.fGyro[YAXIS], fDynamicsData.fGyro[ZAXIS]);
             CompDCMStart(&g_sCompDCMInst);
+            
+            // Start the BMP data acquisition process   
+            BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
         }
         else
         {
@@ -553,7 +585,28 @@ int main(void)
                                 -fDynamicsData.fGyro[YAXIS], -fDynamicsData.fGyro[ZAXIS]);
             CompDCMUpdate(&g_sCompDCMInst);
         }
+        
+        ////////// Get BMP Data //////////
+        while(g_vui8BMPDataFlag == 0)
+        { /* Wait for the new data set to be available*/ }
+        
+        // Reset the data ready flag.
+        g_vui8BMPDataFlag = 0;
 
+        // Get a local copy of the latest temperature data in float format.
+        BMP180DataTemperatureGetFloat(&g_sBMP180Inst, &fAtmosData.fTemperature);
+        
+        // Get a local copy of the latest air pressure data in float format.
+        BMP180DataPressureGetFloat(&g_sBMP180Inst, &fAtmosData.fPressure);
+        
+        // Calculate the altitude.
+        fAtmosData.fAltitude = 44330.0f * (1.0f - powf(fAtmosData.fPressure / 101325.0f,
+                                            1.0f / 5.255f));
+        
+        // Re-start the data acquisition process
+        BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
+        
+        ////////// Printouts/data collection //////////
         // Increment the skip counter.  Skip counter is used so we do not
         // overflow the UART with data.
         g_ui32PrintSkipCounter++;
@@ -566,29 +619,14 @@ int main(void)
             fDynamicsData.fMag[0] *= 1e6;
             fDynamicsData.fMag[1] *= 1e6;
             fDynamicsData.fMag[2] *= 1e6;
-
-            // convert the dynamics data to integers
-            for(ui32Idx = XAXIS; ui32Idx <= ZAXIS; ui32Idx++)
-            {
-                floatToDecimals(fDynamicsData.fAccel[ui32Idx], &i32IPart[ui32Idx], &i32FPart[ui32Idx]);
-                floatToDecimals(fDynamicsData.fGyro[ui32Idx], &i32IPart[ui32Idx+3], &i32FPart[ui32Idx+3]);
-                floatToDecimals(fDynamicsData.fMag[ui32Idx], &i32IPart[ui32Idx+6], &i32FPart[ui32Idx+6]);
-            }
             
-            // decompose the floats of pfData into a integer part and a
-            // fraction (decimal) part.
-            for(ui32Idx = 0; ui32Idx < 7; ui32Idx++)
-            {
-                floatToDecimals(pfData[ui32Idx], &i32IPart[ui32Idx+9], &i32FPart[ui32Idx+9]);
-            }
-            
-            if( makeDataString(dataString, &fDynamicsData) != OK )
+            if( makeDataString(dataString, &fDynamicsData, &fAtmosData) != OK )
             {
               MPU9150AppErrorHandler(__FILE__, __LINE__, "Data String Creation Failure");
             }      
             
 #if USE_UART
-            UARTprintf("\033[4;1H%s",dataString);
+            UARTprintf("%s",dataString);
 #endif
             
 #if USE_SDCARD

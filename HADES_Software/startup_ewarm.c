@@ -53,6 +53,7 @@ extern void IntGPIOb(void);
 extern void HADESI2CIntHandler(void);
 extern void UARTStdioIntHandler(void);
 extern void RGBBlinkIntHandler(void);
+extern void SysTickIntHandler(void);
 
 //*****************************************************************************
 //
@@ -106,7 +107,7 @@ __root const uVectorEntry __vector_table[] @ ".intvec" =
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
     IntDefaultHandler,                      // The PendSV handler
-    IntDefaultHandler,                      // The SysTick handler
+    SysTickIntHandler,        // The SysTick handler
     IntDefaultHandler,                      // GPIO Port A
     IntGPIOb,                 // GPIO Port B
     IntDefaultHandler,                      // GPIO Port C
