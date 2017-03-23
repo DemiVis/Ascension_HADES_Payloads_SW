@@ -48,10 +48,12 @@
 
 #include "utils/uartstdio.h"
 
-#include "sensorlib/hw_mpu9150.h"
-#include "sensorlib/hw_ak8975.h"
 #include "sensorlib/i2cm_drv.h"
+#include "sensorlib/hw_ak8975.h"
+#include "sensorlib/hw_bmp180.h"
+#include "sensorlib/hw_mpu9150.h"
 #include "sensorlib/ak8975.h"
+#include "sensorlib/bmp180.h"
 #include "sensorlib/mpu9150.h"
 #include "sensorlib/comp_dcm.h"
 
@@ -64,6 +66,7 @@
 // Project Definitions
 //
 //*****************************************************************************
+#define BMP180_I2C_ADDRESS      0x77
 #define MPU9150_I2C_ADDRESS     0x68
 #define PRINT_SKIP_COUNT        10
 
@@ -75,6 +78,7 @@
 #define DATA_TYPE               float
 
 #define USE_SDCARD              0    // Set to 1 to use the SD card for storage
+#define USE_UART                1    // Set to 1 to use the UART for data output
 
 //*****************************************************************************
 //
@@ -91,9 +95,12 @@ typedef struct{
 //
 //*****************************************************************************
 uint32_t g_pui32Colors[3];      // for holding the color values for the RGB.
+
 tI2CMInstance g_sI2CInst;       // for the I2C master driver.
+tBMP180 g_sBMP180Inst;          // for the BMP180 sensor driver.
 tMPU9150 g_sMPU9150Inst;        // for the ISL29023 sensor driver.
 tCompDCM g_sCompDCMInst;        // to manage the DCM state.
+
 uint32_t g_ui32PrintSkipCounter;// to control the rate of data to the terminal.
 
 // Flags
@@ -101,11 +108,28 @@ volatile uint_fast8_t g_vui8I2CDoneFlag; // flags to alert main that MPU9150 I2C
                                          // transaction is complete
 volatile uint_fast8_t g_vui8ErrorFlag;   // flags to alert main that MPU9150 I2C 
                                          // transaction error has occurred.
-volatile uint_fast8_t g_vui8DataFlag;    // flags to alert main that MPU9150
+volatile uint_fast8_t g_vui8BMPDataFlag; // flags to alert main that BMP180
+                                         // data is ready.
+volatile uint_fast8_t g_vui8MPUDataFlag; // flags to alert main that MPU9150
                                          // data is ready to be retrieved.
 
 // From microSD.c
 extern FIL *g_psFlashFile;
+
+//*****************************************************************************
+//
+// BMP180 Sensor callback function.  Called at the end of BMP180 sensor driver
+// transactions. This is called from I2C interrupt context. Therefore, we just
+// set a flag and let main do the bulk of the computations and display.
+//
+//*****************************************************************************
+void BMP180AppCallback(void* pvCallbackData, uint_fast8_t ui8Status)
+{
+    if(ui8Status == I2CM_STATUS_SUCCESS)
+    {
+        g_vui8BMPDataFlag = 1;
+    }
+}
 
 //*****************************************************************************
 //
@@ -124,6 +148,20 @@ void MPU9150AppCallback(void *pvCallbackData, uint_fast8_t ui8Status)
     }
     // Store the most recent status in case it was an error condition    
 	g_vui8ErrorFlag = ui8Status;
+}
+
+//*****************************************************************************
+//
+// Called by the NVIC as a SysTick interrupt, which is used to generate the
+// sample interval
+//
+//*****************************************************************************
+void
+SysTickIntHandler()
+{
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
+    BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x00);
 }
 
 //*****************************************************************************
@@ -154,7 +192,7 @@ void IntGPIOb(void)
 // to the MPU9150.
 //
 //*****************************************************************************
-void MPU9150I2CIntHandler(void)
+void HADESI2CIntHandler(void)
 {
     // Pass through to the I2CM interrupt handler provided by sensor library.
     // This is required to be at application level so that I2CMIntHandler can
@@ -226,6 +264,7 @@ void MPU9150AppI2CWait(char *pcFilename, uint_fast32_t ui32Line)
     g_vui8I2CDoneFlag = 0;
 }
 
+#if USE_UART
 //*****************************************************************************
 //
 // Configure the UART and its pins.  This must be called before UARTprintf().
@@ -249,6 +288,30 @@ void ConfigureUART(void)
 
     // Initialize the UART for console I/O.
     UARTStdioConfig(0, 115200, 16000000);
+}
+#endif
+
+//*****************************************************************************
+//
+// Configure the I2C and its pins.
+//
+//*****************************************************************************
+void ConfigureI2C(void)
+{
+    // The I2C3 peripheral must be enabled before use.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C3);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+
+    // Configure the pin muxing for I2C3 functions on port D0 and D1.
+    GPIOPinConfigure(GPIO_PD0_I2C3SCL);
+    GPIOPinConfigure(GPIO_PD1_I2C3SDA);
+
+    // Select the I2C function for these pins.  This function will also
+    // configure the GPIO pins pins for I2C operation, setting them to
+    // open-drain operation with weak pull-ups.  Consult the data sheet
+    // to see which functions are allocated per pin.
+    GPIOPinTypeI2CSCL(GPIO_PORTD_BASE, GPIO_PIN_0);
+    GPIOPinTypeI2C(GPIO_PORTD_BASE, GPIO_PIN_1);
 }
 
 //*****************************************************************************
@@ -289,6 +352,7 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData)
 {
   int len;
   int_fast32_t iIPart[9], iFPart[9];
+  static uint32_t idx = 0;
 
   floatToDecimals( dynamicsData->fAccel[XAXIS], &iIPart[XAXIS], &iFPart[XAXIS]);
   floatToDecimals( dynamicsData->fAccel[YAXIS], &iIPart[YAXIS], &iFPart[YAXIS]);
@@ -302,8 +366,8 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData)
   
   
   sprintf(outString,
-          "AX: %3d.%03d \nAY: %3d.%03d \nAZ: %3d.%03d \nGX: %3d.%03d \nGY: %3d.%03d \
-            \nGZ: %3d.%03d \nMX: %3d.%03d \nMY: %3d.%03d \nMZ: %3d.%03d \n",
+         "%4u,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d\n",
+          idx,
           iIPart[0], iFPart[0],         // Accel X
           iIPart[1], iFPart[1],         // Accel Y
           iIPart[2], iFPart[2],         // Accel Z
@@ -313,6 +377,8 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData)
           iIPart[6], iFPart[6],         // Mag X
           iIPart[7], iFPart[7],         // Mag Y
           iIPart[8], iFPart[8]);        // Mag Z
+  
+  idx++;
   
   len = strnlen(outString, MAX_DATASTR_LEN+1);
   if( len > MAX_DATASTR_LEN )
@@ -332,17 +398,7 @@ int main(void)
     uint_fast32_t ui32Idx, ui32CompDCMStarted;
     dynamicsData_t fDynamicsData;
     float pfData[8];
-    float *pfAccel, *pfGyro, *pfMag, *pfEulers, *pfQuaternion;
     char dataString[MAX_DATASTR_LEN];
-
-    // Initialize convenience pointers that clean up and clarify the code
-    // meaning. We want all the data in a single contiguous array so that
-    // we can make our pretty printing easier later.
-    pfAccel = &fDynamicsData.fAccel[0];
-    pfGyro = &fDynamicsData.fGyro[0];
-    pfMag = &fDynamicsData.fMag[0];
-    pfEulers = pfData;
-    pfQuaternion = pfData + 3;
 
     // Setup the system clock to run at 40 Mhz from PLL with crystal reference
     SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ |
@@ -351,8 +407,14 @@ int main(void)
     // Enable port B used for motion interrupt.
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 
+#if USE_UART
     // Initialize the UART.
     ConfigureUART();
+    
+    // Print the welcome message to the terminal.
+    UARTprintf("\033[1;1HHADES Data Output\n\n");
+    UARTprintf("\033[3;1H      AccelX  AccelY  AccelZ   GyroX   GyroY   GyroZ   Mag X   Mag Y   Mag Z",dataString);
+#endif
     
 #if USE_SDCARD
     if( SDCardInit() != OK )
@@ -361,9 +423,6 @@ int main(void)
     }
 #endif
     
-    // Print the welcome message to the terminal.
-    UARTprintf("\033[2JMPU9150 Raw Example\n");
-
     // Set the color to a purple approximation.
     g_pui32Colors[RED] = 0x8000;
     g_pui32Colors[BLUE] = 0x8000;
@@ -372,23 +431,11 @@ int main(void)
     // Initialize RGB driver.
     RGBInit(0);
     RGBColorSet(g_pui32Colors);
-    RGBIntensitySet(0.5f);
+    RGBIntensitySet(1.0f);
     RGBEnable();
 
-    // The I2C3 peripheral must be enabled before use.
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C3);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-
-    // Configure the pin muxing for I2C3 functions on port D0 and D1.
-    GPIOPinConfigure(GPIO_PD0_I2C3SCL);
-    GPIOPinConfigure(GPIO_PD1_I2C3SDA);
-
-    // Select the I2C function for these pins.  This function will also
-    // configure the GPIO pins pins for I2C operation, setting them to
-    // open-drain operation with weak pull-ups.  Consult the data sheet
-    // to see which functions are allocated per pin.
-    GPIOPinTypeI2CSCL(GPIO_PORTD_BASE, GPIO_PIN_0);
-    GPIOPinTypeI2C(GPIO_PORTD_BASE, GPIO_PIN_1);
+    // Initialize the I2C
+    ConfigureI2C();
 
     // Configure and Enable the GPIO interrupt. Used for INT signal from the
     // MPU9150
@@ -451,14 +498,7 @@ int main(void)
     // Initialize the DCM system. 50 hz sample rate.
     // accel weight = .2, gyro weight = .8, mag weight = .2
     CompDCMInit(&g_sCompDCMInst, 1.0f / 50.0f, 0.2f, 0.6f, 0.2f);
-
-    UARTprintf("\033[2J\033[H");
-    UARTprintf("MPU9150 9-Axis Simple Data Application Example\n\n");
-    UARTprintf("\033[20GX\033[31G|\033[43GY\033[54G|\033[66GZ\n\n");
-    UARTprintf("Accel\033[8G|\033[31G|\033[54G|\n\n");
-    UARTprintf("Gyro\033[8G|\033[31G|\033[54G|\n\n");
-    UARTprintf("Mag\033[8G|\033[31G|\033[54G|\n\n");
-
+    
     // Enable blinking indicates config finished successfully
     RGBBlinkRateSet(1.0f);
 
@@ -476,16 +516,16 @@ int main(void)
         g_vui8I2CDoneFlag = 0;
         
         // Get floating point version of the Accel Data in m/s^2.
-        MPU9150DataAccelGetFloat(&g_sMPU9150Inst, pfAccel, pfAccel + 1,
-                                 pfAccel + 2);
+        MPU9150DataAccelGetFloat(&g_sMPU9150Inst, &fDynamicsData.fAccel[XAXIS], 
+                                 &fDynamicsData.fAccel[YAXIS], &fDynamicsData.fAccel[ZAXIS]);
 
         // Get floating point version of angular velocities in rad/sec
-        MPU9150DataGyroGetFloat(&g_sMPU9150Inst, pfGyro, pfGyro + 1,
-                                pfGyro + 2);
+        MPU9150DataGyroGetFloat(&g_sMPU9150Inst, &fDynamicsData.fGyro[XAXIS],
+                                &fDynamicsData.fGyro[YAXIS], &fDynamicsData.fGyro[ZAXIS]);
 
         // Get floating point version of magnetic fields strength in tesla
-        MPU9150DataMagnetoGetFloat(&g_sMPU9150Inst, pfMag, pfMag + 1,
-                                   pfMag + 2);
+        MPU9150DataMagnetoGetFloat(&g_sMPU9150Inst, &fDynamicsData.fMag[XAXIS],
+                                   &fDynamicsData.fMag[YAXIS], &fDynamicsData.fMag[ZAXIS]);
         
         
         // Check if this is our first data ever.
@@ -494,23 +534,23 @@ int main(void)
             // Set flag indicating that DCM is started.
             // Perform the seeding of the DCM with the first data set.
             ui32CompDCMStarted = 1;
-            CompDCMMagnetoUpdate(&g_sCompDCMInst, pfMag[0], pfMag[1],
-                                 pfMag[2]);
-            CompDCMAccelUpdate(&g_sCompDCMInst, pfAccel[0], pfAccel[1],
-                               pfAccel[2]);
-            CompDCMGyroUpdate(&g_sCompDCMInst, pfGyro[0], pfGyro[1],
-                              pfGyro[2]);
+            CompDCMMagnetoUpdate(&g_sCompDCMInst, fDynamicsData.fMag[XAXIS],
+                                   fDynamicsData.fMag[YAXIS], fDynamicsData.fMag[ZAXIS]);
+            CompDCMAccelUpdate(&g_sCompDCMInst, fDynamicsData.fGyro[XAXIS],
+                                fDynamicsData.fGyro[YAXIS], fDynamicsData.fGyro[ZAXIS]);
+            CompDCMGyroUpdate(&g_sCompDCMInst, fDynamicsData.fGyro[XAXIS],
+                                fDynamicsData.fGyro[YAXIS], fDynamicsData.fGyro[ZAXIS]);
             CompDCMStart(&g_sCompDCMInst);
         }
         else
         {
             // DCM Is already started.  Perform the incremental update.
-            CompDCMMagnetoUpdate(&g_sCompDCMInst, pfMag[0], pfMag[1],
-                                 pfMag[2]);
-            CompDCMAccelUpdate(&g_sCompDCMInst, pfAccel[0], pfAccel[1],
-                               pfAccel[2]);
-            CompDCMGyroUpdate(&g_sCompDCMInst, -pfGyro[0], -pfGyro[1],
-                              -pfGyro[2]);
+            CompDCMMagnetoUpdate(&g_sCompDCMInst, fDynamicsData.fMag[XAXIS],
+                                   fDynamicsData.fMag[YAXIS], fDynamicsData.fMag[ZAXIS]);
+            CompDCMAccelUpdate(&g_sCompDCMInst, fDynamicsData.fGyro[XAXIS],
+                                fDynamicsData.fGyro[YAXIS], fDynamicsData.fGyro[ZAXIS]);
+            CompDCMGyroUpdate(&g_sCompDCMInst, -fDynamicsData.fGyro[XAXIS],
+                                -fDynamicsData.fGyro[YAXIS], -fDynamicsData.fGyro[ZAXIS]);
             CompDCMUpdate(&g_sCompDCMInst);
         }
 
@@ -522,27 +562,10 @@ int main(void)
             // Reset skip counter.
             g_ui32PrintSkipCounter = 0;
 
-            // Get Euler data. (Roll Pitch Yaw)
-            CompDCMComputeEulers(&g_sCompDCMInst, pfEulers, pfEulers + 1,
-                                 pfEulers + 2);
-
-            // Get Quaternions.
-            CompDCMComputeQuaternion(&g_sCompDCMInst, pfQuaternion);
-
             // convert mag data to micro-tesla for better human interpretation.
-            pfMag[0] *= 1e6;
-            pfMag[1] *= 1e6;
-            pfMag[2] *= 1e6;
-
-            // Convert Eulers to degrees. 180/PI = 57.29...
-            // Convert Yaw to 0 to 360 to approximate compass headings.
-            pfEulers[0] *= 57.295779513082320876798154814105f;
-            pfEulers[1] *= 57.295779513082320876798154814105f;
-            pfEulers[2] *= 57.295779513082320876798154814105f;
-            if(pfEulers[2] < 0)
-            {
-                pfEulers[2] += 360.0f;
-            }
+            fDynamicsData.fMag[0] *= 1e6;
+            fDynamicsData.fMag[1] *= 1e6;
+            fDynamicsData.fMag[2] *= 1e6;
 
             // convert the dynamics data to integers
             for(ui32Idx = XAXIS; ui32Idx <= ZAXIS; ui32Idx++)
@@ -563,22 +586,10 @@ int main(void)
             {
               MPU9150AppErrorHandler(__FILE__, __LINE__, "Data String Creation Failure");
             }      
-            // Print the acceleration numbers in the table.
-            UARTprintf("\033[5;17H%3d.%03d", i32IPart[0], i32FPart[0]);
-            UARTprintf("\033[5;40H%3d.%03d", i32IPart[1], i32FPart[1]);
-            UARTprintf("\033[5;63H%3d.%03d", i32IPart[2], i32FPart[2]);
-
-            // Print the angular velocities in the table.
-            UARTprintf("\033[7;17H%3d.%03d", i32IPart[3], i32FPart[3]);
-            UARTprintf("\033[7;40H%3d.%03d", i32IPart[4], i32FPart[4]);
-            UARTprintf("\033[7;63H%3d.%03d", i32IPart[5], i32FPart[5]);
-
-            // Print the magnetic data in the table.
-            UARTprintf("\033[9;17H%3d.%03d", i32IPart[6], i32FPart[6]);
-            UARTprintf("\033[9;40H%3d.%03d", i32IPart[7], i32FPart[7]);
-            UARTprintf("\033[9;63H%3d.%03d", i32IPart[8], i32FPart[8]);
             
-            UARTprintf("\n%s",dataString);
+#if USE_UART
+            UARTprintf("\033[4;1H%s",dataString);
+#endif
             
 #if USE_SDCARD
             if (f_puts(dataString, g_psFlashFile) == EOF) 

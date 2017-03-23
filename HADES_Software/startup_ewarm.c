@@ -50,7 +50,7 @@ static void IntDefaultHandler(void);
 //
 //*****************************************************************************
 extern void IntGPIOb(void);
-extern void MPU9150I2CIntHandler(void);
+extern void HADESI2CIntHandler(void);
 extern void UARTStdioIntHandler(void);
 extern void RGBBlinkIntHandler(void);
 
@@ -108,11 +108,11 @@ __root const uVectorEntry __vector_table[] @ ".intvec" =
     IntDefaultHandler,                      // The PendSV handler
     IntDefaultHandler,                      // The SysTick handler
     IntDefaultHandler,                      // GPIO Port A
-    IntGPIOb,                               // GPIO Port B
+    IntGPIOb,                 // GPIO Port B
     IntDefaultHandler,                      // GPIO Port C
     IntDefaultHandler,                      // GPIO Port D
     IntDefaultHandler,                      // GPIO Port E
-    UARTStdioIntHandler,                    // UART0 Rx and Tx
+    UARTStdioIntHandler,      // UART0 Rx and Tx
     IntDefaultHandler,                      // UART1 Rx and Tx
     IntDefaultHandler,                      // SSI0 Rx and Tx
     IntDefaultHandler,                      // I2C0 Master and Slave
@@ -176,7 +176,7 @@ __root const uVectorEntry __vector_table[] @ ".intvec" =
     0,                                      // Reserved
     0,                                      // Reserved
     IntDefaultHandler,                      // I2C2 Master and Slave
-    MPU9150I2CIntHandler,                   // I2C3 Master and Slave
+    HADESI2CIntHandler,      // I2C3 Master and Slave
     IntDefaultHandler,                      // Timer 4 subtimer A
     IntDefaultHandler,                      // Timer 4 subtimer B
     0,                                      // Reserved
@@ -212,7 +212,7 @@ __root const uVectorEntry __vector_table[] @ ".intvec" =
     IntDefaultHandler,                      // Wide Timer 4 subtimer A
     IntDefaultHandler,                      // Wide Timer 4 subtimer B
     IntDefaultHandler,                      // Wide Timer 5 subtimer A
-    RGBBlinkIntHandler,                     // Wide Timer 5 subtimer B
+    RGBBlinkIntHandler,       // Wide Timer 5 subtimer B
     IntDefaultHandler,                      // FPU
     0,                                      // Reserved
     0,                                      // Reserved

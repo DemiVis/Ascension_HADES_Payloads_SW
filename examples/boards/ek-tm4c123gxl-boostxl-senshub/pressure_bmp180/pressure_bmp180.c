@@ -92,7 +92,7 @@ tBMP180 g_sBMP180Inst;
 // Global new data flag to alert main that BMP180 data is ready.
 //
 //*****************************************************************************
-volatile uint_fast8_t g_vui8DataFlag;
+volatile uint_fast8_t g_vui8BMPDataFlag;
 
 //*****************************************************************************
 //
@@ -117,7 +117,7 @@ void BMP180AppCallback(void* pvCallbackData, uint_fast8_t ui8Status)
 {
     if(ui8Status == I2CM_STATUS_SUCCESS)
     {
-        g_vui8DataFlag = 1;
+        g_vui8BMPDataFlag = 1;
     }
 }
 
@@ -280,7 +280,7 @@ main(void)
     //
     // Wait for initialization callback to indicate reset request is complete.
     //
-    while(g_vui8DataFlag == 0)
+    while(g_vui8BMPDataFlag == 0)
     {
         //
         // Wait for I2C Transactions to complete.
@@ -290,7 +290,7 @@ main(void)
     //
     // Reset the data ready flag
     //
-    g_vui8DataFlag = 0;
+    g_vui8BMPDataFlag = 0;
 
     //
     // Enable the system ticks at 10 Hz.
@@ -319,7 +319,7 @@ main(void)
         // processor to continue doing other tasks as needed.
         //
         BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
-        while(g_vui8DataFlag == 0)
+        while(g_vui8BMPDataFlag == 0)
         {
             //
             // Wait for the new data set to be available.
@@ -329,7 +329,7 @@ main(void)
         //
         // Reset the data ready flag.
         //
-        g_vui8DataFlag = 0;
+        g_vui8BMPDataFlag = 0;
 
         //
         // Get a local copy of the latest temperature data in float format.

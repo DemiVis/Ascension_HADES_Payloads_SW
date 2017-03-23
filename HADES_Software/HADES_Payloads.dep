@@ -88,6 +88,8 @@
       <file>$PROJ_DIR$\..\driverlib\rom_map.h</file>
       <file>$PROJ_DIR$\ewarm\Obj\uartstdio.o</file>
       <file>$TOOLKIT_DIR$\inc\c\time.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\bmp180.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\hw_bmp180.h</file>
       <file>$PROJ_DIR$\..\driverlib\cpu.c</file>
     </outputs>
     <file>
@@ -105,11 +107,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 51 64 11 16 41 69 9 40 61 77 73 78 70 57 44 76 19 38 62 56 29 28 39 30 13 75 72 45 65 43 49 66 63 33 60 58 26</file>
+          <file> 83 41 11 69 9 70 43 49 61 77 73 64 75 40 65 66 76 16 60 19 38 62 56 29 28 39 30 13 78 82 72 45 57 44 51 63 33 58 26</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 19 41 16 65 49 66 43 57 38 61 76 44 62 51 69 56 77 29 11 28 73 39 9 30 78 13 64 75 70 72 40 45 58 33 63 26</file>
+          <file> 19 41 16 65 49 66 43 57 38 61 76 44 62 51 69 56 77 29 11 28 73 39 9 30 64 13 83 78 75 82 70 72 40 45 58 33 63 26</file>
         </tool>
       </inputs>
     </file>
