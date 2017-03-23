@@ -72,6 +72,9 @@
 #define ZAXIS                   2
 
 #define MAX_DATASTR_LEN         1024
+#define DATA_TYPE               float
+
+#define USE_SDCARD              0    // Set to 1 to use the SD card for storage
 
 //*****************************************************************************
 //
@@ -79,7 +82,7 @@
 //
 //*****************************************************************************
 typedef struct{
-  float fAccel[3], fGyro[3], fMag[3];
+  DATA_TYPE fAccel[3], fGyro[3], fMag[3];
 }dynamicsData_t;
 
 //*****************************************************************************
@@ -100,6 +103,9 @@ volatile uint_fast8_t g_vui8ErrorFlag;   // flags to alert main that MPU9150 I2C
                                          // transaction error has occurred.
 volatile uint_fast8_t g_vui8DataFlag;    // flags to alert main that MPU9150
                                          // data is ready to be retrieved.
+
+// From microSD.c
+extern FIL *g_psFlashFile;
 
 //*****************************************************************************
 //
@@ -245,6 +251,11 @@ void ConfigureUART(void)
     UARTStdioConfig(0, 115200, 16000000);
 }
 
+//*****************************************************************************
+//
+// convert a float to a two part integers
+//
+//*****************************************************************************
 void floatToDecimals(float inFloat, int_fast32_t *iPart, int_fast32_t *fPart) 
 {
     // Conver float value to a integer truncating the decimal part.
@@ -269,17 +280,39 @@ void floatToDecimals(float inFloat, int_fast32_t *iPart, int_fast32_t *fPart)
     }
 }
 
+//*****************************************************************************
+//
+// Make data string to write to file
+//
+//*****************************************************************************
 int makeDataString(char *outString, dynamicsData_t *dynamicsData)
 {
   int len;
+  int_fast32_t iIPart[9], iFPart[9];
+
+  floatToDecimals( dynamicsData->fAccel[XAXIS], &iIPart[XAXIS], &iFPart[XAXIS]);
+  floatToDecimals( dynamicsData->fAccel[YAXIS], &iIPart[YAXIS], &iFPart[YAXIS]);
+  floatToDecimals( dynamicsData->fAccel[ZAXIS], &iIPart[ZAXIS], &iFPart[ZAXIS]);
+  floatToDecimals( dynamicsData->fGyro[XAXIS], &iIPart[XAXIS+3], &iFPart[XAXIS+3]);
+  floatToDecimals( dynamicsData->fGyro[YAXIS], &iIPart[YAXIS+3], &iFPart[YAXIS+3]);
+  floatToDecimals( dynamicsData->fGyro[ZAXIS], &iIPart[ZAXIS+3], &iFPart[ZAXIS+3]);
+  floatToDecimals( dynamicsData->fMag[XAXIS], &iIPart[XAXIS+6], &iFPart[XAXIS+6]);
+  floatToDecimals( dynamicsData->fMag[YAXIS], &iIPart[YAXIS+6], &iFPart[YAXIS+6]);
+  floatToDecimals( dynamicsData->fMag[ZAXIS], &iIPart[ZAXIS+6], &iFPart[ZAXIS+6]);
   
-  sprintf(outString, "%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f,%3.4f\n",
-          dynamicsData->fAccel[XAXIS], dynamicsData->fAccel[YAXIS],
-          dynamicsData->fAccel[ZAXIS],
-          dynamicsData->fGyro[XAXIS] , dynamicsData->fGyro[YAXIS],
-          dynamicsData->fGyro[ZAXIS] ,
-          dynamicsData->fMag[XAXIS]  , dynamicsData->fMag[YAXIS],
-          dynamicsData->fMag[ZAXIS] );
+  
+  sprintf(outString,
+          "AX: %3d.%03d \nAY: %3d.%03d \nAZ: %3d.%03d \nGX: %3d.%03d \nGY: %3d.%03d \
+            \nGZ: %3d.%03d \nMX: %3d.%03d \nMY: %3d.%03d \nMZ: %3d.%03d \n",
+          iIPart[0], iFPart[0],         // Accel X
+          iIPart[1], iFPart[1],         // Accel Y
+          iIPart[2], iFPart[2],         // Accel Z
+          iIPart[3], iFPart[3],         // Gyro X
+          iIPart[4], iFPart[4],         // Gyro Y
+          iIPart[5], iFPart[5],         // Gyro Z
+          iIPart[6], iFPart[6],         // Mag X
+          iIPart[7], iFPart[7],         // Mag Y
+          iIPart[8], iFPart[8]);        // Mag Z
   
   len = strnlen(outString, MAX_DATASTR_LEN+1);
   if( len > MAX_DATASTR_LEN )
@@ -305,9 +338,9 @@ int main(void)
     // Initialize convenience pointers that clean up and clarify the code
     // meaning. We want all the data in a single contiguous array so that
     // we can make our pretty printing easier later.
-    pfAccel = fDynamicsData.fAccel;
-    pfGyro = fDynamicsData.fGyro;
-    pfMag = fDynamicsData.fMag;
+    pfAccel = &fDynamicsData.fAccel[0];
+    pfGyro = &fDynamicsData.fGyro[0];
+    pfMag = &fDynamicsData.fMag[0];
     pfEulers = pfData;
     pfQuaternion = pfData + 3;
 
@@ -321,11 +354,13 @@ int main(void)
     // Initialize the UART.
     ConfigureUART();
     
+#if USE_SDCARD
     if( SDCardInit() != OK )
     {
       MPU9150AppErrorHandler(__FILE__, __LINE__, "SD Card Initialization Failure");
     }
-
+#endif
+    
     // Print the welcome message to the terminal.
     UARTprintf("\033[2JMPU9150 Raw Example\n");
 
@@ -543,7 +578,13 @@ int main(void)
             UARTprintf("\033[9;40H%3d.%03d", i32IPart[7], i32FPart[7]);
             UARTprintf("\033[9;63H%3d.%03d", i32IPart[8], i32FPart[8]);
             
-            UARTprintf("\033[11;5H%s",dataString);
+            UARTprintf("\n%s",dataString);
+            
+#if USE_SDCARD
+            if (f_puts(dataString, g_psFlashFile) == EOF) 
+                SDCardInit();
+            f_sync(g_psFlashFile);
+#endif
 
         }
     }

@@ -4,7 +4,7 @@ LMIFTDIfoundProbes=
 LMI_ResetMode=0x00000000
 LMI_LeaveTargetRunning=0x00000000
 [DebugChecksum]
-Checksum=1750842704
+Checksum=-208205142
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -25,8 +25,7 @@ MixedMode=1
 [Disassemble mode]
 mode=0
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\main.c}.529.15" 1 0 0 0 "" 0 ""
-Count=1
+Count=0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -35,5 +34,7 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Aliases]
-Count=0
-SuppressDialog=0
+A0=_ "C:\Jenkins\workspace\TivaWare-Git-Release\DriverLib\build\DriverLib.test\driverlib\i2c.c" "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\i2c.c"
+A1=_ "C:\Jenkins\workspace\TivaWare-Git-Release\DriverLib\build\DriverLib.test\driverlib\interrupt.c" "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\interrupt.c"
+Count=2
+SuppressDialog=1

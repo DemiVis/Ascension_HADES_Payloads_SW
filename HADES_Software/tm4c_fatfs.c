@@ -43,27 +43,30 @@
 
 /* Peripheral definitions for DK-TM4C123G board */
 // SSI port
-#define SDC_SSI_BASE            SSI0_BASE
-#define SDC_SSI_SYSCTL_PERIPH   SYSCTL_PERIPH_SSI0
+#define SDC_SSI_BASE            SSI2_BASE
+#define SDC_SSI_SYSCTL_PERIPH   SYSCTL_PERIPH_SSI2
 
 // GPIO for SSI pins
-#define SDC_GPIO_PORT_BASE      GPIO_PORTA_BASE
-#define SDC_GPIO_SYSCTL_PERIPH  SYSCTL_PERIPH_GPIOA
-#define SDC_SSI_CLK             GPIO_PIN_2
-#define SDC_SSI_TX              GPIO_PIN_5
-#define SDC_SSI_RX              GPIO_PIN_4
+#define SDC_GPIO_PORT_BASE      GPIO_PORTB_BASE
+#define SDC_GPIO_SYSCTL_PERIPH  SYSCTL_PERIPH_GPIOB
+#define SDC_SSI_CLK             GPIO_PIN_4
+#define SDC_SSI_TX              GPIO_PIN_7
+#define SDC_SSI_RX              GPIO_PIN_6
+
+#define FSS_GPIO_PORT_BASE      GPIO_PORTA_BASE
+#define FSS_GPIO_SYSCTL_PERIPH  SYSCTL_PERIPH_GPIOA
 #define SDC_SSI_FSS             GPIO_PIN_3
-#define SDC_SSI_PINS            (SDC_SSI_TX | SDC_SSI_RX | SDC_SSI_CLK |      \
-                                 SDC_SSI_FSS)
+
+#define SDC_SSI_PINS            (SDC_SSI_TX | SDC_SSI_RX | SDC_SSI_CLK )
 
 // Asserts the CS pin to the card
 static inline void SELECT(void) {
-  MAP_GPIOPinWrite(SDC_GPIO_PORT_BASE, SDC_SSI_FSS, 0);
+  MAP_GPIOPinWrite(FSS_GPIO_PORT_BASE, SDC_SSI_FSS, 0);
 }
 
 // De-asserts the CS pin to the card
 static inline void DESELECT(void) {
-  MAP_GPIOPinWrite(SDC_GPIO_PORT_BASE, SDC_SSI_FSS, SDC_SSI_FSS);
+  MAP_GPIOPinWrite(FSS_GPIO_PORT_BASE, SDC_SSI_FSS, SDC_SSI_FSS);
 }
 
 clock_t disk_time(void) {
@@ -182,6 +185,7 @@ void power_on(void) {
   /* Enable the peripherals used to drive the SDC on SSI */
   MAP_SysCtlPeripheralEnable(SDC_SSI_SYSCTL_PERIPH);
   MAP_SysCtlPeripheralEnable(SDC_GPIO_SYSCTL_PERIPH);
+  MAP_SysCtlPeripheralEnable(FSS_GPIO_SYSCTL_PERIPH);
 
   /*
    * Configure the appropriate pins to be SSI instead of GPIO. The FSS (CS)
@@ -189,14 +193,15 @@ void power_on(void) {
    * complete transaction with the SD card.
    */
   MAP_GPIOPinTypeSSI(SDC_GPIO_PORT_BASE, SDC_SSI_TX | SDC_SSI_RX | SDC_SSI_CLK);
-  MAP_GPIOPinTypeGPIOOutput(SDC_GPIO_PORT_BASE, SDC_SSI_FSS);
+  MAP_GPIOPinTypeGPIOOutput(FSS_GPIO_PORT_BASE, SDC_SSI_FSS);
 
   /*
    * Set the SSI output pins to 4MA drive strength and engage the
    * pull-up on the receive line.
    */
   MAP_GPIOPadConfigSet(SDC_GPIO_PORT_BASE, SDC_SSI_RX, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPU);
-  MAP_GPIOPadConfigSet(SDC_GPIO_PORT_BASE, SDC_SSI_CLK | SDC_SSI_TX | SDC_SSI_FSS, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+  MAP_GPIOPadConfigSet(SDC_GPIO_PORT_BASE, SDC_SSI_CLK | SDC_SSI_TX, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+  MAP_GPIOPadConfigSet(FSS_GPIO_PORT_BASE, SDC_SSI_FSS, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
 
   /* Configure the SSI port */
   MAP_SSIConfigSetExpClk(SDC_SSI_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 400000, 8);
