@@ -1170,9 +1170,6 @@
   <group>
     <name>Source</name>
     <file>
-      <name>$PROJ_DIR$\fatfs\option\ccsbcs.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\fatfs\ff.c</name>
     </file>
     <file>

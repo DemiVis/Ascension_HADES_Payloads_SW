@@ -46,7 +46,6 @@
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
-#include "driverlib/timer.h"
 #include "driverlib/uart.h"
 
 #include "utils/uartstdio.h"
@@ -79,16 +78,6 @@
 
 #define MAX_DATASTR_LEN         1024
 #define DATA_TYPE               float
-
-#define ATMOS_TIMER_SYSCTL      SYSCTL_PERIPH_TIMER0
-#define ATMOS_TIMER_BASE        TIMER0_BASE
-#define ATMOS_SUBTIMER          TIMER_A
-#define ATMOS_FREQ              25      // Hz
-
-#define DYNAMICS_TIMER_SYSCTL   SYSCTL_PERIPH_TIMER1
-#define DYNAMICS_TIMER_BASE     TIMER1_BASE
-#define DYNAMICS_SUBTIMER       TIMER_A
-#define DYNAMICS_FREQ           100     // Hz
 
 #define USE_SDCARD              0    // Set to 1 to use the SD card for storage
 #define USE_UART                1    // Set to 1 to use the UART for data output
@@ -219,28 +208,6 @@ void HADESI2CIntHandler(void)
 
 //*****************************************************************************
 //
-// Interrupt handler for the timer interrupt associated with the Atmospheric
-// sensors.
-//
-//*****************************************************************************
-void AtmosTimerIntHandler(void)
-{
-  // TODO: Implement this
-}
-
-//*****************************************************************************
-//
-// Interrupt handler for the timer interrupt associated with the Dynamics
-// sensors.
-//
-//*****************************************************************************
-void DynamicsTimerIntHandler(void)
-{
-  // TODO: Implement this
-}
-
-//*****************************************************************************
-//
 // MPU9150 Application error handler. Show the user if we have encountered an
 // I2C error.
 //
@@ -355,77 +322,6 @@ void ConfigureI2C(void)
 
 //*****************************************************************************
 //
-// Configure the timers for collecting data.
-//
-//*****************************************************************************
-void ConfigureTimers(void)
-{
-  // Turn on the timers used
-  SysCtlPeripheralEnable(ATMOS_TIMER_SYSCTL);
-  SysCtlPeripheralEnable(DYNAMICS_TIMER_SYSCTL);
-  
-  // Configure the timers used
-  TimerConfigure(ATMOS_TIMER_BASE, TIMER_CFG_A_PERIODIC);
-  TimerConfigure(DYNAMICS_TIMER_BASE, TIMER_CFG_A_PERIODIC);
-  
-  // Set the Timer frequencies
-  TimerLoadSet(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, SysCtlClockGet() / ATMOS_FREQ);
-  TimerLoadSet(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER, SysCtlClockGet() / DYNAMICS_FREQ);
-  
-  // Register the timer ISRs
-  TimerIntRegister(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, AtmosTimerIntHandler);
-  TimerIntRegister(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER, DynamicsTimerIntHandler);
-}
-
-//*****************************************************************************
-//
-// Configure the LEDs for external indication.
-//
-//*****************************************************************************
-void ConfigureLEDs(void)
-{
-    // Set the color to a purple approximation.
-    g_pui32Colors[RED] = 0x8000;
-    g_pui32Colors[BLUE] = 0x8000;
-    g_pui32Colors[GREEN] = 0x0000;
-
-    // Initialize RGB driver.
-    RGBInit(0);
-    RGBColorSet(g_pui32Colors);
-    RGBIntensitySet(1.0f);
-    RGBEnable();
-}
-
-//*****************************************************************************
-//
-// Configure the SD Card, create a data file and write header out to the data 
-// file.
-//
-//*****************************************************************************
-void StartSDCard( void)
-{
-    g_psFlashFile = &dataFile;
-
-    // Initialize the SD card interface
-    if( SDCardInit() != OK )
-    {
-      MPU9150AppErrorHandler(__FILE__, __LINE__, "SD Card Initialization Failure");
-    }
-
-    // Write headers to file
-    if (f_puts("HADES Data Output\n\n", g_psFlashFile) == EOF) 
-                SDCardInit();
-    f_sync(g_psFlashFile);
-    if (f_puts(",AccelX,AccelY,AccelZ,GyroX,GyroY,GyroZ,Mag X,Mag Y,Mag Z,Press,Temp,Alt\n", g_psFlashFile) == EOF) 
-                SDCardInit();
-    f_sync(g_psFlashFile);
-    if (f_puts(",m/s^2,m/s^2,m/s^2,rad/s,rad/s,rad/s,uT,uT,uT,inHg,C,m\n", g_psFlashFile) == EOF) 
-                SDCardInit();
-    f_sync(g_psFlashFile);
-}
-
-//*****************************************************************************
-//
 // convert a float to a two part integers
 //
 //*****************************************************************************
@@ -516,17 +412,11 @@ int main(void)
     dynamicsData_t fDynamicsData;
     atmosData_t fAtmosData;
     char dataString[MAX_DATASTR_LEN];
-#if USE_SDCARD
-    FIL dataFile;
-#endif
-    
+
     // Setup the system clock to run at 40 Mhz from PLL with crystal reference
     SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ |
                        SYSCTL_OSC_MAIN);
 
-    // Disable all interrupts for configuration
-    IntMasterDisable();
-    
     ////////// General Peripheral Initialization //////////
     // Enable port B used for motion interrupt.
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
@@ -537,25 +427,30 @@ int main(void)
     
     // Print the welcome message to the terminal.
     UARTprintf("\033[1;1HHADES Data Output\n\n");
-    UARTprintf("\033[3;1H    , AccelX, AccelY, AccelZ, GyroX , GyroY , GyroZ , Mag X , Mag Y , Mag Z , Press ,  Temp ,   Alt  \n");
-    UARTprintf("\033[4;1H    , m/s^2 , m/s^2 , m/s^2 , rad/s , rad/s , rad/s ,   uT  ,   uT  ,   uT  ,  inHg ,   C   ,    m   \n");
-    
-    // Flush UART to finish printing all of this
-    UARTFlushTx(false);
+    UARTprintf("\033[2;1H    , AccelX, AccelY, AccelZ, GyroX , GyroY , GyroZ , Mag X , Mag Y , Mag Z , Press ,  Temp ,   Alt  \n");
+    UARTprintf("\033[3;1H    , m/s^2 , m/s^2 , m/s^2 , rad/s , rad/s , rad/s ,   uT  ,   uT  ,   uT  ,  Press,   C   ,    m   \n");
 #endif
     
 #if USE_SDCARD
-    StartSDCard();
+    if( SDCardInit() != OK )
+    {
+      MPU9150AppErrorHandler(__FILE__, __LINE__, "SD Card Initialization Failure");
+    }
 #endif
     
-    // Initialize the LEDs for indications
-    ConfigureLEDs();
-    
+    // Set the color to a purple approximation.
+    g_pui32Colors[RED] = 0x8000;
+    g_pui32Colors[BLUE] = 0x8000;
+    g_pui32Colors[GREEN] = 0x0000;
+
+    // Initialize RGB driver.
+    RGBInit(0);
+    RGBColorSet(g_pui32Colors);
+    RGBIntensitySet(1.0f);
+    RGBEnable();
+
     // Initialize the I2C
     ConfigureI2C();
-    
-    // Initialize the Timers
-    ConfigureTimers();
 
     // Configure and Enable the GPIO interrupt. Used for INT signal from the
     // MPU9150

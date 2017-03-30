@@ -245,7 +245,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>00000000</state>
+          <state>10010100</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -334,7 +334,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -343,7 +343,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -982,9 +982,6 @@
   </group>
   <group>
     <name>Source</name>
-    <file>
-      <name>$PROJ_DIR$\fatfs\option\ccsbcs.c</name>
-    </file>
     <file>
       <name>$PROJ_DIR$\fatfs\ff.c</name>
     </file>
