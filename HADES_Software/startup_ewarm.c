@@ -54,6 +54,7 @@ extern void HADESI2CIntHandler(void);
 extern void UARTStdioIntHandler(void);
 extern void RGBBlinkIntHandler(void);
 extern void SysTickIntHandler(void);
+extern void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg);
 
 //*****************************************************************************
 //
@@ -67,7 +68,7 @@ extern void __iar_program_start(void);
 // Reserve space for the system stack.
 //
 //*****************************************************************************
-static uint32_t pui32Stack[512] @ ".noinit";
+static uint32_t pui32Stack[4096] @ ".noinit";
 
 //*****************************************************************************
 //
@@ -310,9 +311,9 @@ NmiSR(void)
 static void
 FaultISR(void)
 {
-    //
+    MPU9150AppErrorHandler("UNKNOWN", 0, "Fault ISR");
+      
     // Enter an infinite loop.
-    //
     while(1)
     {
     }
@@ -328,9 +329,10 @@ FaultISR(void)
 static void
 IntDefaultHandler(void)
 {
-    //
+    
+    MPU9150AppErrorHandler("UNKNOWN", 0, "IntDefaultHandler");
+    
     // Go into an infinite loop.
-    //
     while(1)
     {
     }
