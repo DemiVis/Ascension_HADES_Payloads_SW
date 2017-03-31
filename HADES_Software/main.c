@@ -83,6 +83,9 @@
 #define MAX_DATASTR_LEN         1024
 #define DATA_TYPE               float
 
+#define SENSHUB_LED_PORT        GPIO_PORTD_BASE
+#define SENSHUB_LED_PIN         GPIO_PIN_2
+
 #define ATMOS_TIMER_SYSCTL      SYSCTL_PERIPH_TIMER2
 #define ATMOS_TIMER_BASE        TIMER2_BASE
 #define ATMOS_SUBTIMER          TIMER_A
@@ -134,6 +137,9 @@ tCompDCM g_sCompDCMInst;        // to manage the DCM state.
 
 uint32_t g_ui32PrintSkipCounter;// to control the rate of data to the terminal.
 
+atmosData_t fAtmosData;         // Temp atmos data storage
+dynamicsData_t fDynamicsData;   // Temp dynamics data storage
+
 #if USE_SDCARD
 FIL dataFile;                   // File where the data is stored on the SD card
 #endif
@@ -147,6 +153,9 @@ volatile uint_fast8_t g_vui8BMPDataFlag; // flags to alert main that BMP180
                                          // data is ready.
 volatile uint_fast8_t g_vui8MPUDataFlag; // flags to alert main that MPU9150
                                          // data is ready to be retrieved.
+volatile bool newAtmosDataReady;         // flag to indicate atmos data ready to be written
+volatile bool newDynamicsDataReady;      // flag to indicate dyanmics data ready to be written
+
 // External Variables
 #if USE_SDCARD
 extern FIL *g_psFlashFile;               // From microSD.c
@@ -266,7 +275,28 @@ void AtmosTimerIntHandler(void)
   // Clear the interrupt flag
   TimerIntClear(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
   
-  // TODO: Implement this
+  // Make sure data is available, this should never hang
+  while(g_vui8BMPDataFlag == 0)
+  { /* Wait for the new data set to be available*/ }
+  
+  // Reset the data ready flag.
+  g_vui8BMPDataFlag = 0;
+
+  // Get a local copy of the latest temperature data in float format.
+  BMP180DataTemperatureGetFloat(&g_sBMP180Inst, &fAtmosData.fTemperature);
+  
+  // Get a local copy of the latest air pressure data in float format.
+  BMP180DataPressureGetFloat(&g_sBMP180Inst, &fAtmosData.fPressure);
+  
+  // Calculate the altitude.
+  fAtmosData.fAltitude = 44330.0f * (1.0f - powf(fAtmosData.fPressure / 101325.0f,
+                                      1.0f / 5.255f));
+  
+  // Indicate new data is ready for writing
+  newAtmosDataReady = true;
+  
+  // Re-start the data acquisition process
+  BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
 }
 
 //*****************************************************************************
@@ -277,10 +307,63 @@ void AtmosTimerIntHandler(void)
 //*****************************************************************************
 void DynamicsTimerIntHandler(void)
 {
+  static uint_fast32_t ui32CompDCMStarted = 0;
+  
   // Clear the interrupt flag
   TimerIntClear(DYNAMICS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
   
-  // TODO: Implement this
+  // Clear the flag
+  g_vui8I2CDoneFlag = 0;
+  
+  // Get floating point version of the Accel Data in m/s^2.
+  MPU9150DataAccelGetFloat(&g_sMPU9150Inst, &fDynamicsData.fAccel[XAXIS], 
+                           &fDynamicsData.fAccel[YAXIS], &fDynamicsData.fAccel[ZAXIS]);
+
+  // Get floating point version of angular velocities in rad/sec
+  MPU9150DataGyroGetFloat(&g_sMPU9150Inst, &fDynamicsData.fGyro[XAXIS],
+                          &fDynamicsData.fGyro[YAXIS], &fDynamicsData.fGyro[ZAXIS]);
+
+  // Get floating point version of magnetic fields strength in tesla
+  MPU9150DataMagnetoGetFloat(&g_sMPU9150Inst, &fDynamicsData.fMag[XAXIS],
+                             &fDynamicsData.fMag[YAXIS], &fDynamicsData.fMag[ZAXIS]);
+  
+  
+  // Check if this is our first data ever.
+  if(ui32CompDCMStarted == 0)
+  {
+      // Set flag indicating that DCM is started.
+      // Perform the seeding of the DCM with the first data set.
+      ui32CompDCMStarted = 1;
+      CompDCMMagnetoUpdate(&g_sCompDCMInst, fDynamicsData.fMag[XAXIS],
+                             fDynamicsData.fMag[YAXIS], fDynamicsData.fMag[ZAXIS]);
+      CompDCMAccelUpdate(&g_sCompDCMInst, fDynamicsData.fGyro[XAXIS],
+                          fDynamicsData.fGyro[YAXIS], fDynamicsData.fGyro[ZAXIS]);
+      CompDCMGyroUpdate(&g_sCompDCMInst, fDynamicsData.fGyro[XAXIS],
+                          fDynamicsData.fGyro[YAXIS], fDynamicsData.fGyro[ZAXIS]);
+      CompDCMStart(&g_sCompDCMInst);
+      
+      // Start the BMP data acquisition process   
+      BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
+  }
+  else
+  {
+      // DCM Is already started.  Perform the incremental update.
+      CompDCMMagnetoUpdate(&g_sCompDCMInst, fDynamicsData.fMag[XAXIS],
+                             fDynamicsData.fMag[YAXIS], fDynamicsData.fMag[ZAXIS]);
+      CompDCMAccelUpdate(&g_sCompDCMInst, fDynamicsData.fGyro[XAXIS],
+                          fDynamicsData.fGyro[YAXIS], fDynamicsData.fGyro[ZAXIS]);
+      CompDCMGyroUpdate(&g_sCompDCMInst, -fDynamicsData.fGyro[XAXIS],
+                          -fDynamicsData.fGyro[YAXIS], -fDynamicsData.fGyro[ZAXIS]);
+      CompDCMUpdate(&g_sCompDCMInst);
+  }
+  
+  // convert mag data to micro-tesla for better human interpretation.
+  fDynamicsData.fMag[0] *= 1e6;
+  fDynamicsData.fMag[1] *= 1e6;
+  fDynamicsData.fMag[2] *= 1e6;
+  
+  // Indicate data is ready to write
+  newDynamicsDataReady = true;
 }
 
 //*****************************************************************************
@@ -482,6 +565,7 @@ void ConfigureGPIObInts(void)
 //*****************************************************************************
 void ConfigureLEDs(void)
 {
+    //////////LaunchPad 3-clr LED //////////
     // Set the color to a purple approximation.
     g_pui32Colors[RED] = 0x8000;
     g_pui32Colors[BLUE] = 0x8000;
@@ -495,6 +579,15 @@ void ConfigureLEDs(void)
     
     // Enable blinking indicates config started
     RGBBlinkRateSet(20.0f);
+    
+    ////////// SENSHUB USER LED //////////
+    // Power on to GPIOD for the USER LED
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOD));
+    
+    // Configure Specific Pin
+    GPIOPinTypeGPIOOutput(SENSHUB_LED_PORT, SENSHUB_LED_PIN);
+    GPIOPinWrite(SENSHUB_LED_PORT, SENSHUB_LED_PIN, 0x00);
 }
 
 //*****************************************************************************
@@ -628,10 +721,12 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
     floatToDecimals( dynamicsData->fMag[YAXIS], &iIPart[YAXIS+6], &iFPart[YAXIS+6]);
     floatToDecimals( dynamicsData->fMag[ZAXIS], &iIPart[ZAXIS+6], &iFPart[ZAXIS+6]);
     
-    // Atmospheric Data
-    floatToDecimals( atmosData->fPressure,    &iIPart[9], &iFPart[9] );
-    floatToDecimals( atmosData->fTemperature, &iIPart[10], &iFPart[10] );
-    floatToDecimals( atmosData->fAltitude,    &iIPart[11], &iFPart[11] );
+    if(atmosData != NULL)
+    {
+      // Atmospheric Data
+      floatToDecimals( atmosData->fPressure,    &iIPart[9], &iFPart[9] );
+      floatToDecimals( atmosData->fTemperature, &iIPart[10], &iFPart[10] );
+      floatToDecimals( atmosData->fAltitude,    &iIPart[11], &iFPart[11] );
     
     sprintf(outString,
            "%4u,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d\n\r",
@@ -648,6 +743,22 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
             iIPart[7], iFPart[9],         // Pressure
             iIPart[10], iFPart[10],       // Temperature
             iIPart[11], iFPart[11]);      // Altitude
+    }
+    else
+    {
+      sprintf(outString,
+           "%4u,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,        ,        ,        \n\r",
+            idx,
+            iIPart[0], iFPart[0],         // Accel X
+            iIPart[1], iFPart[1],         // Accel Y
+            iIPart[2], iFPart[2],         // Accel Z
+            iIPart[3], iFPart[3],         // Gyro X
+            iIPart[4], iFPart[4],         // Gyro Y
+            iIPart[5], iFPart[5],         // Gyro Z
+            iIPart[6], iFPart[6],         // Mag X
+            iIPart[7], iFPart[7],         // Mag Y
+            iIPart[8], iFPart[8]);        // Mag Z
+    }
     
     idx++;
     
@@ -704,9 +815,6 @@ void waitConfirmGO(void)
 //*****************************************************************************
 int main(void)
 {
-    uint_fast32_t ui32CompDCMStarted;
-    dynamicsData_t fDynamicsData;
-    atmosData_t fAtmosData;
     char dataString[MAX_DATASTR_LEN];
     bool stop = false;
     
@@ -759,6 +867,9 @@ int main(void)
     IntMasterEnable();  
 
     //////// MPU9150 Initialization ///////
+    // Set data ready flag to false
+    newDynamicsDataReady = false;
+    
     // Initialize I2C3 peripheral.
     I2CMInit(&g_sI2CInst, I2C3_BASE, INT_I2C3, 0xff, 0xff,
              SysCtlClockGet());
@@ -799,6 +910,9 @@ int main(void)
     CompDCMInit(&g_sCompDCMInst, 1.0f / 50.0f, 0.2f, 0.6f, 0.2f);
        
     ////////// BMP Initialization //////////
+    // set data ready flag to false
+    newAtmosDataReady = false;
+    
     // Initialize the BMP180.
     BMP180Init(&g_sBMP180Inst, &g_sI2CInst, BMP180_I2C_ADDRESS,
                BMP180AppCallback, &g_sBMP180Inst);
@@ -807,8 +921,7 @@ int main(void)
     while(g_vui8BMPDataFlag == 0)
     {    }
 
-    // Reset the flags
-    ui32CompDCMStarted = 0;
+    // Reset the flag
     g_vui8BMPDataFlag = 0;
     
     // Enable the system ticks at 10 Hz.
@@ -818,6 +931,8 @@ int main(void)
     
     // Stop Blinking to indicate that configuration is complete
     RGBBlinkRateSet(0.0f);  
+    // Turn on USERLED to indicate that configuration is complete
+    GPIOPinWrite(SENSHUB_LED_PORT, SENSHUB_LED_PIN, 0xFF);
     
 #if USE_UART
     char tempStr[128];
@@ -841,13 +956,16 @@ int main(void)
     g_pui32Colors[RED] = 0x0000;
     g_pui32Colors[BLUE] = 0x0000;
     g_pui32Colors[GREEN] = 0x8000;
-
-    // Initialize RGB driver.
     RGBColorSet(g_pui32Colors);
     RGBBlinkRateSet(5.0f);
+    // Turn off USER LED for data acquisition
+    GPIOPinWrite(SENSHUB_LED_PORT, SENSHUB_LED_PIN, 0x00);
     
     // Delay for half a second for the human plebians
     SysCtlDelay(SysCtlClockGet() / 3 / 2);
+    
+    // Start data collection of both sensors
+    BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
     
     // Turn on Sensor timers to begin data collection
     EnableSensorTimers();
@@ -855,90 +973,36 @@ int main(void)
     while(!stop)
     {  
         ////////// Get Dynamics Data //////////
-        // Clear the flag
-        g_vui8I2CDoneFlag = 0;
-        
-        // Get floating point version of the Accel Data in m/s^2.
-        MPU9150DataAccelGetFloat(&g_sMPU9150Inst, &fDynamicsData.fAccel[XAXIS], 
-                                 &fDynamicsData.fAccel[YAXIS], &fDynamicsData.fAccel[ZAXIS]);
-
-        // Get floating point version of angular velocities in rad/sec
-        MPU9150DataGyroGetFloat(&g_sMPU9150Inst, &fDynamicsData.fGyro[XAXIS],
-                                &fDynamicsData.fGyro[YAXIS], &fDynamicsData.fGyro[ZAXIS]);
-
-        // Get floating point version of magnetic fields strength in tesla
-        MPU9150DataMagnetoGetFloat(&g_sMPU9150Inst, &fDynamicsData.fMag[XAXIS],
-                                   &fDynamicsData.fMag[YAXIS], &fDynamicsData.fMag[ZAXIS]);
-        
-        
-        // Check if this is our first data ever.
-        if(ui32CompDCMStarted == 0)
-        {
-            // Set flag indicating that DCM is started.
-            // Perform the seeding of the DCM with the first data set.
-            ui32CompDCMStarted = 1;
-            CompDCMMagnetoUpdate(&g_sCompDCMInst, fDynamicsData.fMag[XAXIS],
-                                   fDynamicsData.fMag[YAXIS], fDynamicsData.fMag[ZAXIS]);
-            CompDCMAccelUpdate(&g_sCompDCMInst, fDynamicsData.fGyro[XAXIS],
-                                fDynamicsData.fGyro[YAXIS], fDynamicsData.fGyro[ZAXIS]);
-            CompDCMGyroUpdate(&g_sCompDCMInst, fDynamicsData.fGyro[XAXIS],
-                                fDynamicsData.fGyro[YAXIS], fDynamicsData.fGyro[ZAXIS]);
-            CompDCMStart(&g_sCompDCMInst);
-            
-            // Start the BMP data acquisition process   
-            BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
-        }
-        else
-        {
-            // DCM Is already started.  Perform the incremental update.
-            CompDCMMagnetoUpdate(&g_sCompDCMInst, fDynamicsData.fMag[XAXIS],
-                                   fDynamicsData.fMag[YAXIS], fDynamicsData.fMag[ZAXIS]);
-            CompDCMAccelUpdate(&g_sCompDCMInst, fDynamicsData.fGyro[XAXIS],
-                                fDynamicsData.fGyro[YAXIS], fDynamicsData.fGyro[ZAXIS]);
-            CompDCMGyroUpdate(&g_sCompDCMInst, -fDynamicsData.fGyro[XAXIS],
-                                -fDynamicsData.fGyro[YAXIS], -fDynamicsData.fGyro[ZAXIS]);
-            CompDCMUpdate(&g_sCompDCMInst);
-        }
+        // moved to Dynamics timer ISR
         
         ////////// Get BMP Data //////////
-        while(g_vui8BMPDataFlag == 0)
-        { /* Wait for the new data set to be available*/ }
+        // moved to ATMOS timer ISR
         
-        // Reset the data ready flag.
-        g_vui8BMPDataFlag = 0;
-
-        // Get a local copy of the latest temperature data in float format.
-        BMP180DataTemperatureGetFloat(&g_sBMP180Inst, &fAtmosData.fTemperature);
-        
-        // Get a local copy of the latest air pressure data in float format.
-        BMP180DataPressureGetFloat(&g_sBMP180Inst, &fAtmosData.fPressure);
-        
-        // Calculate the altitude.
-        fAtmosData.fAltitude = 44330.0f * (1.0f - powf(fAtmosData.fPressure / 101325.0f,
-                                            1.0f / 5.255f));
-        
-        // Re-start the data acquisition process
-        BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
-        
-        ////////// Printouts/data collection //////////
-        // Increment the skip counter.  Skip counter is used so we do not
-        // overflow the UART with data.
-        g_ui32PrintSkipCounter++;
-        if(g_ui32PrintSkipCounter >= PRINT_SKIP_COUNT)
+        ////////// Printouts/data collection //////////           
+        if(newDynamicsDataReady)
         {
-            // Reset skip counter.
-            g_ui32PrintSkipCounter = 0;
-
-            // convert mag data to micro-tesla for better human interpretation.
-            fDynamicsData.fMag[0] *= 1e6;
-            fDynamicsData.fMag[1] *= 1e6;
-            fDynamicsData.fMag[2] *= 1e6;
+          if(newAtmosDataReady) // print both data types
+          {
+            newDynamicsDataReady = false;
+            newAtmosDataReady = false;
             
+            // make full data string
             if( makeDataString(dataString, &fDynamicsData, &fAtmosData) != OK )
             {
               MPU9150AppErrorHandler(__FILE__, __LINE__, "Data String Creation Failure");
-            }      
+            }
+          }
+          else  // just print dynamics data
+          {
+            newDynamicsDataReady = false;
             
+            // make partial data string
+            if( makeDataString(dataString, &fDynamicsData, NULL) != OK )
+            {
+              MPU9150AppErrorHandler(__FILE__, __LINE__, "Data String Creation Failure");
+            }
+          }
+          
 #if USE_UART
             UARTSend(dataString);
 #endif
@@ -948,10 +1012,9 @@ int main(void)
                 SDCardInit();
             f_sync(g_psFlashFile);
 #endif
-
         }
         
-        /// Watching for stops
+        ////////// Watch for stop button press //////////
         // Check if any button is pushed
         if((~GPIOPinRead(BUTTONS_GPIO_BASE, ALL_BUTTONS)) & ALL_BUTTONS)
         {
@@ -975,9 +1038,10 @@ int main(void)
     g_pui32Colors[RED] = 0x0000;
     g_pui32Colors[BLUE] = 0x8000;
     g_pui32Colors[GREEN] = 0x0000;
-
-    // Initialize RGB driver.
     RGBColorSet(g_pui32Colors);
     RGBBlinkRateSet(0.0f);
+    
+    // Turn on USER LED for indication data acquisition is done
+    GPIOPinWrite(SENSHUB_LED_PORT, SENSHUB_LED_PIN, 0xFF);
     
 }
