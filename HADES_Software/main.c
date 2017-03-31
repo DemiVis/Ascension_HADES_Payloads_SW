@@ -316,7 +316,7 @@ void IntGPIOb(void)
 #if USE_UART
 //*****************************************************************************
 //
-// Configure the UART and its pins.  This must be called before UARTprintf().
+// Configure the UART and its pins.  This must be called before UARTSend().
 //
 //*****************************************************************************
 void ConfigureUART(void)
@@ -332,11 +332,10 @@ void ConfigureUART(void)
     GPIOPinConfigure(GPIO_PA1_U0TX);
     GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
-    // Use the internal 16MHz oscillator as the UART clock source.
-    UARTClockSourceSet(UART0_BASE, UART_CLOCK_PIOSC);
-
     // Initialize the UART for console I/O.
-    UARTStdioConfig(0, 115200, 16000000);
+    UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,
+                        (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
+                         UART_CONFIG_PAR_NONE));
 }
 #endif
 
@@ -519,6 +518,7 @@ void floatToDecimals(float inFloat, int_fast32_t *iPart, int_fast32_t *fPart)
     }
 }
 
+
 //*****************************************************************************
 //
 // Make data string to write to file
@@ -571,6 +571,29 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
       return OK;
 }
 
+#if USE_UART
+//*****************************************************************************
+//
+// Send a string through UART
+//
+//*****************************************************************************
+void UARTSend(const char *pucBuffer)
+{
+    unsigned long ulCount = strnlen(pucBuffer, 256);
+    
+    //
+    // Loop while there are more characters to send.
+    //
+    while(ulCount--)
+    {
+        //
+        // Write the next character to the UART.
+        //
+        UARTCharPut(UART0_BASE, *pucBuffer++);
+    }
+}
+#endif
+
 //*****************************************************************************
 //
 // Main application entry point.
@@ -601,16 +624,9 @@ int main(void)
     ConfigureUART();
     
     // Print the welcome message to the terminal.
-    UARTprintf("\033[1;1HHADES Data Output\n\n");
-    //UARTFlushTx(false);
-    UARTprintf("\033[3;1H    , AccelX, AccelY, AccelZ, GyroX , GyroY , GyroZ , Mag X , Mag Y , Mag Z , Press ,  Temp ,   Alt  \n");
-    //UARTFlushTx(false);
-    UARTprintf("\033[4;1H    , m/s^2 , m/s^2 , m/s^2 , rad/s , rad/s , rad/s ,   uT  ,   uT  ,   uT  ,  inHg ,   C   ,    m   \n");
-    //UARTFlushTx(false);
-    
-    // Flush UART to finish printing all of this
-    SysCtlDelay(SysCtlClockGet()/3);
-    UARTFlushTx(false);
+    UARTSend("HADES Data Output\n\n\r");
+    UARTSend("    , AccelX, AccelY, AccelZ, GyroX , GyroY , GyroZ , Mag X , Mag Y , Mag Z , Press ,  Temp ,   Alt  \n\r");
+    UARTSend("    , m/s^2 , m/s^2 , m/s^2 , rad/s , rad/s , rad/s ,   uT  ,   uT  ,   uT  ,  inHg ,   C   ,    m   \n\r");
 #endif
     
 #if USE_SDCARD
@@ -783,7 +799,7 @@ int main(void)
             }      
             
 #if USE_UART
-            UARTprintf("%s",dataString);
+            UARTSend(dataString);
 #endif
             
 #if USE_SDCARD
