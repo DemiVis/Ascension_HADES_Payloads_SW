@@ -61,8 +61,8 @@ uint_fast8_t SDCardInit( void )
   uint_fast8_t vui8Index = 0;
   
   // Mount the File System
-  while (f_mount(1, g_psFlashMount) != FR_OK)
-    ;
+  while (f_mount(g_psFlashMount, "", 1) != FR_OK)
+  {     };
   
   // Create the filename
   sprintf(pcFilename, "%s.%s", SDCARD_FILENAME, SDCARD_EXT);
@@ -86,7 +86,7 @@ uint_fast8_t SDCardInit( void )
     // Out of flash memory
     //
     f_close(g_psFlashFile);
-    f_mount(1, NULL);
+    f_mount(NULL, "", 0);
     return (ERROR);
   } else 
   {

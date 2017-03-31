@@ -21,6 +21,7 @@
 #include "driverlib/sysctl.h"
 
 #include "fatfs/diskio.h"
+#include "fatfs/integer.h"
 
 #include "userlib/spim_drv.h"
 
@@ -458,7 +459,7 @@ DSTATUS disk_status(BYTE drv /* Physical drive number (0) */
 DRESULT disk_read(BYTE drv, /* Physical drive number (0) */
                   BYTE *buff, /* Pointer to the data buffer to store read data */
                   DWORD sector, /* Start sector number (LBA) */
-                  BYTE count /* Sector count (1..255) */
+                  UINT count /* Sector count (1..255) */
                   ) {
   if (drv || !count) return RES_PARERR;
   if (Stat & STA_NOINIT) return RES_NOTRDY;
@@ -494,7 +495,7 @@ DRESULT disk_read(BYTE drv, /* Physical drive number (0) */
 DRESULT disk_write(BYTE drv, /* Physical drive number (0) */
                    const BYTE *buff, /* Pointer to the data to be written */
                    DWORD sector, /* Start sector number (LBA) */
-                   BYTE count /* Sector count (1..255) */
+                   UINT count /* Sector count (1..255) */
                    ) {
   if (drv || !count) return RES_PARERR;
   if (Stat & STA_NOINIT) return RES_NOTRDY;
