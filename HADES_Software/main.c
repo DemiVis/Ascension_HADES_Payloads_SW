@@ -38,6 +38,8 @@
 
 #include "inc/hw_memmap.h"
 #include "inc/hw_ints.h"
+#include "inc/hw_gpio.h"
+#include "inc/hw_types.h"
 
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
@@ -60,6 +62,7 @@
 #include "sensorlib/mpu9150.h"
 #include "sensorlib/comp_dcm.h"
 
+#include "drivers/buttons.h"
 #include "drivers/rgb.h"
 
 #include "microSD.h"
@@ -92,6 +95,16 @@
 
 #define USE_SDCARD              0    // Set to 1 to use the SD card for storage
 #define USE_UART                1    // Set to 1 to use the UART for data output
+
+#define GO_DELAY                1.0f // Delay (in sec) for GO button push  
+
+#if USE_UART
+#define GO_UART_CHAR            'G'
+#define PROJ_UART_BASE          UART0_BASE              // Which UART to use
+#define PROJ_UART_PERIPH        SYSCTL_PERIPH_UART0     // Note if this changes
+#define PROJ_UART_GPIO_BASE     GPIO_PORTA_BASE         // ConfigureUART() must
+#define PROJ_UART_GPIO_PERIPH   SYSCTL_PERIPH_GPIOA     // must still be updated
+#endif
 
 //*****************************************************************************
 //
@@ -155,6 +168,29 @@ void EnableSensorTimers(void)
   TimerEnable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
   TimerEnable(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER);
 }
+
+#if USE_UART
+//*****************************************************************************
+//
+// Send a string through UART
+//
+//*****************************************************************************
+void UARTSend(const char *pucBuffer)
+{
+    unsigned long ulCount = strnlen(pucBuffer, 256);
+    
+    //
+    // Loop while there are more characters to send.
+    //
+    while(ulCount--)
+    {
+        //
+        // Write the next character to the UART.
+        //
+        UARTCharPut(PROJ_UART_BASE, *pucBuffer++);
+    }
+}
+#endif
 
 //*****************************************************************************
 //
@@ -254,20 +290,23 @@ void DynamicsTimerIntHandler(void)
 //*****************************************************************************
 void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg)
 {
+  char tempErrStr[128];
     // Set terminal color to red and print error status and locations
-    UARTprintf("\033[31;1m");
-    UARTprintf("Error: %d, File: %s, Line: %d\n"
-               "See I2C status definitions in sensorlib\\i2cm_drv.h\n",
+    UARTSend("\033[31;1m");
+    sprintf(tempErrStr, "Error: %d, File: %s, Line: %d\n\r"
+               "See I2C status definitions in sensorlib\\i2cm_drv.h\n\r",
                g_vui8ErrorFlag, pcFilename, ui32Line);
-    UARTprintf("Msg: %s\n", msg);
+    UARTSend(tempErrStr);
+    sprintf(tempErrStr, "Msg: %s\n\r", msg);
+    UARTSend(tempErrStr);
 
     // Return terminal color to normal
-    UARTprintf("\033[0m");
+    UARTSend("\033[0m");
 
     // Set RGB Color to RED
-    g_pui32Colors[0] = 0xFFFF;
-    g_pui32Colors[1] = 0;
-    g_pui32Colors[2] = 0;
+    g_pui32Colors[RED] = 0x8000;
+    g_pui32Colors[GREEN] = 0x0000;
+    g_pui32Colors[BLUE] = 0x0000;
     RGBColorSet(g_pui32Colors);
 
     // Increase blink rate to get attention
@@ -341,18 +380,18 @@ void IntGPIOb(void)
 void ConfigureUART(void)
 {
     // Enable the GPIO Peripheral used by the UART.
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    SysCtlPeripheralEnable(PROJ_UART_GPIO_PERIPH);
 
-    // Enable UART0
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+    // Enable UART
+    SysCtlPeripheralEnable(PROJ_UART_PERIPH);
 
     // Configure GPIO Pins for UART mode.
     GPIOPinConfigure(GPIO_PA0_U0RX);
     GPIOPinConfigure(GPIO_PA1_U0TX);
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    GPIOPinTypeUART(PROJ_UART_GPIO_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
     // Initialize the UART for console I/O.
-    UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,
+    UARTConfigSetExpClk(PROJ_UART_BASE, SysCtlClockGet(), 115200,
                         (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                          UART_CONFIG_PAR_NONE));
 }
@@ -482,6 +521,30 @@ void ConfigureSleep( void )
     SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_I2C3);
 }
 
+//*****************************************************************************
+//
+// Configure pushbuttons on senshub booster pack. Purposefully polled.
+//
+//*****************************************************************************
+void ConfigureButtons( void )
+{
+    // Enable the GPIO port to which the pushbuttons are connected.
+    SysCtlPeripheralEnable(BUTTONS_GPIO_PERIPH);
+
+    // Unlock PF0 so we can change it to a GPIO input
+    // Once we have enabled (unlocked) the commit register then re-lock it
+    // to prevent further changes.  PF0 is muxed with NMI thus a special case.
+    HWREG(BUTTONS_GPIO_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+    HWREG(BUTTONS_GPIO_BASE + GPIO_O_CR) |= 0x01;
+    HWREG(BUTTONS_GPIO_BASE + GPIO_O_LOCK) = 0;
+
+    // Set each of the button GPIO pins as an input with a pull-up.
+    GPIODirModeSet(BUTTONS_GPIO_BASE, ALL_BUTTONS, GPIO_DIR_MODE_IN);
+    GPIOPadConfigSet(BUTTONS_GPIO_BASE, ALL_BUTTONS,
+                         GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+    
+}
+
 #if USE_SDCARD
 //*****************************************************************************
 //
@@ -594,28 +657,44 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
       return OK;
 }
 
-#if USE_UART
 //*****************************************************************************
 //
-// Send a string through UART
+// Wait for a GO confirmation from the user
+// Depending on configuration GO confirmation can be given through the SENSHUB
+// pushbuttons or UART.
 //
 //*****************************************************************************
-void UARTSend(const char *pucBuffer)
+void waitConfirmGO(void)
 {
-    unsigned long ulCount = strnlen(pucBuffer, 256);
-    
-    //
-    // Loop while there are more characters to send.
-    //
-    while(ulCount--)
+  bool go = false;
+  
+  while(!go)
+  {
+    // Check if any button is pushed
+    if((~GPIOPinRead(BUTTONS_GPIO_BASE, ALL_BUTTONS)) & ALL_BUTTONS)
     {
-        //
-        // Write the next character to the UART.
-        //
-        UARTCharPut(UART0_BASE, *pucBuffer++);
+      // wait for delay period
+      SysCtlDelay((uint32_t) (GO_DELAY * SysCtlClockGet() / 3) );
+      
+      // Check if button is still pushed
+      if((~GPIOPinRead(BUTTONS_GPIO_BASE, ALL_BUTTONS)) & ALL_BUTTONS)
+          go = true;
     }
-}
+    
+#if USE_UART
+    // Check if GO from UART
+    if(UARTCharsAvail(PROJ_UART_BASE))
+    {
+      // Get one char from FIFO
+      char inChar = UARTCharGet(PROJ_UART_BASE);
+      
+      // check if that char means GO
+      if(inChar == GO_UART_CHAR)
+          go = true;
+    }
 #endif
+  }
+}
 
 //*****************************************************************************
 //
@@ -648,8 +727,7 @@ int main(void)
     
     // Print the welcome message to the terminal.
     UARTSend("HADES Data Output\n\n\r");
-    UARTSend("    , AccelX, AccelY, AccelZ, GyroX , GyroY , GyroZ , Mag X , Mag Y , Mag Z , Press ,  Temp ,   Alt  \n\r");
-    UARTSend("    , m/s^2 , m/s^2 , m/s^2 , rad/s , rad/s , rad/s ,   uT  ,   uT  ,   uT  ,  inHg ,   C   ,    m   \n\r");
+    UARTSend("Configuration Started... ");
 #endif
     
 #if USE_SDCARD
@@ -660,13 +738,19 @@ int main(void)
     ConfigureI2C();
     
     // Initialize the Timers
-    //ConfigureTimers();
+    ConfigureTimers();
 
     // Initialize GPIO and whatnot for MPU Interrupts
     ConfigureGPIObInts();
     
     // Set which peripherals stay on when system is sleeping
     ConfigureSleep();
+    
+    // Initialize the buttons for GO confirmation
+    ConfigureButtons();
+    
+    // Delay just to make sure everything is good and set
+    SysCtlDelay(SysCtlClockGet() / 3);
     
     // Enable interrupts to the processor.
     // Must be done for sensor configuration since it relies on GPIOb ints
@@ -732,6 +816,39 @@ int main(void)
     
     // Stop Blinking to indicate that configuration is complete
     RGBBlinkRateSet(0.0f);  
+    
+#if USE_UART
+    char tempStr[128];
+    
+    UARTSend("Done!\n\r");
+    sprintf(tempStr, "Enter '%c' or hold button for %fsec to continue to data acquisition\n\r", GO_UART_CHAR, GO_DELAY);
+    UARTSend(tempStr);
+    UARTSend("... ");
+#endif
+    
+    // Wait for confirmation to continue
+    waitConfirmGO();
+    
+#if USE_UART
+    UARTSend("GO confirmed! Begin data acquisition.\n\n\n\r");
+    UARTSend("  # , AccelX, AccelY, AccelZ, GyroX , GyroY , GyroZ , Mag X , Mag Y , Mag Z , Press ,  Temp ,   Alt  \n\r");
+    UARTSend("    , m/s^2 , m/s^2 , m/s^2 , rad/s , rad/s , rad/s ,   uT  ,   uT  ,   uT  ,  inHg ,   C   ,    m   \n\r");
+#endif
+    
+    // Turn LED Green and Blink for data acquisition
+    g_pui32Colors[RED] = 0x0000;
+    g_pui32Colors[BLUE] = 0x0000;
+    g_pui32Colors[GREEN] = 0x8000;
+
+    // Initialize RGB driver.
+    RGBColorSet(g_pui32Colors);
+    RGBBlinkRateSet(5.0f);
+    
+    // Delay for half a second for the human plebians
+    SysCtlDelay(SysCtlClockGet() / 3 / 2);
+    
+    // Turn on Sensor timers to begin data collection
+    EnableSensorTimers();
     
     while(1)
     {

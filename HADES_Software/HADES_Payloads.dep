@@ -106,6 +106,10 @@
       <file>$PROJ_DIR$\..\driverlib\interrupt.h</file>
       <file>$PROJ_DIR$\ewarm\Obj\ff.pbi</file>
       <file>$PROJ_DIR$\..\sensorlib\mpu9150.h</file>
+      <file>$PROJ_DIR$\..\driverlib\uart.c</file>
+      <file>$PROJ_DIR$\..\driverlib\gpio.c</file>
+      <file>$PROJ_DIR$\drivers\buttons.h</file>
+      <file>$PROJ_DIR$\..\inc\hw_gpio.h</file>
     </outputs>
     <file>
       <name>[ROOT_NODE]</name>
@@ -297,11 +301,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 23 48 50 2 9 78 26 84 0 32 37 76 61 51 47 59 29 69 77 11 44 49 68 12 71 82 97 73 60 19 80 52 79 99 27 56 36 92 64 58 63 40 1 67</file>
+          <file> 59 0 7 69 48 32 47 29 27 11 61 51 9 37 2 76 78 23 26 50 84 63 44 49 68 12 71 103 82 97 73 60 19 80 52 79 99 102 77 56 36 92 64 58 40 1 67</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 1 0 48 56 92 64 36 23 68 61 50 26 12 11 32 84 58 71 51 82 9 97 47 73 37 60 59 19 2 80 29 52 76 79 69 99 78 27 77 40 44 67 49</file>
+          <file> 1 0 48 56 92 64 36 23 68 61 50 26 12 11 32 84 58 71 51 103 7 82 9 97 47 73 37 60 59 19 2 80 29 52 76 79 69 99 78 102 27 77 40 44 67 49</file>
         </tool>
       </inputs>
     </file>
