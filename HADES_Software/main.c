@@ -96,7 +96,8 @@
 #define USE_SDCARD              0    // Set to 1 to use the SD card for storage
 #define USE_UART                1    // Set to 1 to use the UART for data output
 
-#define GO_DELAY                1.0f // Delay (in sec) for GO button push  
+#define GO_DELAY                1.0f // Delay (in sec) for GO button push 
+#define STOP_DELAY              1.5f // How long a button must be held for collection to stop
 
 #if USE_UART
 #define GO_UART_CHAR            'G'
@@ -707,6 +708,7 @@ int main(void)
     dynamicsData_t fDynamicsData;
     atmosData_t fAtmosData;
     char dataString[MAX_DATASTR_LEN];
+    bool stop = false;
     
     // Setup the system clock to run at 40 Mhz from PLL with crystal reference
     SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ |
@@ -850,9 +852,8 @@ int main(void)
     // Turn on Sensor timers to begin data collection
     EnableSensorTimers();
     
-    while(1)
-    {
-      
+    while(!stop)
+    {  
         ////////// Get Dynamics Data //////////
         // Clear the flag
         g_vui8I2CDoneFlag = 0;
@@ -949,5 +950,34 @@ int main(void)
 #endif
 
         }
+        
+        /// Watching for stops
+        // Check if any button is pushed
+        if((~GPIOPinRead(BUTTONS_GPIO_BASE, ALL_BUTTONS)) & ALL_BUTTONS)
+        {
+          // wait for delay period
+          SysCtlDelay((uint32_t) (STOP_DELAY * SysCtlClockGet() / 3) );
+          
+          // Check if button is still pushed
+          if((~GPIOPinRead(BUTTONS_GPIO_BASE, ALL_BUTTONS)) & ALL_BUTTONS)
+          {
+            stop = true;
+            DisableSensorTimers();
+          }
+        }
     }
+    
+#if USE_UART
+    UARTSend("Data collection stopped by button.\n\r");
+#endif
+    
+    // Turn LED blue for data acquisition over
+    g_pui32Colors[RED] = 0x0000;
+    g_pui32Colors[BLUE] = 0x8000;
+    g_pui32Colors[GREEN] = 0x0000;
+
+    // Initialize RGB driver.
+    RGBColorSet(g_pui32Colors);
+    RGBBlinkRateSet(0.0f);
+    
 }
