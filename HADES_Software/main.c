@@ -137,6 +137,25 @@ volatile uint_fast8_t g_vui8MPUDataFlag; // flags to alert main that MPU9150
 #if USE_SDCARD
 extern FIL *g_psFlashFile;               // From microSD.c
 #endif
+
+//*****************************************************************************
+//
+// Enable/Disable the timers for sensor (atmos and dynamics) data collection
+//
+//*****************************************************************************
+void DisableSensorTimers(void)
+{
+    // Disable timers until we're ready to use them
+  TimerDisable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
+  TimerDisable(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER);
+}
+void EnableSensorTimers(void)
+{
+    // Disable timers until we're ready to use them
+  TimerEnable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
+  TimerEnable(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER);
+}
+
 //*****************************************************************************
 //
 // BMP180 Sensor callback function.  Called at the end of BMP180 sensor driver
@@ -390,6 +409,9 @@ void ConfigureTimers(void)
   // Register the timer ISRs
   TimerIntRegister(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, AtmosTimerIntHandler);
   TimerIntRegister(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER, DynamicsTimerIntHandler);
+  
+  // Disable timers until we're ready to use them
+  DisableSensorTimers();
 }
  
 //*****************************************************************************
@@ -402,6 +424,7 @@ void ConfigureGPIObInts(void)
 {
     // Power on to GPIOB
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOB));
     
     // Configure Specific Pin
     GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_2);
@@ -547,7 +570,7 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
     floatToDecimals( atmosData->fAltitude,    &iIPart[11], &iFPart[11] );
     
     sprintf(outString,
-           "%4u,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d\n",
+           "%4u,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d\n\r",
             idx,
             iIPart[0], iFPart[0],         // Accel X
             iIPart[1], iFPart[1],         // Accel Y
@@ -644,7 +667,10 @@ int main(void)
     
     // Set which peripherals stay on when system is sleeping
     ConfigureSleep();
-
+    
+    // Enable interrupts to the processor.
+    // Must be done for sensor configuration since it relies on GPIOb ints
+    IntMasterEnable();  
 
     //////// MPU9150 Initialization ///////
     // Initialize I2C3 peripheral.
@@ -705,10 +731,7 @@ int main(void)
     SysTickEnable();
     
     // Stop Blinking to indicate that configuration is complete
-    RGBBlinkRateSet(0.0f);
-
-    // Enable interrupts to the processor.
-    IntMasterEnable();    
+    RGBBlinkRateSet(0.0f);  
     
     while(1)
     {
