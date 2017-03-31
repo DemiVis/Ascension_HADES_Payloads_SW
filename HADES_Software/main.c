@@ -80,13 +80,13 @@
 #define MAX_DATASTR_LEN         1024
 #define DATA_TYPE               float
 
-#define ATMOS_TIMER_SYSCTL      SYSCTL_PERIPH_TIMER0
-#define ATMOS_TIMER_BASE        TIMER0_BASE
+#define ATMOS_TIMER_SYSCTL      SYSCTL_PERIPH_TIMER2
+#define ATMOS_TIMER_BASE        TIMER2_BASE
 #define ATMOS_SUBTIMER          TIMER_A
 #define ATMOS_FREQ              25      // Hz
 
-#define DYNAMICS_TIMER_SYSCTL   SYSCTL_PERIPH_TIMER1
-#define DYNAMICS_TIMER_BASE     TIMER1_BASE
+#define DYNAMICS_TIMER_SYSCTL   SYSCTL_PERIPH_TIMER3
+#define DYNAMICS_TIMER_BASE     TIMER3_BASE
 #define DYNAMICS_SUBTIMER       TIMER_A
 #define DYNAMICS_FREQ           100     // Hz
 
@@ -120,6 +120,10 @@ tCompDCM g_sCompDCMInst;        // to manage the DCM state.
 
 uint32_t g_ui32PrintSkipCounter;// to control the rate of data to the terminal.
 
+#if USE_SDCARD
+FIL dataFile;                   // File where the data is stored on the SD card
+#endif
+
 // Flags
 volatile uint_fast8_t g_vui8I2CDoneFlag; // flags to alert main that MPU9150 I2C
                                          // transaction is complete
@@ -129,10 +133,10 @@ volatile uint_fast8_t g_vui8BMPDataFlag; // flags to alert main that BMP180
                                          // data is ready.
 volatile uint_fast8_t g_vui8MPUDataFlag; // flags to alert main that MPU9150
                                          // data is ready to be retrieved.
-
-// From microSD.c
-extern FIL *g_psFlashFile;
-
+// External Variables
+#if USE_SDCARD
+extern FIL *g_psFlashFile;               // From microSD.c
+#endif
 //*****************************************************************************
 //
 // BMP180 Sensor callback function.  Called at the end of BMP180 sensor driver
@@ -183,28 +187,6 @@ SysTickIntHandler()
 
 //*****************************************************************************
 //
-// Called by the NVIC as a result of GPIO port B interrupt event. For this
-// application GPIO port B pin 2 is the interrupt line for the MPU9150
-//
-//*****************************************************************************
-void IntGPIOb(void)
-{
-    unsigned long ulStatus;
-
-    ulStatus = GPIOIntStatus(GPIO_PORTB_BASE, true);
-
-    // Clear all the pin interrupts that are set
-    GPIOIntClear(GPIO_PORTB_BASE, ulStatus);
-
-    if(ulStatus & GPIO_PIN_2)
-    {
-        // MPU9150 Data is ready for retrieval and processing.
-        MPU9150DataRead(&g_sMPU9150Inst, MPU9150AppCallback, &g_sMPU9150Inst);
-    }
-}
-
-//*****************************************************************************
-//
 // Called by the NVIC as a result of I2C3 Interrupt. I2C3 is the I2C connection
 // to the MPU9150.
 //
@@ -225,6 +207,9 @@ void HADESI2CIntHandler(void)
 //*****************************************************************************
 void AtmosTimerIntHandler(void)
 {
+  // Clear the interrupt flag
+  TimerIntClear(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
+  
   // TODO: Implement this
 }
 
@@ -236,6 +221,9 @@ void AtmosTimerIntHandler(void)
 //*****************************************************************************
 void DynamicsTimerIntHandler(void)
 {
+  // Clear the interrupt flag
+  TimerIntClear(DYNAMICS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
+  
   // TODO: Implement this
 }
 
@@ -301,6 +289,28 @@ void MPU9150AppI2CWait(char *pcFilename, uint_fast32_t ui32Line)
 
     // clear the data flag for next use.
     g_vui8I2CDoneFlag = 0;
+}
+
+//*****************************************************************************
+//
+// Called by the NVIC as a result of GPIO port B interrupt event. For this
+// application GPIO port B pin 2 is the interrupt line for the MPU9150
+//
+//*****************************************************************************
+void IntGPIOb(void)
+{
+    unsigned long ulStatus;
+
+    ulStatus = GPIOIntStatus(GPIO_PORTB_BASE, true);
+
+    // Clear all the pin interrupts that are set
+    GPIOIntClear(GPIO_PORTB_BASE, ulStatus);
+
+    if(ulStatus & GPIO_PIN_2)
+    {
+        // MPU9150 Data is ready for retrieval and processing.
+        MPU9150DataRead(&g_sMPU9150Inst, MPU9150AppCallback, &g_sMPU9150Inst);
+    }
 }
 
 #if USE_UART
@@ -372,9 +382,35 @@ void ConfigureTimers(void)
   TimerLoadSet(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, SysCtlClockGet() / ATMOS_FREQ);
   TimerLoadSet(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER, SysCtlClockGet() / DYNAMICS_FREQ);
   
+  // Setup Timer Interrupts
+  TimerIntEnable(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
+  TimerIntEnable(DYNAMICS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
+  IntEnable(INT_TIMER0A);
+  IntEnable(INT_TIMER1A);
+  
   // Register the timer ISRs
   TimerIntRegister(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, AtmosTimerIntHandler);
   TimerIntRegister(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER, DynamicsTimerIntHandler);
+}
+ 
+//*****************************************************************************
+//
+// Configure and Enable the GPIO interrupt. Used for INT signal from the
+// MPU9150
+//
+//*****************************************************************************
+void ConfigureGPIObInts(void)
+{
+    // Power on to GPIOB
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+    
+    // Configure Specific Pin
+    GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_2);
+    
+    // Configure Interrupts
+    GPIOIntEnable(GPIO_PORTB_BASE, GPIO_PIN_2);
+    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_FALLING_EDGE);
+    IntEnable(INT_GPIOB);
 }
 
 //*****************************************************************************
@@ -394,8 +430,37 @@ void ConfigureLEDs(void)
     RGBColorSet(g_pui32Colors);
     RGBIntensitySet(1.0f);
     RGBEnable();
+    
+    // Enable blinking indicates config started
+    RGBBlinkRateSet(20.0f);
 }
 
+//*****************************************************************************
+//
+// Configure what stays on when system goes to sleep
+//
+//*****************************************************************************
+void ConfigureSleep( void )
+{
+    // Keep only some parts of the systems running while in sleep mode.
+    SysCtlPeripheralClockGating(true);
+    
+    // GPIOB is for the MPU9150 interrupt pin.
+    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOB);
+    
+    // UART0 is the virtual serial port
+    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UART0);
+    
+    // TIMER0, TIMER1 and WTIMER5 are used by the RGB driver
+    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER0);
+    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER1);
+    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_WTIMER5);
+    
+    // I2C3 is the I2C interface to the ISL29023
+    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_I2C3);
+}
+
+#if USE_SDCARD
 //*****************************************************************************
 //
 // Configure the SD Card, create a data file and write header out to the data 
@@ -423,6 +488,7 @@ void StartSDCard( void)
                 SDCardInit();
     f_sync(g_psFlashFile);
 }
+#endif
 
 //*****************************************************************************
 //
@@ -516,9 +582,6 @@ int main(void)
     dynamicsData_t fDynamicsData;
     atmosData_t fAtmosData;
     char dataString[MAX_DATASTR_LEN];
-#if USE_SDCARD
-    FIL dataFile;
-#endif
     
     // Setup the system clock to run at 40 Mhz from PLL with crystal reference
     SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ |
@@ -527,20 +590,26 @@ int main(void)
     // Disable all interrupts for configuration
     IntMasterDisable();
     
-    ////////// General Peripheral Initialization //////////
-    // Enable port B used for motion interrupt.
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-
+    ////////// Non-Sensor Peripheral Initialization //////////
+    
+    // Initialize the LEDs for indications
+    // Begins blinking the LED at 20 Hz for indicator of configuration time
+    ConfigureLEDs();    
+    
 #if USE_UART
     // Initialize the UART.
     ConfigureUART();
     
     // Print the welcome message to the terminal.
     UARTprintf("\033[1;1HHADES Data Output\n\n");
+    //UARTFlushTx(false);
     UARTprintf("\033[3;1H    , AccelX, AccelY, AccelZ, GyroX , GyroY , GyroZ , Mag X , Mag Y , Mag Z , Press ,  Temp ,   Alt  \n");
+    //UARTFlushTx(false);
     UARTprintf("\033[4;1H    , m/s^2 , m/s^2 , m/s^2 , rad/s , rad/s , rad/s ,   uT  ,   uT  ,   uT  ,  inHg ,   C   ,    m   \n");
+    //UARTFlushTx(false);
     
     // Flush UART to finish printing all of this
+    SysCtlDelay(SysCtlClockGet()/3);
     UARTFlushTx(false);
 #endif
     
@@ -548,43 +617,24 @@ int main(void)
     StartSDCard();
 #endif
     
-    // Initialize the LEDs for indications
-    ConfigureLEDs();
-    
     // Initialize the I2C
     ConfigureI2C();
     
     // Initialize the Timers
-    ConfigureTimers();
+    //ConfigureTimers();
 
-    // Configure and Enable the GPIO interrupt. Used for INT signal from the
-    // MPU9150
-    GPIOPinTypeGPIOInput(GPIO_PORTB_BASE, GPIO_PIN_2);
-    GPIOIntEnable(GPIO_PORTB_BASE, GPIO_PIN_2);
-    GPIOIntTypeSet(GPIO_PORTB_BASE, GPIO_PIN_2, GPIO_FALLING_EDGE);
-    IntEnable(INT_GPIOB);
+    // Initialize GPIO and whatnot for MPU Interrupts
+    ConfigureGPIObInts();
+    
+    // Set which peripherals stay on when system is sleeping
+    ConfigureSleep();
 
-    // Keep only some parts of the systems running while in sleep mode.
-    // GPIOB is for the MPU9150 interrupt pin.
-    // UART0 is the virtual serial port
-    // TIMER0, TIMER1 and WTIMER5 are used by the RGB driver
-    // I2C3 is the I2C interface to the ISL29023
-    SysCtlPeripheralClockGating(true);
-    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_GPIOB);
-    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UART0);
-    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER0);
-    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_TIMER1);
-    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_I2C3);
-    SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_WTIMER5);
 
-    // Enable interrupts to the processor.
-    IntMasterEnable();
-
+    //////// MPU9150 Initialization ///////
     // Initialize I2C3 peripheral.
     I2CMInit(&g_sI2CInst, I2C3_BASE, INT_I2C3, 0xff, 0xff,
              SysCtlClockGet());
 
-    ////////// MPU9150 Initialization //////////
     // Initialize the MPU9150 Driver.
     MPU9150Init(&g_sMPU9150Inst, &g_sI2CInst, MPU9150_I2C_ADDRESS,
                 MPU9150AppCallback, &g_sMPU9150Inst);
@@ -634,13 +684,15 @@ int main(void)
     g_vui8BMPDataFlag = 0;
     
     // Enable the system ticks at 10 Hz.
-    //
     SysTickPeriodSet(ROM_SysCtlClockGet() / (10 * 3));
     SysTickIntEnable();
     SysTickEnable();
     
-    // Enable blinking indicates config finished successfully
-    RGBBlinkRateSet(1.0f);
+    // Stop Blinking to indicate that configuration is complete
+    RGBBlinkRateSet(0.0f);
+
+    // Enable interrupts to the processor.
+    IntMasterEnable();    
     
     while(1)
     {
