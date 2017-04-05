@@ -96,7 +96,7 @@
 #define DYNAMICS_SUBTIMER       TIMER_A
 #define DYNAMICS_FREQ           100     // Hz
 
-#define USE_SDCARD              0    // Set to 1 to use the SD card for storage
+#define USE_SDCARD              1    // Set to 1 to use the SD card for storage
 #define USE_UART                1    // Set to 1 to use the UART for data output
 
 #define GO_DELAY                1.0f // Delay (in sec) for GO button push 
@@ -141,6 +141,7 @@ atmosData_t fAtmosData;         // Temp atmos data storage
 dynamicsData_t fDynamicsData;   // Temp dynamics data storage
 
 #if USE_SDCARD
+FATFS flashMount;
 FIL dataFile;                   // File where the data is stored on the SD card
 #endif
 
@@ -158,6 +159,7 @@ volatile bool newDynamicsDataReady;      // flag to indicate dyanmics data ready
 
 // External Variables
 #if USE_SDCARD
+extern FATFS *g_psFlashMount;            // From microSD.c
 extern FIL *g_psFlashFile;               // From microSD.c
 #endif
 
@@ -649,6 +651,7 @@ void ConfigureButtons( void )
 void StartSDCard( void)
 {
     g_psFlashFile = &dataFile;
+    g_psFlashMount = &flashMount;
 
     // Initialize the SD card interface
     if( SDCardInit() != OK )
@@ -807,6 +810,7 @@ void waitConfirmGO(void)
 #endif
   }
 }
+#include "driverlib/ssi.h"
 
 //*****************************************************************************
 //
@@ -815,6 +819,7 @@ void waitConfirmGO(void)
 //*****************************************************************************
 int main(void)
 {
+  
     char dataString[MAX_DATASTR_LEN];
     bool stop = false;
     
@@ -841,6 +846,13 @@ int main(void)
 #endif
     
 #if USE_SDCARD
+    disk_initialize(0);
+    for(int i = 0; i < 11; i++)
+    {
+      SSIDataPut(SSI2_BASE, 0xFF);
+      SysCtlDelay(SysCtlClockGet()/12);
+    }
+    
     StartSDCard();
 #endif
     

@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\settings\HADES_Payloads.Debug.general.xcl" --backend -f "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\settings\HADES_Payloads.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5_2\common\bin\cspybat" -f "C:\Users\vism\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\settings\HADES_Payloads.Debug.general.xcl" --backend -f "C:\Users\vism\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\settings\HADES_Payloads.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\common\bin\cspybat" -f "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\settings\HADES_Payloads.Debug.general.xcl" "--debug_file=%~1" --backend -f "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\settings\HADES_Payloads.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5_2\common\bin\cspybat" -f "C:\Users\vism\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\settings\HADES_Payloads.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\vism\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\settings\HADES_Payloads.Debug.driver.xcl" 
 
 @echo off 
 :end

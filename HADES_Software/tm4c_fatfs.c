@@ -17,13 +17,12 @@
 #include "driverlib/gpio.h"
 #include "driverlib/rom.h"
 #include "driverlib/rom_map.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/ssi.h"
 #include "driverlib/sysctl.h"
 
 #include "fatfs/diskio.h"
 #include "fatfs/integer.h"
-
-#include "userlib/spim_drv.h"
 
 /* Definitions for MMC/SDC command */
 #define CMD0     (0x40+0)    /* GO_IDLE_STATE */
@@ -195,14 +194,18 @@ void power_on(void) {
    */
   MAP_GPIOPinTypeSSI(SDC_GPIO_PORT_BASE, SDC_SSI_TX | SDC_SSI_RX | SDC_SSI_CLK);
   MAP_GPIOPinTypeGPIOOutput(FSS_GPIO_PORT_BASE, SDC_SSI_FSS);
+  // MUST CHANGE IF YOU PORT TO NEW SYSTEM OR CHANGE SSI USED
+  GPIOPinConfigure(GPIO_PB4_SSI2CLK);
+  GPIOPinConfigure(GPIO_PB6_SSI2RX);
+  GPIOPinConfigure(GPIO_PB7_SSI2TX);  
 
   /*
    * Set the SSI output pins to 4MA drive strength and engage the
    * pull-up on the receive line.
    */
-  MAP_GPIOPadConfigSet(SDC_GPIO_PORT_BASE, SDC_SSI_RX, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPU);
-  MAP_GPIOPadConfigSet(SDC_GPIO_PORT_BASE, SDC_SSI_CLK | SDC_SSI_TX, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-  MAP_GPIOPadConfigSet(FSS_GPIO_PORT_BASE, SDC_SSI_FSS, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+//  MAP_GPIOPadConfigSet(SDC_GPIO_PORT_BASE, SDC_SSI_RX, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPU);
+//  MAP_GPIOPadConfigSet(SDC_GPIO_PORT_BASE, SDC_SSI_CLK | SDC_SSI_TX, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+//  MAP_GPIOPadConfigSet(FSS_GPIO_PORT_BASE, SDC_SSI_FSS, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
 
   /* Configure the SSI port */
   MAP_SSIConfigSetExpClk(SDC_SSI_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 400000, 8);

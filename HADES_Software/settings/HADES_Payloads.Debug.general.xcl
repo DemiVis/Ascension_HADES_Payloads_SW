@@ -1,14 +1,14 @@
-"F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\bin\armproc.dll" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5_2\arm\bin\armproc.dll" 
 
-"F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\bin\armlmiftdi.dll" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5_2\arm\bin\armlmiftdi.dll" 
 
-"F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\Exe\HADES.out" 
+"C:\Users\vism\Documents\GitHub\Ascension_HADES_Payloads_SW\HADES_Software\ewarm\Exe\HADES.out" 
 
---plugin "F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\bin\armbat.dll" 
+--plugin "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5_2\arm\bin\armbat.dll" 
 
---device_macro "F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\config\debugger\TexasInstruments\TM4C123.dmac" 
+--device_macro "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5_2\arm\config\debugger\TexasInstruments\TM4C123.dmac" 
 
---flash_loader "F:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5\arm\config\flashloader\TexasInstruments\FlashTC4_H6_o.board" 
+--flash_loader "C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.5_2\arm\config\flashloader\TexasInstruments\FlashTC4_H6_o.board" 
 
 
 

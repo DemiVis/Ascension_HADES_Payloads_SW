@@ -34,7 +34,7 @@
 /  2: Enable with LF-CRLF conversion. */
 
 
-#define _USE_FIND		2
+#define _USE_FIND		0
 /* This option switches filtered directory read functions, f_findfirst() and
 /  f_findnext(). (0:Disable, 1:Enable 2:Enable with matching altname[] too) */
 
@@ -122,7 +122,7 @@
 /  This option also affects behavior of string I/O functions. */
 
 
-#define _STRF_ENCODE	3
+#define _STRF_ENCODE	0
 /* When _LFN_UNICODE == 1, this option selects the character encoding ON THE FILE to
 /  be read/written via string I/O functions, f_gets(), f_putc(), f_puts and f_printf().
 /
@@ -216,9 +216,9 @@
 
 
 #define _FS_NORTC	0
-#define _NORTC_MON	1
-#define _NORTC_MDAY	1
-#define _NORTC_YEAR	2016
+#define _NORTC_MON	4
+#define _NORTC_MDAY	21
+#define _NORTC_YEAR	2017
 /* The option _FS_NORTC switches timestamp functiton. If the system does not have
 /  any RTC function or valid timestamp is not needed, set _FS_NORTC = 1 to disable
 /  the timestamp function. All objects modified by FatFs will have a fixed timestamp

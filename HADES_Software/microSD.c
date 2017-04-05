@@ -34,6 +34,9 @@
 // Ryan Claus User Files
 #include "userlib/timer.h"
 
+#define MAX_MOUNT_ATTEMPTS      100
+#define MAX_FOPEN_ATTEMPTS      100
+
 //*****************************************************************************
 //
 // Local Function Prototypes
@@ -59,16 +62,20 @@ uint_fast8_t SDCardInit( void )
 {
   char pcFilename[250];
   uint_fast8_t vui8Index = 0;
+  int idx = 0;
   
   // Mount the File System
-  while (f_mount(g_psFlashMount, "", 1) != FR_OK)
-  {     };
+  while (f_mount(g_psFlashMount, "", 1) != FR_OK && idx <= MAX_MOUNT_ATTEMPTS)
+  { idx++;  }
+  
+  if(idx == MAX_MOUNT_ATTEMPTS) // Max Mount Attempts reached, error out
+    return(ERROR);
   
   // Create the filename
   sprintf(pcFilename, "%s.%s", SDCARD_FILENAME, SDCARD_EXT);
   
   // if file already exists, append nuumber to it after last number
-  for (vui8Index = 1; f_stat(pcFilename, NULL) != FR_NO_FILE && vui8Index < 9999; vui8Index++) 
+  for (vui8Index = 1; f_stat(pcFilename, NULL) != FR_NO_FILE && vui8Index <= 99; vui8Index++) 
   {
     sprintf(pcFilename, "%s%d.%s", SDCARD_FILENAME, vui8Index, SDCARD_EXT);
   }
@@ -77,8 +84,12 @@ uint_fast8_t SDCardInit( void )
   f_unlink(pcFilename);
   
   // Open the file
-  while (f_open(g_psFlashFile, pcFilename, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK)
-    ;
+  idx = 0;
+  while (f_open(g_psFlashFile, pcFilename, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK && idx <= MAX_FOPEN_ATTEMPTS)
+  { idx++;  }
+  
+  if(idx == MAX_FOPEN_ATTEMPTS) // Max Mount Attempts reached, error out
+    return(ERROR);
 
   // Put a comment into the top of the file
   if (f_puts("HADES\n"SDCARD_COMMENT"\n", g_psFlashFile) == EOF) {
