@@ -63,9 +63,10 @@ uint_fast8_t SDCardInit( void )
   char pcFilename[250];
   uint_fast8_t vui8Index = 0;
   int idx = 0;
+  FRESULT res;
   
   // Mount the File System
-  while (f_mount(g_psFlashMount, "", 1) != FR_OK && idx <= MAX_MOUNT_ATTEMPTS)
+  while( (res = f_mount(g_psFlashMount, "", 1) ) != FR_OK && idx <= MAX_MOUNT_ATTEMPTS)
   { idx++;  }
   
   if(idx == MAX_MOUNT_ATTEMPTS) // Max Mount Attempts reached, error out
@@ -85,7 +86,7 @@ uint_fast8_t SDCardInit( void )
   
   // Open the file
   idx = 0;
-  while (f_open(g_psFlashFile, pcFilename, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK && idx <= MAX_FOPEN_ATTEMPTS)
+  while ( (res = f_open(g_psFlashFile, pcFilename, FA_WRITE | FA_CREATE_ALWAYS) ) != FR_OK && idx <= MAX_FOPEN_ATTEMPTS)
   { idx++;  }
   
   if(idx == MAX_FOPEN_ATTEMPTS) // Max Mount Attempts reached, error out

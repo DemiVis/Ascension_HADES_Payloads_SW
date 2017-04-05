@@ -402,7 +402,6 @@ void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg
     // attempt corrective actions here.
     while(1)
     {
-        // Do Nothing
     }
 }
 
