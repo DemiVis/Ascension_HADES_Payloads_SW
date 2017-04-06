@@ -89,25 +89,27 @@
 #define ATMOS_TIMER_SYSCTL      SYSCTL_PERIPH_TIMER2
 #define ATMOS_TIMER_BASE        TIMER2_BASE
 #define ATMOS_SUBTIMER          TIMER_A
-#define ATMOS_FREQ              25      // Hz
+#define ATMOS_FREQ              1       // Hz
 
 #define DYNAMICS_TIMER_SYSCTL   SYSCTL_PERIPH_TIMER3
 #define DYNAMICS_TIMER_BASE     TIMER3_BASE
 #define DYNAMICS_SUBTIMER       TIMER_A
-#define DYNAMICS_FREQ           100     // Hz
+#define DYNAMICS_FREQ           4       // Hz
 
 #define USE_SDCARD              0    // Set to 1 to use the SD card for storage
 #define USE_UART                1    // Set to 1 to use the UART for data output
 
 #define GO_DELAY                1.0f // Delay (in sec) for GO button push 
-#define STOP_DELAY              1.5f // How long a button must be held for collection to stop
+#define BUTTON_HOLD_COUNT	(100000) // Arbitrary number
 
 #if USE_UART
 #define GO_UART_CHAR            'G'
+#define STOP_UART_CHAR			'S'
 #define PROJ_UART_BASE          UART0_BASE              // Which UART to use
 #define PROJ_UART_PERIPH        SYSCTL_PERIPH_UART0     // Note if this changes
 #define PROJ_UART_GPIO_BASE     GPIO_PORTA_BASE         // ConfigureUART() must
 #define PROJ_UART_GPIO_PERIPH   SYSCTL_PERIPH_GPIOA     // must still be updated
+#define OUTPUT_CONFIRM_STR		"Output Data"
 #endif
 
 //*****************************************************************************
@@ -771,6 +773,16 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
 
 //*****************************************************************************
 //
+// Store the latest data point in the Flash
+//
+//*****************************************************************************
+void storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData)
+{
+  // TODO: implement this
+}
+
+//*****************************************************************************
+//
 // Wait for a GO confirmation from the user
 // Depending on configuration GO confirmation can be given through the SENSHUB
 // pushbuttons or UART.
@@ -808,6 +820,18 @@ void waitConfirmGO(void)
   }
 }
 
+#if USE_UART
+//*****************************************************************************
+//
+// Output all the data stored in this round out to the UART.
+//
+//*****************************************************************************
+void OutputAcquiredData(void)
+{
+	// TODO: Implement this
+}
+#endif
+
 //*****************************************************************************
 //
 // Main application entry point.
@@ -817,6 +841,7 @@ int main(void)
 {
     char dataString[MAX_DATASTR_LEN];
     bool stop = false;
+    uint32_t idx = 0;
     
     // Setup the system clock to run at 40 Mhz from PLL with crystal reference
     SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ |
@@ -978,7 +1003,7 @@ int main(void)
         ////////// Get BMP Data //////////
         // moved to ATMOS timer ISR
         
-        ////////// Printouts/data collection //////////           
+        ////////// Printouts/store data //////////           
         if(newDynamicsDataReady)
         {
           if(newAtmosDataReady) // print both data types
@@ -986,21 +1011,33 @@ int main(void)
             newDynamicsDataReady = false;
             newAtmosDataReady = false;
             
+#if USE_UART || USE_SDCARD
             // make full data string
             if( makeDataString(dataString, &fDynamicsData, &fAtmosData) != OK )
             {
               MPU9150AppErrorHandler(__FILE__, __LINE__, "Data String Creation Failure");
             }
+#endif
+#if !USE_SDCARD
+			// store data on on-chip flash
+			storeDataPoint(&fDynamicsData, &fAtmosData);
+#endif
           }
           else  // just print dynamics data
           {
             newDynamicsDataReady = false;
             
+#if USE_UART || USE_SDCARD
             // make partial data string
             if( makeDataString(dataString, &fDynamicsData, NULL) != OK )
             {
               MPU9150AppErrorHandler(__FILE__, __LINE__, "Data String Creation Failure");
             }
+#endif
+#if !USE_SDCARD
+			// store data on on-chip flash
+			storeDataPoint(&fDynamicsData, NULL);
+#endif
           }
           
 #if USE_UART
@@ -1018,30 +1055,95 @@ int main(void)
         // Check if any button is pushed
         if((~GPIOPinRead(BUTTONS_GPIO_BASE, ALL_BUTTONS)) & ALL_BUTTONS)
         {
-          // wait for delay period
-          SysCtlDelay((uint32_t) (STOP_DELAY * SysCtlClockGet() / 3) );
+          // Increment the index for button being pressed
+          idx++;
           
           // Check if button is still pushed
-          if((~GPIOPinRead(BUTTONS_GPIO_BASE, ALL_BUTTONS)) & ALL_BUTTONS)
-          {
+          if(idx >= BUTTON_HOLD_COUNT)
             stop = true;
-            DisableSensorTimers();
-          }
         }
-    }
+		else
+		{
+		  // Reset the count because the button was released
+		  idx = 0;
+		}
+#if USE_UART
+		// Check for UART stop command
+		if(UARTCharsAvail(PROJ_UART_BASE))
+		{
+		  // Get one char from FIFO
+		  char inChar = UARTCharGet(PROJ_UART_BASE);
+		  
+		  // check if that char means GO
+		  if(inChar == STOP_UART_CHAR)
+			  stop = true;
+		}
+#endif
+
+    } // end while(!stop)
+	
+    DisableSensorTimers();
     
 #if USE_UART
-    UARTSend("Data collection stopped by button.\n\r");
+    UARTSend("Data collection stopped by command.\n\r");
 #endif
     
-    // Turn LED blue for data acquisition over
-    g_pui32Colors[RED] = 0x0000;
-    g_pui32Colors[BLUE] = 0x8000;
-    g_pui32Colors[GREEN] = 0x0000;
-    RGBColorSet(g_pui32Colors);
-    RGBBlinkRateSet(0.0f);
-    
-    // Turn on USER LED for indication data acquisition is done
-    GPIOPinWrite(SENSHUB_LED_PORT, SENSHUB_LED_PIN, 0xFF);
+	// Infinite while loop to end the program
+	while(1)
+	{
+		// Turn LED blue for data acquisition over
+		g_pui32Colors[RED] = 0x0000;
+		g_pui32Colors[BLUE] = 0x8000;
+		g_pui32Colors[GREEN] = 0x0000;
+		RGBColorSet(g_pui32Colors);
+		RGBBlinkRateSet(0.0f);
+		
+		// Turn on USER LED for indication data acquisition is done
+		GPIOPinWrite(SENSHUB_LED_PORT, SENSHUB_LED_PIN, 0xFF);
+		
+	#if USE_UART
+		int confirmStrLen, idx=0;
+		
+		UARTSend("Enter \""OUTPUT_CONFIRM_STR"\" to send all stored data.\n\r");
+		sprintf(tempStr, OUTPUT_CONFIRM_STR);
+		
+		confirmStrLen = strnlen(tempStr, 20);
+		
+		stop = false;	
+		while(!stop)
+		{
+		  // Wait for UART characters
+		  while(UARTCharsAvail(PROJ_UART_BASE));
+		  
+		  // Get one char from FIFO
+		  char inChar = UARTCharGet(PROJ_UART_BASE);
+		  
+		  // check if that char is right
+		  if(inChar == tempStr[idx])
+		  {
+			if(idx >= confirmStrLen)
+				// Got through the whole string
+				stop = true;
+			else
+				// move to check the next character next
+				idx++;
+		  }
+		  else
+		  {
+			// messed up a character, start from the beginning
+			idx = 0;
+			UARTSend("Character mismatch. Type \""OUTPUT_CONFIRM_STR" to output acquired data");
+		  }
+		  
+		}
+		
+		UARTSend("Data output confirmed, delaying 2 seconds to read this message.\n\r");
+		SysCtlDelay((SysCtlClockGet()/3)*2);
+		
+		OutputAcquiredData();
+		UARTSend("Data Output complete.\n\r");
+	}
+	
+#endif
     
 }
