@@ -26,6 +26,7 @@
 #include "inc/hw_memmap.h"
 
 #include "driverlib/timer.h"
+#include "driverlib/sysctl.h"
 
 // FatFS files
 #include "fatfs/diskio.h"
@@ -34,8 +35,8 @@
 // Ryan Claus User Files
 #include "userlib/timer.h"
 
-#define MAX_MOUNT_ATTEMPTS      100
-#define MAX_FOPEN_ATTEMPTS      100
+#define MAX_MOUNT_ATTEMPTS      9
+#define MAX_FOPEN_ATTEMPTS      9
 
 //*****************************************************************************
 //
@@ -63,13 +64,16 @@ uint_fast8_t SDCardInit( void )
   char pcFilename[250];
   uint_fast8_t vui8Index = 0;
   int idx = 0;
-  FRESULT res;
+  FRESULT res[10];
   
   // Mount the File System
-  while( (res = f_mount(g_psFlashMount, "", 1) ) != FR_OK && idx <= MAX_MOUNT_ATTEMPTS)
-  { idx++;  }
+  while( (res[idx] = f_mount(g_psFlashMount, "", 1) ) != FR_OK && idx < MAX_MOUNT_ATTEMPTS)
+  { 
+    idx++;  
+    SysCtlDelay(8E3);
+  }
   
-  if(idx == MAX_MOUNT_ATTEMPTS) // Max Mount Attempts reached, error out
+  if(idx >= MAX_MOUNT_ATTEMPTS) // Max Mount Attempts reached, error out
     return(ERROR);
   
   // Create the filename
@@ -86,10 +90,13 @@ uint_fast8_t SDCardInit( void )
   
   // Open the file
   idx = 0;
-  while ( (res = f_open(g_psFlashFile, pcFilename, FA_WRITE | FA_CREATE_ALWAYS) ) != FR_OK && idx <= MAX_FOPEN_ATTEMPTS)
-  { idx++;  }
+  while ( (res[idx] = f_open(g_psFlashFile, pcFilename, FA_WRITE | FA_CREATE_ALWAYS) ) != FR_OK && idx < MAX_FOPEN_ATTEMPTS)
+  { 
+    idx++;  
+    SysCtlDelay(8E4);
+  }
   
-  if(idx == MAX_FOPEN_ATTEMPTS) // Max Mount Attempts reached, error out
+  if(idx >= MAX_FOPEN_ATTEMPTS) // Max Mount Attempts reached, error out
     return(ERROR);
 
   // Put a comment into the top of the file
@@ -97,6 +104,7 @@ uint_fast8_t SDCardInit( void )
     //
     // Out of flash memory
     //
+    idx = f_error(g_psFlashFile);
     f_close(g_psFlashFile);
     f_mount(NULL, "", 0);
     return (ERROR);

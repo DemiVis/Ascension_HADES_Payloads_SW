@@ -89,7 +89,7 @@
 #define ATMOS_TIMER_SYSCTL      SYSCTL_PERIPH_TIMER2
 #define ATMOS_TIMER_BASE        TIMER2_BASE
 #define ATMOS_SUBTIMER          TIMER_A
-#define ATMOS_FREQ              25      // Hz
+#define ATMOS_FREQ              10      // Hz
 
 #define DYNAMICS_TIMER_SYSCTL   SYSCTL_PERIPH_TIMER3
 #define DYNAMICS_TIMER_BASE     TIMER3_BASE
@@ -216,6 +216,7 @@ void BMP180AppCallback(void* pvCallbackData, uint_fast8_t ui8Status)
     if(ui8Status == I2CM_STATUS_SUCCESS)
     {
         g_vui8BMPDataFlag = 1;
+        IntEnable(INT_TIMER1A);
     }
 }
 
@@ -298,6 +299,7 @@ void AtmosTimerIntHandler(void)
   newAtmosDataReady = true;
   
   // Re-start the data acquisition process
+  IntDisable(INT_TIMER1A);
   BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
 }
 
@@ -662,10 +664,10 @@ void StartSDCard( void)
     if (f_puts("HADES Data Output\n\n", g_psFlashFile) == EOF) 
                 SDCardInit();
     f_sync(g_psFlashFile);
-    if (f_puts(",AccelX,AccelY,AccelZ,GyroX,GyroY,GyroZ,Mag X,Mag Y,Mag Z,Press,Temp,Alt\n", g_psFlashFile) == EOF) 
+    if (f_puts("#,AccelX,AccelY,AccelZ,GyroX,GyroY,GyroZ,Mag X,Mag Y,Mag Z,Press,Temp,Alt\n", g_psFlashFile) == EOF) 
                 SDCardInit();
     f_sync(g_psFlashFile);
-    if (f_puts(",m/s^2,m/s^2,m/s^2,rad/s,rad/s,rad/s,uT,uT,uT,inHg,C,m\n", g_psFlashFile) == EOF) 
+    if (f_puts(" ,m/s^2,m/s^2,m/s^2,rad/s,rad/s,rad/s,uT,uT,uT,inHg,C,m\n", g_psFlashFile) == EOF) 
                 SDCardInit();
     f_sync(g_psFlashFile);
 }
@@ -809,7 +811,6 @@ void waitConfirmGO(void)
 #endif
   }
 }
-#include "driverlib/ssi.h"
 
 //*****************************************************************************
 //
@@ -845,13 +846,13 @@ int main(void)
 #endif
     
 #if USE_SDCARD
-    disk_initialize(0);
-    for(int i = 0; i < 11; i++)
-    {
-      SSIDataPut(SSI2_BASE, 0xFF);
-      SysCtlDelay(SysCtlClockGet()/12);
-    }
-    
+//    disk_initialize(0);
+//    for(int i = 0; i < 11; i++)
+//    {
+//      SSIDataPut(SSI2_BASE, 0xFF);
+//      SysCtlDelay(SysCtlClockGet()/12);
+//    }
+    //    TODO: remove above
     StartSDCard();
 #endif
     
