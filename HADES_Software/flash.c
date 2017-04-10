@@ -15,7 +15,19 @@
 
 #include "flash.h"
 
-__root const sensorData_t flashData[4000] @ ".storage";
+// to make sure room is reserved in the flash
+__root const sensorData_t flashData[NUM_DATA_PTS] @ ".storage";
+
+//*****************************************************************************
+//
+// Initialize the Flash interface
+//
+//*****************************************************************************
+void ConfigureFlash(void)
+{
+  // TODO: implement this
+  FlashPBInit((uint32_t)&flashData, (uint32_t)(&flashData + DATA_STORAGE_SZ), 64);
+}
 
 //*****************************************************************************
 //
@@ -42,7 +54,7 @@ void flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData)
 // if UART is enabled (protect with #ifdef USE_UART)
 //
 //*****************************************************************************
-void OutputFlashData(void)
+void flash_outputData(void)
 {
 	// TODO: Implement this
 }

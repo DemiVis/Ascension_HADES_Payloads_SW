@@ -1123,7 +1123,7 @@ int main(void)
 		UARTSend("Data output confirmed, delaying 2 seconds to read this message.\n\r");
 		SysCtlDelay((SysCtlClockGet()/3)*2);
 		
-		OutputFlashData();
+		flash_outputData();
 		UARTSend("Data Output complete.\n\r");
 	}
 	

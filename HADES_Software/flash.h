@@ -33,19 +33,18 @@
 // Project Definitions
 //
 //*****************************************************************************
-// Constants
-#define FLASH_BLOCK_SZ          (64*1024)
-
-// Types
-typedef struct flashBlock { uint8_t data[FLASH_BLOCK_SZ]; } flashBlock_t;
+#define NUM_DATA_PTS            4000          
+#define DATA_STORAGE_SZ         (NUM_DATA_PTS*sizeof(sensorData_t))
 
 //*****************************************************************************
 //
 // Function Prototypes
 //
 //*****************************************************************************
+void ConfigureFlash(void);
+
 void flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData);
 
-void OutputFlashData(void); //Should only be called if UART is enabled (protect with #ifdef USE_UART)
+void flash_outputData(void); //Should only be called if UART is enabled (protect with #ifdef USE_UART)
 
 #endif

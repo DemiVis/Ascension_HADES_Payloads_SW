@@ -25,15 +25,15 @@ MixedMode=1
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
 [Disassemble mode]
 mode=0
 [Breakpoints]
 Bp0=_ "STD_CODE" "{$PROJ_DIR$\microSD.c}.64.3" 0 0 0 0 "" 0 ""
 Count=1
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
 [Aliases]
 A0=_ "C:\Jenkins\workspace\TivaWare-Git-Release\DriverLib\build\DriverLib.test\driverlib\gpio.c" "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\gpio.c"
 A1=_ "C:\Jenkins\workspace\TivaWare-Git-Release\DriverLib\build\DriverLib.test\driverlib\i2c.c" "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\i2c.c"
