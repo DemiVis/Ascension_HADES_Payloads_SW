@@ -15,6 +15,8 @@
 
 #include "flash.h"
 
+__root const sensorData_t flashData[4000] @ ".storage";
+
 //*****************************************************************************
 //
 // Store the latest data point in the Flash
@@ -22,6 +24,7 @@
 //*****************************************************************************
 void flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData)
 {
+  
   // TODO: implement this
   if(atmosData == NULL) // No atmoshperic data for this data point
   {

@@ -62,6 +62,8 @@ do not initialize { section .noinit };
 //
 place at start of FLASH { readonly section .intvec };
 
+place in FLASH { section .storage };
+
 //
 // Place the remainder of the read-only items into flash.
 //

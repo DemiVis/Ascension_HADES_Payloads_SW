@@ -25,4 +25,9 @@ typedef struct{
     DATA_TYPE fTemperature, fPressure, fAltitude;
 }atmosData_t;
 
+typedef struct{
+	dynamicsData_t dynamics_data;
+	atmosData_t atmos_Data;
+}sensorData_t;
+
 #endif
