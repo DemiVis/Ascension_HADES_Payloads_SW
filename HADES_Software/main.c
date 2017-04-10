@@ -24,6 +24,11 @@
 //*****************************************************************************
 //*****************************************************************************
 
+// Basic Configurations
+#define USE_SDCARD              0    // Set to 1 to use the SD card for storage
+#define USE_UART                1    // Set to 1 to use the UART for data output
+#define USE_FLASH               (!USE_SDCARD) // If not using the SD card, use the flash to store all the data
+
 
 //*****************************************************************************
 //
@@ -51,8 +56,6 @@
 #include "driverlib/timer.h"
 #include "driverlib/uart.h"
 
-#include "utils/uartstdio.h"
-
 #include "sensorlib/i2cm_drv.h"
 #include "sensorlib/hw_ak8975.h"
 #include "sensorlib/hw_bmp180.h"
@@ -65,7 +68,15 @@
 #include "drivers/buttons.h"
 #include "drivers/rgb.h"
 
+#include "HADES_types.h"
+
+#ifdef USE_SDCARD
 #include "microSD.h"
+#endif
+
+#ifdef USE_FLASH
+#include "flash.h"
+#endif
 
 //*****************************************************************************
 //
@@ -81,7 +92,6 @@
 #define ZAXIS                   2
 
 #define MAX_DATASTR_LEN         1024
-#define DATA_TYPE               float
 
 #define SENSHUB_LED_PORT        GPIO_PORTD_BASE
 #define SENSHUB_LED_PIN         GPIO_PIN_2
@@ -89,41 +99,37 @@
 #define ATMOS_TIMER_SYSCTL      SYSCTL_PERIPH_TIMER2
 #define ATMOS_TIMER_BASE        TIMER2_BASE
 #define ATMOS_SUBTIMER          TIMER_A
+#ifdef USE_SDCARD
+#define ATMOS_FREQ              40       // Hz
+#else   // using flash
 #define ATMOS_FREQ              1       // Hz
+#endif
 
 #define DYNAMICS_TIMER_SYSCTL   SYSCTL_PERIPH_TIMER3
 #define DYNAMICS_TIMER_BASE     TIMER3_BASE
 #define DYNAMICS_SUBTIMER       TIMER_A
+#ifdef USE_SDCARD
+#define DYNAMICS_FREQ           100       // Hz
+#else   // using flash
 #define DYNAMICS_FREQ           4       // Hz
-
-#define USE_SDCARD              0    // Set to 1 to use the SD card for storage
-#define USE_UART                1    // Set to 1 to use the UART for data output
+#endif
 
 #define GO_DELAY                1.0f // Delay (in sec) for GO button push 
 #define BUTTON_HOLD_COUNT	(100000) // Arbitrary number
 
 #if USE_UART
 #define GO_UART_CHAR            'G'
-#define STOP_UART_CHAR			'S'
+#define STOP_UART_CHAR		'S'
 #define PROJ_UART_BASE          UART0_BASE              // Which UART to use
 #define PROJ_UART_PERIPH        SYSCTL_PERIPH_UART0     // Note if this changes
 #define PROJ_UART_GPIO_BASE     GPIO_PORTA_BASE         // ConfigureUART() must
 #define PROJ_UART_GPIO_PERIPH   SYSCTL_PERIPH_GPIOA     // must still be updated
-#define OUTPUT_CONFIRM_STR		"Output Data"
+#define OUTPUT_CONFIRM_STR	"Output Data"
 #endif
 
-//*****************************************************************************
-//
-// Project-Specific Types
-//
-//*****************************************************************************
-typedef struct{
-    DATA_TYPE fAccel[3], fGyro[3], fMag[3];
-}dynamicsData_t;
-
-typedef struct{
-    DATA_TYPE fTemperature, fPressure, fAltitude;
-}atmosData_t;
+#ifdef USE_FLASH
+#define FLASH_BLOCK_SZ          (64*1024)
+#endif
 
 //*****************************************************************************
 //
@@ -142,10 +148,6 @@ uint32_t g_ui32PrintSkipCounter;// to control the rate of data to the terminal.
 atmosData_t fAtmosData;         // Temp atmos data storage
 dynamicsData_t fDynamicsData;   // Temp dynamics data storage
 
-#if USE_SDCARD
-FIL dataFile;                   // File where the data is stored on the SD card
-#endif
-
 // Flags
 volatile uint_fast8_t g_vui8I2CDoneFlag; // flags to alert main that MPU9150 I2C
                                          // transaction is complete
@@ -161,6 +163,7 @@ volatile bool newDynamicsDataReady;      // flag to indicate dyanmics data ready
 // External Variables
 #if USE_SDCARD
 extern FIL *g_psFlashFile;               // From microSD.c
+FIL dataFile;                   // File where the data is stored on the SD card
 #endif
 
 //*****************************************************************************
@@ -771,15 +774,7 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
       return OK;
 }
 
-//*****************************************************************************
-//
-// Store the latest data point in the Flash
-//
-//*****************************************************************************
-void storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData)
-{
-  // TODO: implement this
-}
+
 
 //*****************************************************************************
 //
@@ -820,18 +815,6 @@ void waitConfirmGO(void)
   }
 }
 
-#if USE_UART
-//*****************************************************************************
-//
-// Output all the data stored in this round out to the UART.
-//
-//*****************************************************************************
-void OutputAcquiredData(void)
-{
-	// TODO: Implement this
-}
-#endif
-
 //*****************************************************************************
 //
 // Main application entry point.
@@ -854,7 +837,7 @@ int main(void)
     
     // Initialize the LEDs for indications
     // Begins blinking the LED at 20 Hz for indicator of configuration time
-    ConfigureLEDs();    
+    ConfigureLEDs();
     
 #if USE_UART
     // Initialize the UART.
@@ -1018,9 +1001,9 @@ int main(void)
               MPU9150AppErrorHandler(__FILE__, __LINE__, "Data String Creation Failure");
             }
 #endif
-#if !USE_SDCARD
-			// store data on on-chip flash
-			storeDataPoint(&fDynamicsData, &fAtmosData);
+#if USE_FLASH
+            // store data on on-chip flash
+            flash_storeDataPoint(&fDynamicsData, &fAtmosData);
 #endif
           }
           else  // just print dynamics data
@@ -1034,20 +1017,20 @@ int main(void)
               MPU9150AppErrorHandler(__FILE__, __LINE__, "Data String Creation Failure");
             }
 #endif
-#if !USE_SDCARD
-			// store data on on-chip flash
-			storeDataPoint(&fDynamicsData, NULL);
+#if USE_FLASH
+            // store data on on-chip flash
+            flash_storeDataPoint(&fDynamicsData, NULL);
 #endif
           }
           
 #if USE_UART
-            UARTSend(dataString);
+          UARTSend(dataString);
 #endif
             
 #if USE_SDCARD
-            if (f_puts(dataString, g_psFlashFile) == EOF) 
-                SDCardInit();
-            f_sync(g_psFlashFile);
+          if (f_puts(dataString, g_psFlashFile) == EOF) 
+              SDCardInit();
+          f_sync(g_psFlashFile);
 #endif
         }
         
@@ -1140,7 +1123,7 @@ int main(void)
 		UARTSend("Data output confirmed, delaying 2 seconds to read this message.\n\r");
 		SysCtlDelay((SysCtlClockGet()/3)*2);
 		
-		OutputAcquiredData();
+		OutputFlashData();
 		UARTSend("Data Output complete.\n\r");
 	}
 	

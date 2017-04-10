@@ -1,10 +1,10 @@
 //*****************************************************************************
 //
-// microSD.h - microSD card interface softwaer for HADES Payload.
+// flash.h - on-chip flash interface software for HADES Payload.
 //
 // This software is to be used on the Payloads of the HADES project by Team
-// Ascension. The software contained is to allow interface between the TI
-// LaunchPad and a properly connected microSD card for data storage.
+// Ascension. The software contained is to utilize the on-chip flash for sensor
+// data storage.
 //
 // Primary Author: Matthew Demi Vis
 //                 vism@my.erau.edu
@@ -13,8 +13,8 @@
 //
 //*****************************************************************************
 
-#ifndef MICROSD
-#define MICROSD
+#ifndef FLASH
+#define FLASH
 
 //*****************************************************************************
 //
@@ -22,9 +22,9 @@
 //
 //*****************************************************************************
 #include <stdint.h>
+#include <stdio.h>
 
-#include "fatfs/diskio.h"
-#include "fatfs/ff.h"
+#include "utils/flash_pb.h"
 
 #include "HADES_types.h"
 
@@ -33,25 +33,19 @@
 // Project Definitions
 //
 //*****************************************************************************
-#define SDCARD_ENABLE      true
+// Constants
+#define FLASH_BLOCK_SZ          (64*1024)
 
-#define SDCARD_FILENAME 			"HADES_data"
-#define SDCARD_EXT      			"csv"
-#define SDCARD_COMMENT 				"Raw data read from sensors"
-#define SDCARD_TIMERPROC_TIMER_BASE		TIMER0_BASE
-#define SDCARD_TIMERPROC_RATE 			100 		// in hz
-
-#define OK                                      1
-#define ERROR                                   0
-
+// Types
+typedef struct flashBlock { uint8_t data[FLASH_BLOCK_SZ]; } flashBlock_t;
 
 //*****************************************************************************
 //
 // Function Prototypes
 //
 //*****************************************************************************
+void flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData);
 
-uint_fast8_t SDCardInit(void);
-uint_fast8_t SDCardWrite(char * writeString, FIL * file);
+void OutputFlashData(void); //Should only be called if UART is enabled (protect with #ifdef USE_UART)
 
 #endif

@@ -68,7 +68,7 @@ extern void __iar_program_start(void);
 // Reserve space for the system stack.
 //
 //*****************************************************************************
-static uint32_t pui32Stack[4096] @ ".noinit";
+static uint32_t pui32Stack[4096] @ ".noinit"; /* max is around 7557 */
 
 //*****************************************************************************
 //

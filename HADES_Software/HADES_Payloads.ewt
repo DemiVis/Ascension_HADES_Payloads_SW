@@ -1176,6 +1176,9 @@
       <name>$PROJ_DIR$\fatfs\ff.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\flash.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\main.c</name>
     </file>
     <file>
