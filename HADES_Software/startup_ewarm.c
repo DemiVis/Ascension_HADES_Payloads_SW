@@ -311,7 +311,7 @@ NmiSR(void)
 static void
 FaultISR(void)
 {
-    MPU9150AppErrorHandler("UNKNOWN", 0, "Fault ISR");
+    MPU9150AppErrorHandler("startup_ewarm", 0, "Fault ISR");
       
     // Enter an infinite loop.
     while(1)
@@ -330,7 +330,7 @@ static void
 IntDefaultHandler(void)
 {
     
-    MPU9150AppErrorHandler("UNKNOWN", 0, "IntDefaultHandler");
+    MPU9150AppErrorHandler("startup_ewarm", 0, "IntDefaultHandler");
     
     // Go into an infinite loop.
     while(1)
