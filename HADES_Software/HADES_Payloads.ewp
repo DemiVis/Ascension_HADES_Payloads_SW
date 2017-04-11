@@ -989,9 +989,6 @@
       <name>$PROJ_DIR$\fatfs\ff.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\flash.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\utils\flash_pb.c</name>
     </file>
     <file>
@@ -1014,6 +1011,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\utils\uartstdio.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\userFlash.c</name>
     </file>
   </group>
 </project>

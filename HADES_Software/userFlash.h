@@ -21,16 +21,6 @@
 // Necessary Includes
 //
 //*****************************************************************************
-#include <stdint.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
-
-#include "driverlib/sysctl.h"
-
-#include "utils/flash_pb.h"
-
 #include "HADES_types.h"
 
 //*****************************************************************************

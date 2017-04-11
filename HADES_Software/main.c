@@ -75,7 +75,7 @@
 #endif
 
 #ifdef USE_FLASH
-#include "flash.h"
+#include "userFlash.h"
 #endif
 
 //*****************************************************************************
@@ -401,7 +401,17 @@ void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg
     // attempt corrective actions here.
     while(1)
     {
-        // Do Nothing
+        // Turn on USER LED on
+        GPIOPinWrite(SENSHUB_LED_PORT, SENSHUB_LED_PIN, 0xFF);
+        
+        // Delay
+        SysCtlDelay(SysCtlClockGet()/30);
+        
+        // Turn on USER LED off
+        GPIOPinWrite(SENSHUB_LED_PORT, SENSHUB_LED_PIN, 0x00);
+        
+        // Delay
+        SysCtlDelay(SysCtlClockGet()/30);
     }
 }
 
