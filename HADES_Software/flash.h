@@ -22,7 +22,12 @@
 //
 //*****************************************************************************
 #include <stdint.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
+#include <assert.h>
+
+#include "driverlib/sysctl.h"
 
 #include "utils/flash_pb.h"
 
@@ -35,6 +40,8 @@
 //*****************************************************************************
 #define NUM_DATA_PTS            4000          
 #define DATA_STORAGE_SZ         (NUM_DATA_PTS*sizeof(sensorData_t))
+
+#define FLASH_BLOCK_SZ          SysCtlFlashSectorSizeGet()
 
 //*****************************************************************************
 //

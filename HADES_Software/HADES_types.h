@@ -20,14 +20,17 @@
 typedef struct{
     DATA_TYPE fAccel[3], fGyro[3], fMag[3];
 }dynamicsData_t;
+#define DYNAMICS_STRUCT_SZ      (sizeof(DATA_TYPE)*9)
 
 typedef struct{
     DATA_TYPE fTemperature, fPressure, fAltitude;
 }atmosData_t;
+#define ATMOS_STRUCT_SZ         (sizeof(DATA_TYPE)*3)
 
 typedef struct{
 	dynamicsData_t dynamics_data;
 	atmosData_t atmos_Data;
 }sensorData_t;
+#define SENSOR_STRUCT_SZ        (DYNAMICS_STRUCT_SZ + ATMOS_STRUCT_SZ)
 
 #endif

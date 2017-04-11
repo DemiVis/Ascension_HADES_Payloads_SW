@@ -992,6 +992,9 @@
       <name>$PROJ_DIR$\flash.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\utils\flash_pb.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\main.c</name>
     </file>
     <file>

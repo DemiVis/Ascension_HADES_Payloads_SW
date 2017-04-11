@@ -127,10 +127,6 @@
 #define OUTPUT_CONFIRM_STR	"Output Data"
 #endif
 
-#ifdef USE_FLASH
-#define FLASH_BLOCK_SZ          (64*1024)
-#endif
-
 //*****************************************************************************
 //
 // Global Variables
@@ -706,7 +702,9 @@ void floatToDecimals(float inFloat, int_fast32_t *iPart, int_fast32_t *fPart)
 
 //*****************************************************************************
 //
-// Make data string to write to file
+// Make data string to write to file.
+// Set atmosData to NULL for writing blank instead of atmos data
+// Set atmosData AND dynamicsData to NULL to reset the index in the string to 0
 //
 //*****************************************************************************
 int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *atmosData)
@@ -714,6 +712,12 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
     int len;
     int_fast32_t iIPart[12], iFPart[12]; // Dynamics(9) + Atmos(3)
     static uint32_t idx = 0;
+    
+    // TODO: check for valid string addr for outStirng
+    
+    // Reset the idx for printing
+    if(dynamicsData == NULL && atmosData == NULL)
+      idx = 0;
 
     // Dynamics Data
     floatToDecimals( dynamicsData->fAccel[XAXIS], &iIPart[XAXIS], &iFPart[XAXIS]);
@@ -850,6 +854,10 @@ int main(void)
     
 #if USE_SDCARD
     StartSDCard();
+#endif
+    
+#ifdef USE_FLASH
+    ConfigureFlash();
 #endif
     
     // Initialize the I2C
@@ -1090,7 +1098,7 @@ int main(void)
 		UARTSend("Enter \""OUTPUT_CONFIRM_STR"\" to send all stored data.\n\r");
 		sprintf(tempStr, OUTPUT_CONFIRM_STR);
 		
-		confirmStrLen = strnlen(tempStr, 20);
+		confirmStrLen = strnlen(tempStr, 20) - 1;
 		
 		stop = false;	
 		while(!stop)
@@ -1115,7 +1123,7 @@ int main(void)
 		  {
 			// messed up a character, start from the beginning
 			idx = 0;
-			UARTSend("Character mismatch. Type \""OUTPUT_CONFIRM_STR" to output acquired data");
+			UARTSend("Character mismatch. Type \""OUTPUT_CONFIRM_STR"\" to output acquired data\n\r");
 		  }
 		  
 		}
