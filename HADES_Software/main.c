@@ -99,19 +99,20 @@
 #define ATMOS_TIMER_SYSCTL      SYSCTL_PERIPH_TIMER2
 #define ATMOS_TIMER_BASE        TIMER2_BASE
 #define ATMOS_SUBTIMER          TIMER_A
-#ifdef USE_SDCARD
+#if USE_SDCARD
 #define ATMOS_FREQ              40       // Hz
 #else   // using flash
 #define ATMOS_FREQ              1       // Hz
 #endif
+#define ATMOS_SKIP_COUNT        3       // DO atmospheric stuff every 4th dynamics stuff
 
 #define DYNAMICS_TIMER_SYSCTL   SYSCTL_PERIPH_TIMER3
 #define DYNAMICS_TIMER_BASE     TIMER3_BASE
 #define DYNAMICS_SUBTIMER       TIMER_A
-#ifdef USE_SDCARD
+#if USE_SDCARD
 #define DYNAMICS_FREQ           100       // Hz
 #else   // using flash
-#define DYNAMICS_FREQ           4       // Hz
+#define DYNAMICS_FREQ           3       // Hz
 #endif
 
 #define GO_DELAY                1.0f // Delay (in sec) for GO button push 
@@ -170,13 +171,13 @@ FIL dataFile;                   // File where the data is stored on the SD card
 void DisableSensorTimers(void)
 {
     // Disable timers until we're ready to use them
-  TimerDisable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
+  //TimerDisable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
   TimerDisable(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER);
 }
 void EnableSensorTimers(void)
 {
     // Disable timers until we're ready to use them
-  TimerEnable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
+  //TimerEnable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
   TimerEnable(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER);
 }
 
@@ -274,11 +275,14 @@ void HADESI2CIntHandler(void)
 void AtmosTimerIntHandler(void)
 {
   // Clear the interrupt flag
-  TimerIntClear(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
+  //TimerIntClear(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
   
-  // Make sure data is available, this should never hang
-  while(g_vui8BMPDataFlag == 0)
-  { /* Wait for the new data set to be available*/ }
+  // Make sure data is available, if not, miss this capture and try again
+  if(g_vui8BMPDataFlag == 0)
+  { 
+    // Re-start the data acquisition process
+    BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
+  }
   
   // Reset the data ready flag.
   g_vui8BMPDataFlag = 0;
@@ -288,10 +292,6 @@ void AtmosTimerIntHandler(void)
   
   // Get a local copy of the latest air pressure data in float format.
   BMP180DataPressureGetFloat(&g_sBMP180Inst, &fAtmosData.fPressure);
-  
-  // Calculate the altitude.
-  fAtmosData.fAltitude = 44330.0f * (1.0f - powf(fAtmosData.fPressure / 101325.0f,
-                                      1.0f / 5.255f));
   
   // Indicate new data is ready for writing
   newAtmosDataReady = true;
@@ -309,6 +309,7 @@ void AtmosTimerIntHandler(void)
 void DynamicsTimerIntHandler(void)
 {
   static uint_fast32_t ui32CompDCMStarted = 0;
+  static int atmosCount = 0;
   
   // Clear the interrupt flag
   TimerIntClear(DYNAMICS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
@@ -365,12 +366,20 @@ void DynamicsTimerIntHandler(void)
   
   // Indicate data is ready to write
   newDynamicsDataReady = true;
+  
+  // count towards doing the atmos processing
+  atmosCount++;
+  if(atmosCount >= ATMOS_SKIP_COUNT)
+  {
+    AtmosTimerIntHandler();
+    atmosCount = 0;
+  }
 }
 
 //*****************************************************************************
 //
 // MPU9150 Application error handler. Show the user if we have encountered an
-// I2C error.
+// error.
 //
 //*****************************************************************************
 void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg)
@@ -378,8 +387,8 @@ void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg
   char tempErrStr[128];
     // Set terminal color to red and print error status and locations
     UARTSend("\033[31;1m");
-    sprintf(tempErrStr, "Error: %d, File: %s, Line: %d\n\r"
-               "See I2C status definitions in sensorlib\\i2cm_drv.h\n\r",
+    
+    sprintf(tempErrStr, "Error: %d, File: %s, Line: %d\n\r",
                g_vui8ErrorFlag, pcFilename, ui32Line);
     UARTSend(tempErrStr);
     sprintf(tempErrStr, "Msg: %s\n\r", msg);
@@ -397,8 +406,7 @@ void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg
     // Increase blink rate to get attention
     RGBBlinkRateSet(10.0f);
 
-    // Go to sleep wait for interventions.  A more robust application could
-    // attempt corrective actions here.
+    // Go to sleep wait for interventions.
     while(1)
     {
         // Turn on USER LED on
@@ -523,25 +531,25 @@ void ConfigureI2C(void)
 void ConfigureTimers(void)
 {
   // Turn on the timers used
-  SysCtlPeripheralEnable(ATMOS_TIMER_SYSCTL);
+  //SysCtlPeripheralEnable(ATMOS_TIMER_SYSCTL);
   SysCtlPeripheralEnable(DYNAMICS_TIMER_SYSCTL);
   
   // Configure the timers used
-  TimerConfigure(ATMOS_TIMER_BASE, TIMER_CFG_A_PERIODIC);
+  //TimerConfigure(ATMOS_TIMER_BASE, TIMER_CFG_A_PERIODIC);
   TimerConfigure(DYNAMICS_TIMER_BASE, TIMER_CFG_A_PERIODIC);
   
   // Set the Timer frequencies
-  TimerLoadSet(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, SysCtlClockGet() / ATMOS_FREQ);
+  //TimerLoadSet(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, SysCtlClockGet() / ATMOS_FREQ);
   TimerLoadSet(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER, SysCtlClockGet() / DYNAMICS_FREQ);
   
   // Setup Timer Interrupts
-  TimerIntEnable(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
+  //TimerIntEnable(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
   TimerIntEnable(DYNAMICS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
-  IntEnable(INT_TIMER0A);
+  //IntEnable(INT_TIMER0A);
   IntEnable(INT_TIMER1A);
   
   // Register the timer ISRs
-  TimerIntRegister(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, AtmosTimerIntHandler);
+  //TimerIntRegister(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, AtmosTimerIntHandler);
   TimerIntRegister(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER, DynamicsTimerIntHandler);
   
   // Disable timers until we're ready to use them
@@ -724,11 +732,15 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
     static uint32_t idx = 0;
     
     // TODO: check for valid string addr for outStirng
-    
+   
+
     // Reset the idx for printing
     if(dynamicsData == NULL && atmosData == NULL)
+    {
       idx = 0;
-
+      return OK;
+    }
+    
     // Dynamics Data
     floatToDecimals( dynamicsData->fAccel[XAXIS], &iIPart[XAXIS], &iFPart[XAXIS]);
     floatToDecimals( dynamicsData->fAccel[YAXIS], &iIPart[YAXIS], &iFPart[YAXIS]);
@@ -741,11 +753,15 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
     floatToDecimals( dynamicsData->fMag[ZAXIS], &iIPart[ZAXIS+6], &iFPart[ZAXIS+6]);
     
     if(atmosData != NULL)
-    {
+    {    
+      float fAltitude;
+      // Calculate the altitude.
+      fAltitude = 44330.0f * (1.0f - powf(atmosData->fPressure / 101325.0f,
+                                        1.0f / 5.255f));
       // Atmospheric Data
       floatToDecimals( atmosData->fPressure,    &iIPart[9], &iFPart[9] );
       floatToDecimals( atmosData->fTemperature, &iIPart[10], &iFPart[10] );
-      floatToDecimals( atmosData->fAltitude,    &iIPart[11], &iFPart[11] );
+      floatToDecimals( fAltitude,               &iIPart[11], &iFPart[11] );
     
     sprintf(outString,
            "%4u,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d\n\r",
@@ -762,6 +778,21 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
             iIPart[7], iFPart[9],         // Pressure
             iIPart[10], iFPart[10],       // Temperature
             iIPart[11], iFPart[11]);      // Altitude
+    /*  sprintf(outString,
+              "%4u,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f\n\r",
+              idx,
+              dynamicsData->fAccel[XAXIS],
+              dynamicsData->fAccel[YAXIS],
+              dynamicsData->fAccel[ZAXIS],
+              dynamicsData->fGyro[XAXIS],
+              dynamicsData->fGyro[YAXIS],
+              dynamicsData->fGyro[ZAXIS],
+              dynamicsData->fMag[XAXIS],
+              dynamicsData->fMag[YAXIS],
+              dynamicsData->fMag[ZAXIS],
+              atmosData->fPressure,
+              atmosData->fTemperature,
+              atmosData->fAltitude );*/
     }
     else
     {
@@ -846,6 +877,7 @@ int main(void)
 
     // Disable all interrupts for configuration
     IntMasterDisable();
+    //DisableSensorTimers();
     
     ////////// Non-Sensor Peripheral Initialization //////////
     
@@ -872,9 +904,6 @@ int main(void)
     
     // Initialize the I2C
     ConfigureI2C();
-    
-    // Initialize the Timers
-    ConfigureTimers();
 
     // Initialize GPIO and whatnot for MPU Interrupts
     ConfigureGPIObInts();
@@ -993,6 +1022,9 @@ int main(void)
     // Start data collection of both sensors
     BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
     
+    // Initialize the Timers
+    ConfigureTimers();
+
     // Turn on Sensor timers to begin data collection
     EnableSensorTimers();
     
@@ -1021,7 +1053,11 @@ int main(void)
 #endif
 #if USE_FLASH
             // store data on on-chip flash
-            flash_storeDataPoint(&fDynamicsData, &fAtmosData);
+            if( flash_storeDataPoint(&fDynamicsData, &fAtmosData) == ERROR)
+            {
+              UARTSend("Flash Out of Space! Stopping data collection!"); // TODO: Do we want to overwrite here or is this what we want? Look into it.
+              stop = true;
+            }
 #endif
           }
           else  // just print dynamics data
@@ -1037,7 +1073,11 @@ int main(void)
 #endif
 #if USE_FLASH
             // store data on on-chip flash
-            flash_storeDataPoint(&fDynamicsData, NULL);
+            if( flash_storeDataPoint(&fDynamicsData, NULL) == ERROR)
+            {
+              UARTSend("Flash Out of Space! Stopping data collection!"); // TODO: Do we want to overwrite here or is this what we want? Look into it.
+              stop = true;
+            }
 #endif
           }
           
@@ -1102,7 +1142,7 @@ int main(void)
 		// Turn on USER LED for indication data acquisition is done
 		GPIOPinWrite(SENSHUB_LED_PORT, SENSHUB_LED_PIN, 0xFF);
 		
-	#if USE_UART
+#if USE_UART
 		int confirmStrLen, idx=0;
 		
 		UARTSend("Enter \""OUTPUT_CONFIRM_STR"\" to send all stored data.\n\r");

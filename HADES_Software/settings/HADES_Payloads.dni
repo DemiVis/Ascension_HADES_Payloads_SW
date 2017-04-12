@@ -4,7 +4,7 @@ LMIFTDIfoundProbes=
 LMI_ResetMode=0x00000000
 LMI_LeaveTargetRunning=0x00000000
 [DebugChecksum]
-Checksum=-1597313256
+Checksum=1387028356
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -22,6 +22,8 @@ ByteLimit=50
 ShowArgs=0
 [Disassembly]
 MixedMode=1
+[array_types]
+Fmt0=float[3]	4	0
 [watch_formats]
 Fmt0={W}1:tempData	0	2
 [Log file]
@@ -37,10 +39,8 @@ mode=0
 Bp0=_ "STD_CODE" "{$PROJ_DIR$\microSD.c}.64.3" 0 0 0 0 "" 0 ""
 Bp1=_ "STD_CODE" "{$PROJ_DIR$\startup_ewarm.c}.314.5" 1 0 0 0 "" 0 ""
 Bp2=_ "STD_CODE" "{$PROJ_DIR$\startup_ewarm.c}.333.5" 1 0 0 0 "" 0 ""
-Bp3=_ "STD_CODE" "{$PROJ_DIR$\userFlash.c}.139.3" 1 0 0 0 "" 0 ""
-Bp4=_ "STD_CODE" "{$PROJ_DIR$\userFlash.c}.152.7" 1 0 0 0 "" 0 ""
-Bp5=_ "STD_CODE" "{$PROJ_DIR$\userFlash.c}.143.5" 1 0 0 0 "" 0 ""
-Count=6
+Bp3=_ "STD_CODE" "0x00036C42" 0 0 0 0 "" 0 ""
+Count=4
 [Aliases]
 A0=_ "C:\Jenkins\workspace\TivaWare-Git-Release\DriverLib\build\DriverLib.test\driverlib\gpio.c" "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\gpio.c"
 A1=_ "C:\Jenkins\workspace\TivaWare-Git-Release\DriverLib\build\DriverLib.test\driverlib\i2c.c" "F:\Users\Matthew\Documents\GitHub\Ascension_HADES_Payloads_SW\driverlib\i2c.c"

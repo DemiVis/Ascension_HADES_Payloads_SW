@@ -41,10 +41,6 @@
 #define SDCARD_TIMERPROC_TIMER_BASE		TIMER0_BASE
 #define SDCARD_TIMERPROC_RATE 			100 		// in hz
 
-#define OK                                      1
-#define ERROR                                   0
-
-
 //*****************************************************************************
 //
 // Function Prototypes

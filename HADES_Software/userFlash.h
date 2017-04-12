@@ -28,7 +28,7 @@
 // Project Definitions
 //
 //*****************************************************************************
-#define NUM_DATA_PTS            4000          
+#define BYTES_OF_DATA           0x38000 // 224 kB         
 #define DATA_STORAGE_SZ         (NUM_DATA_PTS*sizeof(sensorData_t))
 
 #define FLASH_BLOCK_SZ          SysCtlFlashSectorSizeGet()
@@ -40,7 +40,7 @@
 //*****************************************************************************
 void ConfigureFlash(void);
 
-void flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData);
+int32_t flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData);
 
 void flash_outputData(void); //Should only be called if UART is enabled (protect with #ifdef USE_UART)
 

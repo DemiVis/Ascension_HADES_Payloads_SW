@@ -1173,10 +1173,7 @@
       <name>$PROJ_DIR$\fatfs\option\ccsbcs.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\fatfs\ff.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\utils\flash_pb.c</name>
+      <name>$PROJ_DIR$\flashstore.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\main.c</name>
@@ -1192,9 +1189,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\userlib\timer.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\tm4c_fatfs.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\utils\uartstdio.c</name>
