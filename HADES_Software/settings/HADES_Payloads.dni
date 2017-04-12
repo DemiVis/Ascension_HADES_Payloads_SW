@@ -31,9 +31,8 @@ Bp0=_ "STD_CODE" "{$PROJ_DIR$\microSD.c}.64.3" 0 0 0 0 "" 0 ""
 Bp1=_ "STD_CODE" "{$PROJ_DIR$\startup_ewarm.c}.314.5" 1 0 0 0 "" 0 ""
 Bp2=_ "STD_CODE" "{$PROJ_DIR$\startup_ewarm.c}.333.5" 1 0 0 0 "" 0 ""
 Bp3=_ "STD_CODE" "0x00036C42" 0 0 0 0 "" 0 ""
-Bp4=_ "STD_CODE" "{$PROJ_DIR$\userFlash.c}.136.14" 1 0 0 0 "" 0 ""
-Bp5=_ "STD_CODE" "{$PROJ_DIR$\main.c}.736.5" 1 0 0 0 "" 0 ""
-Count=6
+Bp4=_ "STD_CODE" "{$PROJ_DIR$\main.c}.736.5" 1 0 0 0 "" 0 ""
+Count=5
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

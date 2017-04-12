@@ -68,6 +68,7 @@ uint32_t flashBytesWritten;
 uint32_t flashBaseAddr;
 
 bool FreeSpaceAvailable;
+int32_t blocksFree;
 
 // End of data chunk to indicate end of data
 uint32_t end_of_data = 0xFFFFFFFF;
@@ -81,6 +82,7 @@ uint32_t end_of_data = 0xFFFFFFFF;
 void ConfigureFlash(void)
 {
   flashBytesWritten = 0;
+  blocksFree = flashStoreFree();
   FreeSpaceAvailable = flashStoreInit();
 }
 
@@ -150,6 +152,8 @@ void flash_outputData(void)
       UARTSend(outString);
       idx = 0;
     }
+    else if(readByte == FLASH_STORE_RECORD_HEADER)
+    { /* just skip this byte */ }
     else
     {
       tempData[idx] = readByte;

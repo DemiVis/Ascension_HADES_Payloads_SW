@@ -733,7 +733,7 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
     // TODO: check for valid string addr for outStirng
     
     // Reset the idx for printing
-    if(dynamicsData == NULL && atmosData == NULL)
+    if(dynamicsData == NULL && atmosData == NULL) // TODO: return after idx=0
       idx = 0;
 
     // Dynamics Data

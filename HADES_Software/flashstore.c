@@ -94,6 +94,9 @@ unpack_c3(uint32_t p)
 int32_t
 flashStoreInit(void)
 {
+  // Clear the flash
+  flashStoreErase();
+  
   return flashStoreNewLogFile(0x0, FLASHSTORE_INIT_OVERWRITE);
 }
 
@@ -264,6 +267,7 @@ flashStoreErase(void)
     for(ui32Addr = FLASH_STORE_START_ADDR; ui32Addr < FLASH_STORE_END_ADDR;
         ui32Addr += FLASH_STORE_BLOCK_ERASE_SIZE)
     {
+      if( !IsBlockFree(ui32Addr) )
         FlashErase(ui32Addr);
     }
 
