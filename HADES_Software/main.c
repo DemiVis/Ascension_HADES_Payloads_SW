@@ -104,6 +104,7 @@
 #else   // using flash
 #define ATMOS_FREQ              1       // Hz
 #endif
+#define ATMOS_SKIP_COUNT        4       // DO atmospheric stuff every 4th dynamics stuff
 
 #define DYNAMICS_TIMER_SYSCTL   SYSCTL_PERIPH_TIMER3
 #define DYNAMICS_TIMER_BASE     TIMER3_BASE
@@ -170,13 +171,13 @@ FIL dataFile;                   // File where the data is stored on the SD card
 void DisableSensorTimers(void)
 {
     // Disable timers until we're ready to use them
-  TimerDisable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
+  //TimerDisable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
   TimerDisable(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER);
 }
 void EnableSensorTimers(void)
 {
     // Disable timers until we're ready to use them
-  TimerEnable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
+  //TimerEnable(ATMOS_TIMER_BASE, ATMOS_SUBTIMER);
   TimerEnable(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER);
 }
 
@@ -372,6 +373,11 @@ void DynamicsTimerIntHandler(void)
   
   // count towards doing the atmos processing
   atmosCount++;
+  if(atmosCount >= ATMOS_SKIP_COUNT)
+  {
+    AtmosTimerIntHandler();
+    atmosCount = 0;
+  }
 }
 
 //*****************************************************************************
@@ -530,25 +536,25 @@ void ConfigureI2C(void)
 void ConfigureTimers(void)
 {
   // Turn on the timers used
-  SysCtlPeripheralEnable(ATMOS_TIMER_SYSCTL);
+  //SysCtlPeripheralEnable(ATMOS_TIMER_SYSCTL);
   SysCtlPeripheralEnable(DYNAMICS_TIMER_SYSCTL);
   
   // Configure the timers used
-  TimerConfigure(ATMOS_TIMER_BASE, TIMER_CFG_A_PERIODIC);
+  //TimerConfigure(ATMOS_TIMER_BASE, TIMER_CFG_A_PERIODIC);
   TimerConfigure(DYNAMICS_TIMER_BASE, TIMER_CFG_A_PERIODIC);
   
   // Set the Timer frequencies
-  TimerLoadSet(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, SysCtlClockGet() / ATMOS_FREQ);
+  //TimerLoadSet(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, SysCtlClockGet() / ATMOS_FREQ);
   TimerLoadSet(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER, SysCtlClockGet() / DYNAMICS_FREQ);
   
   // Setup Timer Interrupts
-  TimerIntEnable(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
+  //TimerIntEnable(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
   TimerIntEnable(DYNAMICS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
-  IntEnable(INT_TIMER0A);
+  //IntEnable(INT_TIMER0A);
   IntEnable(INT_TIMER1A);
   
   // Register the timer ISRs
-  TimerIntRegister(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, AtmosTimerIntHandler);
+  //TimerIntRegister(ATMOS_TIMER_BASE, ATMOS_SUBTIMER, AtmosTimerIntHandler);
   TimerIntRegister(DYNAMICS_TIMER_BASE, DYNAMICS_SUBTIMER, DynamicsTimerIntHandler);
   
   // Disable timers until we're ready to use them
@@ -733,9 +739,12 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
     // TODO: check for valid string addr for outStirng
     
     // Reset the idx for printing
-    if(dynamicsData == NULL && atmosData == NULL) // TODO: return after idx=0
+    if(dynamicsData == NULL && atmosData == NULL)
+    {
       idx = 0;
-
+      return OK;
+    }
+    
     // Dynamics Data
     floatToDecimals( dynamicsData->fAccel[XAXIS], &iIPart[XAXIS], &iFPart[XAXIS]);
     floatToDecimals( dynamicsData->fAccel[YAXIS], &iIPart[YAXIS], &iFPart[YAXIS]);

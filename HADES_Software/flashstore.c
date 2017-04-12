@@ -226,10 +226,11 @@ flashStoreWriteRecord(uint8_t *record, int size)
   //
   // Pack chars into record buffer
   //
+  pui32Record = (uint32_t *)record;
   for (i=0; i < (size / 4); i++)
   {
 
-    g_pui32RecordBuf[i+1] = pack(record[i*4], record[(i*4)+1], record[(i*4)+2], record[(i*4)+3]);
+    g_pui32RecordBuf[i+1] = pui32Record[i];
   }
 
   pui32Record = g_pui32RecordBuf;
@@ -246,9 +247,9 @@ flashStoreWriteRecord(uint8_t *record, int size)
   g_ui32StoreAddr += (recordSize);
 
   //
-  // Return success indication to caller.
+  // Return number of bytes written to the caller.
   //
-  return 1;
+  return recordSize;
 }
 
 //*****************************************************************************

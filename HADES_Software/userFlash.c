@@ -93,22 +93,22 @@ void ConfigureFlash(void)
 //*****************************************************************************
 void flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData)
 {
-	// Check to make sure there is still data available
+  // TODO: Check to make sure there is still data available
 	
 	
 	// Don't store the atmospheric data
 	if(atmosData == NULL)
 	{
 		flashStoreWriteRecord((uint8_t *)dynamicsData, DYNAMICS_STRUCT_SZ);
-		FreeSpaceAvailable = flashStoreWriteRecord((uint8_t *)&end_of_data, END_OF_DATA_SZ);
-                flashBytesWritten += DYNAMICS_STRUCT_SZ + END_OF_DATA_SZ;
+		flashStoreWriteRecord((uint8_t *)&end_of_data, END_OF_DATA_SZ);
+                flashBytesWritten += DYNAMICS_STRUCT_SZ + END_OF_DATA_SZ + (2*FLASH_STORE_RECORD_HEADER_SZ);
 	}
 	else
 	{
 		flashStoreWriteRecord((uint8_t *)dynamicsData, DYNAMICS_STRUCT_SZ);
 		flashStoreWriteRecord((uint8_t *)atmosData, ATMOS_STRUCT_SZ);
-		FreeSpaceAvailable = flashStoreWriteRecord((uint8_t *)&end_of_data, END_OF_DATA_SZ);
-                flashBytesWritten += DYNAMICS_STRUCT_SZ + ATMOS_STRUCT_SZ + END_OF_DATA_SZ;
+		flashStoreWriteRecord((uint8_t *)&end_of_data, END_OF_DATA_SZ);
+                flashBytesWritten += DYNAMICS_STRUCT_SZ + ATMOS_STRUCT_SZ + END_OF_DATA_SZ + (3*FLASH_STORE_RECORD_HEADER_SZ);
 	}
 }
 
@@ -132,16 +132,17 @@ void flash_outputData(void)
   UARTSend("  # , AccelX, AccelY, AccelZ, GyroX , GyroY , GyroZ , Mag X , Mag Y , Mag Z , Press ,  Temp ,   Alt  \n\r");
   UARTSend("    , m/s^2 , m/s^2 , m/s^2 , rad/s , rad/s , rad/s ,   uT  ,   uT  ,   uT  ,  inHg ,   C   ,    m   \n\r");
 
-  
-  for(uint32_t addr = FLASH_STORE_START_ADDR; addr <= FLASH_STORE_START_ADDR + flashBytesWritten; addr += 0x4)
+  // Read through all the bytes
+  for(uint32_t addr = FLASH_STORE_START_ADDR; addr < FLASH_STORE_START_ADDR + flashBytesWritten; addr += 0x4)
   {
+    // get the next byte
     uint32_t readByte = flashStoreGetData(addr);
     
     if(readByte == end_of_data)
     {
       char outString[512];
       
-      if(idx > DYNAMICS_STRUCT_SZ) // have atmos data also
+      if(idx > DYNAMICS_STRUCT_SZ/4) // have atmos data also
       {
         makeDataString(outString, (dynamicsData_t *)tempData, (atmosData_t *)&tempData[DYNAMICS_STRUCT_SZ/4]);
       }
@@ -152,7 +153,7 @@ void flash_outputData(void)
       UARTSend(outString);
       idx = 0;
     }
-    else if(readByte == FLASH_STORE_RECORD_HEADER)
+    else if((readByte & 0xFFFFFF00) == FLASH_STORE_RECORD_HEADER)
     { /* just skip this byte */ }
     else
     {

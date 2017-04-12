@@ -23,7 +23,7 @@ typedef struct{
 #define DYNAMICS_STRUCT_SZ      (sizeof(DATA_TYPE)*9)
 
 typedef struct{
-    DATA_TYPE fTemperature, fPressure, fAltitude;
+  DATA_TYPE fTemperature, fPressure, fAltitude;       // TODO: remove the alt and calulate on output
 }atmosData_t;
 #define ATMOS_STRUCT_SZ         (sizeof(DATA_TYPE)*3)
 

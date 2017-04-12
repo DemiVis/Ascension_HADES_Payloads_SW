@@ -1,10 +1,10 @@
 [LMIFTDIDriver]
-LMIFTDIserialNo=0E220713
+LMIFTDIserialNo=0E22149F
 LMIFTDIfoundProbes=
 LMI_ResetMode=0x00000000
 LMI_LeaveTargetRunning=0x00000000
 [DebugChecksum]
-Checksum=1348920763
+Checksum=1290434292
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -22,6 +22,8 @@ ByteLimit=50
 ShowArgs=0
 [Disassembly]
 MixedMode=1
+[array_types]
+Fmt0=float[3]	4	0
 [watch_formats]
 Fmt0={W}1:tempData	0	2
 [Disassemble mode]
@@ -31,8 +33,7 @@ Bp0=_ "STD_CODE" "{$PROJ_DIR$\microSD.c}.64.3" 0 0 0 0 "" 0 ""
 Bp1=_ "STD_CODE" "{$PROJ_DIR$\startup_ewarm.c}.314.5" 1 0 0 0 "" 0 ""
 Bp2=_ "STD_CODE" "{$PROJ_DIR$\startup_ewarm.c}.333.5" 1 0 0 0 "" 0 ""
 Bp3=_ "STD_CODE" "0x00036C42" 0 0 0 0 "" 0 ""
-Bp4=_ "STD_CODE" "{$PROJ_DIR$\main.c}.736.5" 1 0 0 0 "" 0 ""
-Count=5
+Count=4
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
