@@ -877,7 +877,7 @@ int main(void)
 
     // Disable all interrupts for configuration
     IntMasterDisable();
-    DisableSensorTimers();
+    //DisableSensorTimers();
     
     ////////// Non-Sensor Peripheral Initialization //////////
     
