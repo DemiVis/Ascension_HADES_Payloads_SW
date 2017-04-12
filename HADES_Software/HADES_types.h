@@ -15,6 +15,11 @@
 #ifndef HADES_TYPES
 #define HADES_TYPES
 
+// Misc Defines
+#define OK                      1
+#define ERROR                   0
+
+// Data Types
 #define DATA_TYPE               float
 
 typedef struct{
@@ -23,9 +28,9 @@ typedef struct{
 #define DYNAMICS_STRUCT_SZ      (sizeof(DATA_TYPE)*9)
 
 typedef struct{
-  DATA_TYPE fTemperature, fPressure, fAltitude;       // TODO: remove the alt and calulate on output
+  DATA_TYPE fTemperature, fPressure;
 }atmosData_t;
-#define ATMOS_STRUCT_SZ         (sizeof(DATA_TYPE)*3)
+#define ATMOS_STRUCT_SZ         (sizeof(DATA_TYPE)*2)
 
 typedef struct{
 	dynamicsData_t dynamics_data;

@@ -91,7 +91,7 @@ void ConfigureFlash(void)
 // Store the latest data point in the Flash
 //
 //*****************************************************************************
-void flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData)
+int32_t flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData)
 {
   // TODO: Check to make sure there is still data available
 	
@@ -99,17 +99,39 @@ void flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData)
 	// Don't store the atmospheric data
 	if(atmosData == NULL)
 	{
-		flashStoreWriteRecord((uint8_t *)dynamicsData, DYNAMICS_STRUCT_SZ);
-		flashStoreWriteRecord((uint8_t *)&end_of_data, END_OF_DATA_SZ);
-                flashBytesWritten += DYNAMICS_STRUCT_SZ + END_OF_DATA_SZ + (2*FLASH_STORE_RECORD_HEADER_SZ);
+          uint8_t temp[DYNAMICS_STRUCT_SZ + END_OF_DATA_SZ];
+          
+          memcpy(temp, dynamicsData, DYNAMICS_STRUCT_SZ);
+          memcpy(&temp[DYNAMICS_STRUCT_SZ], &end_of_data, END_OF_DATA_SZ);
+          
+		/*if( flashStoreWriteRecord((uint8_t *)dynamicsData, DYNAMICS_STRUCT_SZ) == ERROR )
+                  return ERROR;
+		if( flashStoreWriteRecord((uint8_t *)&end_of_data, END_OF_DATA_SZ) == ERROR )
+                  return ERROR;*/
+                if( flashStoreWriteRecord(temp, DYNAMICS_STRUCT_SZ+END_OF_DATA_SZ) == ERROR )
+                  return ERROR;
+                flashBytesWritten += DYNAMICS_STRUCT_SZ + END_OF_DATA_SZ + FLASH_STORE_RECORD_HEADER_SZ;
 	}
 	else
 	{
-		flashStoreWriteRecord((uint8_t *)dynamicsData, DYNAMICS_STRUCT_SZ);
-		flashStoreWriteRecord((uint8_t *)atmosData, ATMOS_STRUCT_SZ);
-		flashStoreWriteRecord((uint8_t *)&end_of_data, END_OF_DATA_SZ);
-                flashBytesWritten += DYNAMICS_STRUCT_SZ + ATMOS_STRUCT_SZ + END_OF_DATA_SZ + (3*FLASH_STORE_RECORD_HEADER_SZ);
+          uint8_t temp[DYNAMICS_STRUCT_SZ + ATMOS_STRUCT_SZ + END_OF_DATA_SZ];
+          
+          memcpy(temp, dynamicsData, DYNAMICS_STRUCT_SZ);
+          memcpy(temp, atmosData, ATMOS_STRUCT_SZ);
+          memcpy(&temp[DYNAMICS_STRUCT_SZ+ATMOS_STRUCT_SZ], &end_of_data, END_OF_DATA_SZ);
+          
+		/*if( flashStoreWriteRecord((uint8_t *)dynamicsData, DYNAMICS_STRUCT_SZ) == ERROR )
+                  return ERROR;
+		if( flashStoreWriteRecord((uint8_t *)atmosData, ATMOS_STRUCT_SZ) == ERROR )
+                  return ERROR;
+		if( flashStoreWriteRecord((uint8_t *)&end_of_data, END_OF_DATA_SZ) == ERROR )
+                  return ERROR;*/
+                if( flashStoreWriteRecord(temp, DYNAMICS_STRUCT_SZ+ATMOS_STRUCT_SZ+END_OF_DATA_SZ) == ERROR )
+                  return ERROR;
+                flashBytesWritten += DYNAMICS_STRUCT_SZ + ATMOS_STRUCT_SZ + END_OF_DATA_SZ + (FLASH_STORE_RECORD_HEADER_SZ);
 	}
+        
+        return OK;
 }
 
 //*****************************************************************************

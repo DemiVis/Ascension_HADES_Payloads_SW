@@ -99,20 +99,20 @@
 #define ATMOS_TIMER_SYSCTL      SYSCTL_PERIPH_TIMER2
 #define ATMOS_TIMER_BASE        TIMER2_BASE
 #define ATMOS_SUBTIMER          TIMER_A
-#ifdef USE_SDCARD
+#if USE_SDCARD
 #define ATMOS_FREQ              40       // Hz
 #else   // using flash
 #define ATMOS_FREQ              1       // Hz
 #endif
-#define ATMOS_SKIP_COUNT        4       // DO atmospheric stuff every 4th dynamics stuff
+#define ATMOS_SKIP_COUNT        3       // DO atmospheric stuff every 4th dynamics stuff
 
 #define DYNAMICS_TIMER_SYSCTL   SYSCTL_PERIPH_TIMER3
 #define DYNAMICS_TIMER_BASE     TIMER3_BASE
 #define DYNAMICS_SUBTIMER       TIMER_A
-#ifdef USE_SDCARD
+#if USE_SDCARD
 #define DYNAMICS_FREQ           100       // Hz
 #else   // using flash
-#define DYNAMICS_FREQ           4       // Hz
+#define DYNAMICS_FREQ           3       // Hz
 #endif
 
 #define GO_DELAY                1.0f // Delay (in sec) for GO button push 
@@ -275,7 +275,7 @@ void HADESI2CIntHandler(void)
 void AtmosTimerIntHandler(void)
 {
   // Clear the interrupt flag
-  TimerIntClear(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
+  //TimerIntClear(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
   
   // Make sure data is available, if not, miss this capture and try again
   if(g_vui8BMPDataFlag == 0)
@@ -292,10 +292,6 @@ void AtmosTimerIntHandler(void)
   
   // Get a local copy of the latest air pressure data in float format.
   BMP180DataPressureGetFloat(&g_sBMP180Inst, &fAtmosData.fPressure);
-  
-  // Calculate the altitude.
-  fAtmosData.fAltitude = 44330.0f * (1.0f - powf(fAtmosData.fPressure / 101325.0f,
-                                      1.0f / 5.255f));
   
   // Indicate new data is ready for writing
   newAtmosDataReady = true;
@@ -383,7 +379,7 @@ void DynamicsTimerIntHandler(void)
 //*****************************************************************************
 //
 // MPU9150 Application error handler. Show the user if we have encountered an
-// I2C error.
+// error.
 //
 //*****************************************************************************
 void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg)
@@ -391,8 +387,8 @@ void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg
   char tempErrStr[128];
     // Set terminal color to red and print error status and locations
     UARTSend("\033[31;1m");
-    sprintf(tempErrStr, "Error: %d, File: %s, Line: %d\n\r"
-               "See I2C status definitions in sensorlib\\i2cm_drv.h\n\r",
+    
+    sprintf(tempErrStr, "Error: %d, File: %s, Line: %d\n\r",
                g_vui8ErrorFlag, pcFilename, ui32Line);
     UARTSend(tempErrStr);
     sprintf(tempErrStr, "Msg: %s\n\r", msg);
@@ -410,8 +406,7 @@ void MPU9150AppErrorHandler(char *pcFilename, uint_fast32_t ui32Line, char * msg
     // Increase blink rate to get attention
     RGBBlinkRateSet(10.0f);
 
-    // Go to sleep wait for interventions.  A more robust application could
-    // attempt corrective actions here.
+    // Go to sleep wait for interventions.
     while(1)
     {
         // Turn on USER LED on
@@ -737,7 +732,8 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
     static uint32_t idx = 0;
     
     // TODO: check for valid string addr for outStirng
-    
+   
+
     // Reset the idx for printing
     if(dynamicsData == NULL && atmosData == NULL)
     {
@@ -757,11 +753,15 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
     floatToDecimals( dynamicsData->fMag[ZAXIS], &iIPart[ZAXIS+6], &iFPart[ZAXIS+6]);
     
     if(atmosData != NULL)
-    {
+    {    
+      float fAltitude;
+      // Calculate the altitude.
+      fAltitude = 44330.0f * (1.0f - powf(atmosData->fPressure / 101325.0f,
+                                        1.0f / 5.255f));
       // Atmospheric Data
       floatToDecimals( atmosData->fPressure,    &iIPart[9], &iFPart[9] );
       floatToDecimals( atmosData->fTemperature, &iIPart[10], &iFPart[10] );
-      floatToDecimals( atmosData->fAltitude,    &iIPart[11], &iFPart[11] );
+      floatToDecimals( fAltitude,               &iIPart[11], &iFPart[11] );
     
     sprintf(outString,
            "%4u,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d\n\r",
@@ -877,6 +877,7 @@ int main(void)
 
     // Disable all interrupts for configuration
     IntMasterDisable();
+    DisableSensorTimers();
     
     ////////// Non-Sensor Peripheral Initialization //////////
     
@@ -903,9 +904,6 @@ int main(void)
     
     // Initialize the I2C
     ConfigureI2C();
-    
-    // Initialize the Timers
-    ConfigureTimers();
 
     // Initialize GPIO and whatnot for MPU Interrupts
     ConfigureGPIObInts();
@@ -1024,6 +1022,9 @@ int main(void)
     // Start data collection of both sensors
     BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
     
+    // Initialize the Timers
+    ConfigureTimers();
+
     // Turn on Sensor timers to begin data collection
     EnableSensorTimers();
     
@@ -1052,7 +1053,11 @@ int main(void)
 #endif
 #if USE_FLASH
             // store data on on-chip flash
-            flash_storeDataPoint(&fDynamicsData, &fAtmosData);
+            if( flash_storeDataPoint(&fDynamicsData, &fAtmosData) == ERROR)
+            {
+              UARTSend("Flash Out of Space! Stopping data collection!"); // TODO: Do we want to overwrite here or is this what we want? Look into it.
+              stop = true;
+            }
 #endif
           }
           else  // just print dynamics data
@@ -1068,7 +1073,11 @@ int main(void)
 #endif
 #if USE_FLASH
             // store data on on-chip flash
-            flash_storeDataPoint(&fDynamicsData, NULL);
+            if( flash_storeDataPoint(&fDynamicsData, NULL) == ERROR)
+            {
+              UARTSend("Flash Out of Space! Stopping data collection!"); // TODO: Do we want to overwrite here or is this what we want? Look into it.
+              stop = true;
+            }
 #endif
           }
           
