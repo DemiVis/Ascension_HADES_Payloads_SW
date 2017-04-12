@@ -26,7 +26,7 @@
 
 #include "driverlib/sysctl.h"
 
-#include "utils/flash_pb.h"
+#include "flashStore.h"
 
 #include "driverlib/flash.h"
 #include "inc/hw_flash.h"
@@ -60,36 +60,18 @@ extern void UARTSend(const char *pucBuffer);
 //*****************************************************************************
 // to make sure room is reserved in the flash
 #pragma data_alignment = 1024
-__root const sensorData_t flashData[NUM_DATA_PTS] @ ".storage";
+__root const uint8_t flashData[BYTES_OF_DATA] @ ".storage";
 
-// Global index into the flash storage block. 
-// indexes flashWriteIdx bytes into block # flashBlockIdx after &flashData.
-uint32_t flashBlockIdx;
-uint32_t flashWriteIdx;
+uint32_t flashBytesWritten;
 
 // Flash base address to offset (flashWriteIdx) from
 uint32_t flashBaseAddr;
 
+bool FreeSpaceAvailable;
+
 // End of data chunk to indicate end of data
 uint32_t end_of_data = 0xFFFFFFFF;
 #define END_OF_DATA_SZ  (32/8)
-
-//*****************************************************************************
-//
-// IPrivate functions for use below
-//
-//*****************************************************************************
-bool isBlockErased(uint32_t block_num)
-{
-  uint8_t erasedBlock[1024];    // Must be same as FLASH_BLOCK_SZ
-  
-  // TODO:
-  memset((void *)erasedBlock, 0xFFFFFF, FLASH_BLOCK_SZ);
-  if(memcmp((void *)erasedBlock, (void *)(flashBaseAddr + (flashBlockIdx*FLASH_BLOCK_SZ)), FLASH_BLOCK_SZ) == 0)
-    return true;
-  else
-    return false;
-}
 
 //*****************************************************************************
 //
@@ -98,23 +80,8 @@ bool isBlockErased(uint32_t block_num)
 //*****************************************************************************
 void ConfigureFlash(void)
 {
-  uint8_t flashPB[FLASH_PB_BLOCK_SZ];
-  
-  // Check that everything is alright before start initilizing
-  assert(DYNAMICS_STRUCT_SZ % 4 == 0);
-  assert(ATMOS_STRUCT_SZ % 4 == 0);
-  
-  // Initilize the parameter block
-  FlashPBInit(FLASH_PB_START_ADDR, FLASH_PB_END_ADDR, FLASH_PB_BLOCK_SZ);
-  
-  flashPB[0] = 0; // Sequence Number
-  //flashPB[1] = CRC?
-  FlashPBSave(flashPB);
-  
-  flashBaseAddr = (uint32_t)&flashData;
-  
-  flashBlockIdx = 0;
-  flashWriteIdx = 0;
+  flashBytesWritten = 0;
+  FreeSpaceAvailable = flashStoreInit();
 }
 
 //*****************************************************************************
@@ -124,41 +91,23 @@ void ConfigureFlash(void)
 //*****************************************************************************
 void flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData)
 {
-  int32_t temp;
-  
-  IntMasterDisable();
-  
-  // if it's the beginning of a new block, check if it's erased and if not erase it
-  if( flashWriteIdx == 0 && !isBlockErased(flashBlockIdx) );
-  {
-     temp = FlashErase( flashBaseAddr + (flashBlockIdx*FLASH_BLOCK_SZ) );
-     if(temp != 0)
-       MPU9150AppErrorHandler(__FILE__, __LINE__, "Flash Block erase failure");
-  }
-  
-  // Write dynamics data
-  assert(NEXT_FLASH_ADDR % 4 == 0); // make sure the address is a multiple of 4
-  temp = FlashProgram((uint32_t *)dynamicsData, NEXT_FLASH_ADDR, DYNAMICS_STRUCT_SZ);
-  if(temp != 0)
-    MPU9150AppErrorHandler(__FILE__, __LINE__, "Dynamics Data flash programming failure!");
-  flashWriteIdx += DYNAMICS_STRUCT_SZ;
-
-  // If atmoshperic data, write it too
-  if(atmosData != NULL)
-  {      
-    assert(NEXT_FLASH_ADDR % 4 == 0); // make sure the address is a multiple of 4
-    temp = FlashProgram((uint32_t *)atmosData, NEXT_FLASH_ADDR, ATMOS_STRUCT_SZ);
-    if(temp != 0)
-      MPU9150AppErrorHandler(__FILE__, __LINE__, "Atmos Data flash programming failure!");
-    flashWriteIdx += ATMOS_STRUCT_SZ;
-  }
-  
-  // Write end of data point flag
-  //flashBaseAddr[flashWriteIdx] = END_OF_DATA_FLAG;
-  FlashProgram(&end_of_data, NEXT_FLASH_ADDR, END_OF_DATA_SZ);
-  flashWriteIdx += END_OF_DATA_SZ;
-  
-  IntMasterEnable();
+	// Check to make sure there is still data available
+	
+	
+	// Don't store the atmospheric data
+	if(atmosData == NULL)
+	{
+		flashStoreWriteRecord((uint8_t *)dynamicsData, DYNAMICS_STRUCT_SZ);
+		FreeSpaceAvailable = flashStoreWriteRecord((uint8_t *)&end_of_data, END_OF_DATA_SZ);
+                flashBytesWritten += DYNAMICS_STRUCT_SZ + END_OF_DATA_SZ;
+	}
+	else
+	{
+		flashStoreWriteRecord((uint8_t *)dynamicsData, DYNAMICS_STRUCT_SZ);
+		flashStoreWriteRecord((uint8_t *)atmosData, ATMOS_STRUCT_SZ);
+		FreeSpaceAvailable = flashStoreWriteRecord((uint8_t *)&end_of_data, END_OF_DATA_SZ);
+                flashBytesWritten += DYNAMICS_STRUCT_SZ + ATMOS_STRUCT_SZ + END_OF_DATA_SZ;
+	}
 }
 
 //*****************************************************************************
@@ -169,43 +118,42 @@ void flash_storeDataPoint(dynamicsData_t *dynamicsData, atmosData_t *atmosData)
 //*****************************************************************************
 void flash_outputData(void)
 {
-  // TODO: remake this function!
+  uint32_t tempData[(DYNAMICS_STRUCT_SZ + ATMOS_STRUCT_SZ)/4 + 1];
+  uint32_t idx = 0;
   
-  /*uint32_t tempData[SENSOR_STRUCT_SZ+2];
-  char tempStr[254];
+  assert(FLASH_STORE_START_ADDR + flashBytesWritten < FLASH_STORE_END_ADDR);
   
-  // Setup the tempData string with null terminator at the end just in case
-  tempData[SENSOR_STRUCT_SZ+1] = 0;
-  
-  // Reset data string index to zero
+  // reset the count for the data output
   makeDataString(NULL, NULL, NULL);
   
-  // Write out all the data
-  for(uint32_t idx = 0, jdx = 0; idx <= flashWriteIdx; idx++)
-  {    
-    if(flashBaseAddr == end_of_data || jdx >= SENSOR_STRUCT_SZ)
-    {      
-      // If atmospheric data present
-      if(jdx > DYNAMICS_STRUCT_SZ)
-        // Make the data string from both data streams
-        makeDataString(tempStr, (dynamicsData_t *)tempData, (atmosData_t *)(tempData+DYNAMICS_STRUCT_SZ));
-      else
-        // Make the data string with just dynamics data
-        makeDataString(tempStr, (dynamicsData_t *)tempData, NULL);
-       
-      // Print the string to UART
-      UARTSend(tempStr);
+  // Send column headers
+  UARTSend("  # , AccelX, AccelY, AccelZ, GyroX , GyroY , GyroZ , Mag X , Mag Y , Mag Z , Press ,  Temp ,   Alt  \n\r");
+  UARTSend("    , m/s^2 , m/s^2 , m/s^2 , rad/s , rad/s , rad/s ,   uT  ,   uT  ,   uT  ,  inHg ,   C   ,    m   \n\r");
+
+  
+  for(uint32_t addr = FLASH_STORE_START_ADDR; addr <= FLASH_STORE_START_ADDR + flashBytesWritten; addr += 0x4)
+  {
+    uint32_t readByte = flashStoreGetData(addr);
+    
+    if(readByte == end_of_data)
+    {
+      char outString[512];
       
-      // Reset the count for the data string
-      jdx = 0;
+      if(idx > DYNAMICS_STRUCT_SZ) // have atmos data also
+      {
+        makeDataString(outString, (dynamicsData_t *)tempData, (atmosData_t *)&tempData[DYNAMICS_STRUCT_SZ/4]);
+      }
+      else
+      {
+        makeDataString(outString, (dynamicsData_t *)tempData, NULL);
+      }
+      UARTSend(outString);
+      idx = 0;
     }
     else
     {
-      // Store this chunk of data locally
-      tempData[jdx] = *((uint32_t *)flashBaseAddr);
-        
-      // Move on in the local buffer
-      jdx++;
+      tempData[idx] = readByte;
+      idx++;
     }
-  }*/
+  }
 }

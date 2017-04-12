@@ -28,7 +28,7 @@
 // Project Definitions
 //
 //*****************************************************************************
-#define NUM_DATA_PTS            4000          
+#define BYTES_OF_DATA           0x32000 // 200 kB         
 #define DATA_STORAGE_SZ         (NUM_DATA_PTS*sizeof(sensorData_t))
 
 #define FLASH_BLOCK_SZ          SysCtlFlashSectorSizeGet()

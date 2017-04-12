@@ -2,216 +2,169 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>48782306</fileChecksum>
+  <fileChecksum>3604428688</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
-      <file>$PROJ_DIR$\..\inc\hw_ints.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\tm4c_fatfs.pbi</file>
-      <file>$PROJ_DIR$\..\userlib\timer.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
-      <file>$PROJ_DIR$\..\sensorlib\hw_bmp180.h</file>
-      <file>$PROJ_DIR$\flash.c</file>
-      <file>$PROJ_DIR$\..\utils\flash_pb.c</file>
-      <file>$PROJ_DIR$\..\sensorlib\ewarm\Exe\sensorlib.a</file>
-      <file>$PROJ_DIR$\main.c</file>
-      <file>$PROJ_DIR$\microSD.c</file>
-      <file>$PROJ_DIR$\drivers\rgb.c</file>
-      <file>$PROJ_DIR$\fatfs\ff.c</file>
-      <file>$PROJ_DIR$\..\driverlib\ewarm\Exe\driverlib.a</file>
-      <file>$PROJ_DIR$\startup_ewarm.c</file>
-      <file>$PROJ_DIR$\..\userlib\timer.c</file>
-      <file>$PROJ_DIR$\fatfs\option\ccsbcs.c</file>
-      <file>$PROJ_DIR$\microSD.h</file>
-      <file>$PROJ_DIR$\..\utils\uartstdio.c</file>
-      <file>$PROJ_DIR$\tm4c_fatfs.c</file>
-      <file>$PROJ_DIR$\ewarm\List\HADES.map</file>
-      <file>$PROJ_DIR$\ewarm\Obj\microSD.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
-      <file>$PROJ_DIR$\..\sensorlib\hw_mpu9150.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\tm4c_fatfs.o</file>
-      <file>$PROJ_DIR$\..\sensorlib\comp_dcm.h</file>
-      <file>$PROJ_DIR$\..\sensorlib\i2cm_drv.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ymath.h</file>
-      <file>$PROJ_DIR$\..\inc\hw_uart.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
-      <file>$PROJ_DIR$\..\driverlib\rom_map.h</file>
-      <file>$PROJ_DIR$\..\driverlib\debug.h</file>
-      <file>$PROJ_DIR$\..\driverlib\systick.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\ff.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\time.h</file>
-      <file>$PROJ_DIR$\..\driverlib\sysctl.h</file>
-      <file>$PROJ_DIR$\..\utils\uartstdio.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\timer.pbi</file>
-      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.pbi</file>
-      <file>$PROJ_DIR$\ewarm\Obj\rgb.pbi</file>
-      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.pbi</file>
-      <file>$PROJ_DIR$\..\inc\hw_types.h</file>
-      <file>$PROJ_DIR$\ewarm\Exe\HADES_Payloads.bin</file>
-      <file>$PROJ_DIR$\..\driverlib\timer.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\ccsbcs.o</file>
-      <file>$PROJ_DIR$\..\sensorlib\ak8975.h</file>
-      <file>$PROJ_DIR$\..\userlib\spim_drv.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.o</file>
-      <file>$PROJ_DIR$\ewarm\Obj\timer.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\math.h</file>
-      <file>$PROJ_DIR$\..\driverlib\uart.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
-      <file>$PROJ_DIR$\fatfs\diskio.h</file>
-      <file>$PROJ_DIR$\..\sensorlib\bmp180.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\flash.o</file>
-      <file>$PROJ_DIR$\ewarm\Obj\rgb.o</file>
-      <file>$PROJ_DIR$\fatfs\ff.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\flash_pb.o</file>
-      <file>$PROJ_DIR$\ewarm\Obj\ff.pbi</file>
-      <file>$PROJ_DIR$\flash.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\timer.__cstat.et</file>
-      <file>$PROJ_DIR$\..\inc\hw_flash.h</file>
-      <file>$PROJ_DIR$\..\driverlib\rom.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\flash.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
-      <file>$PROJ_DIR$\..\driverlib\flash.h</file>
-      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
-      <file>$PROJ_DIR$\..\driverlib\ssi.h</file>
-      <file>$PROJ_DIR$\fatfs\integer.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.o</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\xtgmath.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\flash.__cstat.et</file>
-      <file>$PROJ_DIR$\HADES_types.h</file>
-      <file>$PROJ_DIR$\..\inc\hw_sysctl.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\flash_pb.pbi</file>
-      <file>$PROJ_DIR$\..\utils\flash_pb.h</file>
-      <file>$PROJ_DIR$\ewarm\Exe\HADES.out</file>
       <file>$PROJ_DIR$\fatfs\ffconf.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\microSD.pbi</file>
-      <file>$PROJ_DIR$\..\inc\hw_timer.h</file>
-      <file>$PROJ_DIR$\..\inc\hw_gpio.h</file>
-      <file>$PROJ_DIR$\..\inc\hw_memmap.h</file>
-      <file>$PROJ_DIR$\drivers\rgb.h</file>
       <file>$PROJ_DIR$\ewarm\Obj\main.pbi</file>
-      <file>$PROJ_DIR$\ewarm\Obj\tm4c_fatfs.__cstat.et</file>
-      <file>$PROJ_DIR$\..\driverlib\gpio.h</file>
-      <file>$PROJ_DIR$\..\inc\hw_nvic.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.__cstat.et</file>
-      <file>$TOOLKIT_DIR$\inc\c\assert.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.__cstat.et</file>
-      <file>$PROJ_DIR$\..\sensorlib\mpu9150.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\rgb.__cstat.et</file>
+      <file>$PROJ_DIR$\drivers\rgb.h</file>
       <file>$PROJ_DIR$\ewarm\Obj\HADES_Payloads.pbd</file>
-      <file>$PROJ_DIR$\ewarm\Obj\ff.__cstat.et</file>
       <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
-      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
-      <file>$PROJ_DIR$\..\driverlib\interrupt.h</file>
-      <file>$PROJ_DIR$\ewarm\Obj\main.__cstat.et</file>
-      <file>$PROJ_DIR$\ewarm\Obj\ccsbcs.__cstat.et</file>
-      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.__cstat.et</file>
       <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
       <file>$PROJ_DIR$\..\driverlib\pin_map.h</file>
       <file>$PROJ_DIR$\HADES.icf</file>
       <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\assert.h</file>
+      <file>$PROJ_DIR$\..\driverlib\interrupt.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\rgb.__cstat.et</file>
+      <file>$PROJ_DIR$\ewarm\Exe\HADES.out</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.__cstat.et</file>
+      <file>$PROJ_DIR$\..\driverlib\gpio.h</file>
+      <file>$PROJ_DIR$\..\inc\hw_nvic.h</file>
       <file>$PROJ_DIR$\ewarm\Obj\ccsbcs.pbi</file>
-      <file>$PROJ_DIR$\ewarm\Obj\main.o</file>
-      <file>$PROJ_DIR$\ewarm\Obj\microSD.__cstat.et</file>
-      <file>$PROJ_DIR$\..\sensorlib\hw_ak8975.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
-      <file>$PROJ_DIR$\drivers\buttons.h</file>
-      <file>$PROJ_DIR$\..\driverlib\uart.c</file>
-      <file>$PROJ_DIR$\..\driverlib\sysctl.c</file>
-      <file>$PROJ_DIR$\userFlash.h</file>
-      <file>$PROJ_DIR$\userFlash.c</file>
-      <file>$PROJ_DIR$\ewarm\Obj\userFlash.o</file>
+      <file>$PROJ_DIR$\..\inc\hw_gpio.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\microSD.pbi</file>
+      <file>$PROJ_DIR$\..\inc\hw_timer.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\mpu9150.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\main.__cstat.et</file>
+      <file>$PROJ_DIR$\ewarm\Obj\ccsbcs.__cstat.et</file>
+      <file>$PROJ_DIR$\..\inc\hw_memmap.h</file>
       <file>$PROJ_DIR$\ewarm\Obj\userFlash.pbi</file>
+      <file>$PROJ_DIR$\..\sensorlib\hw_ak8975.h</file>
+      <file>$PROJ_DIR$\drivers\buttons.h</file>
+      <file>$PROJ_DIR$\..\driverlib\sysctl.c</file>
+      <file>$PROJ_DIR$\ewarm\Obj\userFlash.o</file>
+      <file>$PROJ_DIR$\ewarm\Obj\main.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\microSD.__cstat.et</file>
+      <file>$PROJ_DIR$\userFlash.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$PROJ_DIR$\..\inc\hw_ints.h</file>
+      <file>$PROJ_DIR$\..\userlib\timer.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\hw_bmp180.h</file>
+      <file>$PROJ_DIR$\..\driverlib\ewarm\Exe\driverlib.a</file>
+      <file>$PROJ_DIR$\main.c</file>
+      <file>$PROJ_DIR$\..\sensorlib\ewarm\Exe\sensorlib.a</file>
+      <file>$PROJ_DIR$\microSD.c</file>
+      <file>$PROJ_DIR$\fatfs\option\ccsbcs.c</file>
+      <file>$PROJ_DIR$\drivers\rgb.c</file>
+      <file>$PROJ_DIR$\..\userlib\timer.c</file>
+      <file>$PROJ_DIR$\startup_ewarm.c</file>
+      <file>$PROJ_DIR$\..\utils\uartstdio.c</file>
+      <file>$PROJ_DIR$\microSD.h</file>
+      <file>$PROJ_DIR$\userFlash.c</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.o</file>
+      <file>$PROJ_DIR$\ewarm\Obj\timer.pbi</file>
+      <file>$PROJ_DIR$\..\sensorlib\hw_mpu9150.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\comp_dcm.h</file>
+      <file>$PROJ_DIR$\ewarm\List\HADES.map</file>
+      <file>$PROJ_DIR$\..\inc\hw_uart.h</file>
+      <file>$PROJ_DIR$\..\inc\hw_types.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdbool.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\..\driverlib\debug.h</file>
+      <file>$PROJ_DIR$\..\driverlib\rom_map.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\microSD.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\..\driverlib\systick.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\uartstdio.pbi</file>
+      <file>$PROJ_DIR$\ewarm\Obj\timer.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\math.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\i2cm_drv.h</file>
+      <file>$PROJ_DIR$\..\utils\uartstdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ymath.h</file>
+      <file>$PROJ_DIR$\..\driverlib\sysctl.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.pbi</file>
+      <file>$PROJ_DIR$\ewarm\Obj\rgb.pbi</file>
+      <file>$PROJ_DIR$\ewarm\Exe\HADES_Payloads.bin</file>
+      <file>$PROJ_DIR$\ewarm\Obj\ccsbcs.o</file>
+      <file>$PROJ_DIR$\..\driverlib\timer.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\ak8975.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$PROJ_DIR$\fatfs\integer.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\HADES_types.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\rgb.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\xtgmath.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\startup_ewarm.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\fatfs\diskio.h</file>
+      <file>$PROJ_DIR$\..\driverlib\flash.h</file>
+      <file>$PROJ_DIR$\fatfs\ff.h</file>
+      <file>$PROJ_DIR$\..\driverlib\rom.h</file>
+      <file>$PROJ_DIR$\..\driverlib\uart.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\timer.__cstat.et</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdarg.h</file>
+      <file>$PROJ_DIR$\..\inc\hw_flash.h</file>
+      <file>$PROJ_DIR$\..\sensorlib\bmp180.h</file>
+      <file>$PROJ_DIR$\flashstore.c</file>
+      <file>$PROJ_DIR$\ewarm\Obj\flashstore.pbi</file>
+      <file>$PROJ_DIR$\flashStore.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\flashstore.o</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tlf.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Full.h</file>
+      <file>$PROJ_DIR$\ewarm\Obj\flashstore.__cstat.et</file>
+      <file>$PROJ_DIR$\ewarm\Obj\userFlash.__cstat.et</file>
     </outputs>
+    <file>
+      <name>$PROJ_DIR$\ewarm\Exe\HADES.out</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 55</file>
+        </tool>
+        <tool>
+          <name>OBJCOPY</name>
+          <file> 75</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 8 76 40 101 32 62 85 42 87 67 51 31 4 81 6 102</file>
+        </tool>
+      </inputs>
+    </file>
     <file>
       <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>ILINK</name>
-          <file> 81 20</file>
+          <file> 13 55</file>
         </tool>
       </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\flash.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 67</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 57</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 76</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 114 94 24 68 31 105 65 0 80 53 74 69 22 92 37 77 4 30 63 109 62</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 62 31 114 68 24 4 30 53 74 22 0 105 63 92 109 94 37 80 77 65</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\utils\flash_pb.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 79</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 60</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 24 114 32 78 30 65 69 80 53 4 31 43 33 66 37 68 74 22</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 22 31 114 68 24 4 30 53 74 65 43 78 33 69 66 32 37 80</file>
-        </tool>
-      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\main.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 88</file>
+          <file> 1</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 111</file>
+          <file> 32</file>
         </tool>
         <tool>
           <name>__cstat</name>
-          <file> 103</file>
+          <file> 24</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 66 68 86 23 22 33 52 26 74 63 105 28 114 72 82 92 85 102 34 113 56 87 109 31 0 51 1 43 90 107 37 45 27 5 47 96 115 77 17 118 24 53 4 30 75 59 55</file>
+          <file> 92 26 53 59 58 60 93 54 80 33 79 86 23 19 11 65 28 97 2 103 84 63 36 68 37 57 16 7 72 77 69 39 78 22 29 49 35 64 88 83 14 9 71 89 82 0 91</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 31 114 68 24 4 30 53 74 22 0 105 63 92 109 51 28 75 86 1 85 43 33 90 102 107 66 37 34 45 52 27 113 5 23 47 56 96 26 115 87 77 17 55 72 59 82 118</file>
+          <file> 63 33 80 64 103 59 88 83 58 36 14 79 23 9 68 71 86 26 37 19 57 60 16 11 7 92 72 65 77 93 69 28 39 53 78 97 22 54 29 2 84 49 89 82 91 0 35</file>
         </tool>
       </inputs>
     </file>
@@ -220,133 +173,25 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 83</file>
+          <file> 20</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 21</file>
+          <file> 62</file>
         </tool>
         <tool>
           <name>__cstat</name>
-          <file> 112</file>
+          <file> 34</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 31 45 114 0 59 68 22 86 55 3 77 24 74 72 82 63 17 53 4 30 105</file>
+          <file> 63 103 80 77 33 36 91 59 82 0 79 58 26 89 38 84 64 88 83 14 49</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 17 31 114 68 24 4 30 53 74 55 72 59 82 77 22 0 105 63 86 45 3</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\drivers\rgb.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 41</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 58</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 97</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 32 84 102 74 68 43 37 45 114 22 86 1 66 107 90 87 24 53 4 30 31</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 31 114 68 24 4 30 53 74 22 43 86 84 1 37 66 32 107 45 90 102 87</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\fatfs\ff.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 61</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 35</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 99</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 114 24 72 30 55 53 4 59 54 82 68 74</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 59 72 82 55</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\startup_ewarm.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 40</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 73</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 95</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 74 43 68 114 91 24 53 4 30 31</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 31 114 68 24 4 30 53 74 91 43</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\userlib\timer.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 39</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 50</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 64</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 74 68 66 86 37 31 114 1 102 32 45 22 24 53 4 30 3</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 3 22 31 114 68 24 4 30 53 74 1 86 102 66 32 37 45</file>
+          <file> 49 63 33 80 64 103 59 88 83 89 82 91 0 84 58 36 14 79 26 77 38</file>
         </tool>
       </inputs>
     </file>
@@ -355,11 +200,173 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 110</file>
+          <file> 18</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 46</file>
+          <file> 76</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 25</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 82 0 91</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 82 0</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\drivers\rgb.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 74</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 85</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 12</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 61 103 21 11 33 57 72 77 80 59 58 26 37 92 7 16 2 64 88 83 63</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 63 33 80 64 103 59 88 83 58 57 26 21 37 72 92 61 7 77 16 11 2</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\userlib\timer.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 52</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 67</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 94</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 33 92 103 26 72 63 80 59 37 11 61 77 58 64 88 83 38</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 38 58 63 33 80 64 103 59 88 83 37 26 11 92 61 72 77</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\startup_ewarm.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 87</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 15</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 103 57 80 33 59 17 64 88 83 63</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 63 33 80 64 103 59 88 83 17 57</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\utils\uartstdio.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 66</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 51</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 5</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 11 64 26 93 83 95 56 61 33 88 80 63 37 57 60 92 72 70 103 59 58</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 58 63 33 80 64 103 59 88 83 37 26 57 56 60 11 92 61 72 93 70</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\userFlash.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 27</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 31</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 105</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 96 80 33 10 88 83 14 36 100 64 9 58 23 72 90 103 59 63 35 79 84</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 63 33 80 64 103 59 88 83 58 36 14 79 23 9 10 72 100 90 96 35 84</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\flashstore.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 99</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 101</file>
         </tool>
         <tool>
           <name>__cstat</name>
@@ -369,107 +376,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 72 82 59</file>
+          <file> 80 33 60 103 23 100 59 58 57 90 64 88 83 14 9 63</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 59 72 82</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\utils\uartstdio.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 42</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 49</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 93</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 102 24 114 86 52 30 68 54 29 32 53 4 31 1 43 33 66 37 38 74 22</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 22 31 114 68 24 4 30 53 74 1 86 43 29 33 102 66 32 37 52 38</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\tm4c_fatfs.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 2</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 25</file>
-        </tool>
-        <tool>
-          <name>__cstat</name>
-          <file> 89</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 105 32 24 114 68 91 72 30 36 90 37 53 4 22 86 43 66 71 55 48 74 31</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 31 114 68 24 4 30 53 74 22 36 105 86 91 43 90 66 32 71 37 55 72 48</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\ewarm\Exe\HADES.out</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 20</file>
-        </tool>
-        <tool>
-          <name>OBJCOPY</name>
-          <file> 44</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 108 46 13 35 60 111 21 58 8 73 50 25 49 120 100 70 106 101</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\userFlash.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 121</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 120</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 114 65 68 94 109 0 80 74 63 105 22 92 37 69 118 24 53 4 30 77 31</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 31 114 68 24 4 30 53 74 22 0 105 63 92 109 94 37 80 69 65 118 77</file>
+          <file> 63 33 80 64 103 59 88 83 58 23 14 9 57 60 90 100</file>
         </tool>
       </inputs>
     </file>

@@ -276,9 +276,12 @@ void AtmosTimerIntHandler(void)
   // Clear the interrupt flag
   TimerIntClear(ATMOS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
   
-  // Make sure data is available, this should never hang
-  while(g_vui8BMPDataFlag == 0)
-  { /* Wait for the new data set to be available*/ }
+  // Make sure data is available, if not, miss this capture and try again
+  if(g_vui8BMPDataFlag == 0)
+  { 
+    // Re-start the data acquisition process
+    BMP180DataRead(&g_sBMP180Inst, BMP180AppCallback, &g_sBMP180Inst);
+  }
   
   // Reset the data ready flag.
   g_vui8BMPDataFlag = 0;
@@ -309,6 +312,7 @@ void AtmosTimerIntHandler(void)
 void DynamicsTimerIntHandler(void)
 {
   static uint_fast32_t ui32CompDCMStarted = 0;
+  static int atmosCount = 0;
   
   // Clear the interrupt flag
   TimerIntClear(DYNAMICS_TIMER_BASE, TIMER_TIMA_TIMEOUT);
@@ -365,6 +369,9 @@ void DynamicsTimerIntHandler(void)
   
   // Indicate data is ready to write
   newDynamicsDataReady = true;
+  
+  // count towards doing the atmos processing
+  atmosCount++;
 }
 
 //*****************************************************************************
@@ -762,6 +769,21 @@ int makeDataString(char *outString, dynamicsData_t *dynamicsData, atmosData_t *a
             iIPart[7], iFPart[9],         // Pressure
             iIPart[10], iFPart[10],       // Temperature
             iIPart[11], iFPart[11]);      // Altitude
+    /*  sprintf(outString,
+              "%4u,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f,%3.3f\n\r",
+              idx,
+              dynamicsData->fAccel[XAXIS],
+              dynamicsData->fAccel[YAXIS],
+              dynamicsData->fAccel[ZAXIS],
+              dynamicsData->fGyro[XAXIS],
+              dynamicsData->fGyro[YAXIS],
+              dynamicsData->fGyro[ZAXIS],
+              dynamicsData->fMag[XAXIS],
+              dynamicsData->fMag[YAXIS],
+              dynamicsData->fMag[ZAXIS],
+              atmosData->fPressure,
+              atmosData->fTemperature,
+              atmosData->fAltitude );*/
     }
     else
     {
@@ -1102,7 +1124,7 @@ int main(void)
 		// Turn on USER LED for indication data acquisition is done
 		GPIOPinWrite(SENSHUB_LED_PORT, SENSHUB_LED_PIN, 0xFF);
 		
-	#if USE_UART
+#if USE_UART
 		int confirmStrLen, idx=0;
 		
 		UARTSend("Enter \""OUTPUT_CONFIRM_STR"\" to send all stored data.\n\r");
